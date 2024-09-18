@@ -1,10 +1,8 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { IToken } from "../../../interfaces/token"
 import { verificaTokenExpirado } from "../../../services/token"
 import { LayoutDashboard } from "../../../components/LayoutDashboard"
 import { useForm } from "react-hook-form"
-import { Loading } from "../../../components/Loading"
 
 interface IForm {
     nome: string
@@ -21,34 +19,22 @@ export default function GerenciarUsuarios() {
         formState: { errors }
 
     } = useForm<IForm>()
-
+    
     const navigate = useNavigate()
 
     // Inicio, Update State, Destruir
     useEffect(() => {
 
-        let lsStorage = localStorage.getItem('americanos.token')
-
-        let token: IToken | null = null
-
-        if (typeof lsStorage === 'string') {
-            token = JSON.parse(lsStorage)
-        }
-
-        if (!token || verificaTokenExpirado(token.accessToken)) {
-
+        if (localStorage.length == 0 || verificaTokenExpirado()) {
             navigate("/")
         }
-
-        console.log("Pode desfrutar do sistema :D")
-
+    
     }, [])
 
 
     return (
         <>
             <LayoutDashboard>
-
                 <h2>Usuários</h2>
 
                 <form
@@ -58,7 +44,6 @@ export default function GerenciarUsuarios() {
                         alignItems: 'center'
                     }}
                 >
-
                     <div className="col-md-12" >
                         <label
                             htmlFor="nome"

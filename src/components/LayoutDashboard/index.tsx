@@ -2,13 +2,6 @@ import { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { IToken } from '../../interfaces/token'
 
-//Exemplo enterder undefined ou null
-let Pessoa = {
-    nome: "Junior",
-    email: null,
-    // idade: undefined
-}
-
 interface IProps {
     children: ReactNode
     token?: IToken | null
@@ -42,7 +35,9 @@ export const LayoutDashboard = (props: IProps) => {
                     <div className="nav-item text-nowrap">
                         <Link
                             className="nav-link px-3"
-                            to="/">
+                            to="/"
+                            onClick={() => {localStorage.clear()}}
+                            >
                             Sair
                         </Link>
                     </div>

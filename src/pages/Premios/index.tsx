@@ -5,11 +5,12 @@ import { verificaTokenExpirado } from "../../services/token"
 import { Loading } from "../../components/Loading"
 import axios from "axios"
 
-interface IUsers {
+interface IPremios {
     id: number
     nome: string
-    email: string
-    permissoes: string
+    categoria: string
+    data_recebimento: string
+    imagem: string
 }
 
 export default function Usuarios() {

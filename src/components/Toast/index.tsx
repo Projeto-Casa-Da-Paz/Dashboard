@@ -1,16 +1,8 @@
-import {
-    Toast as ToastBootstrap,
-    ToastProps
-} from 'react-bootstrap'
+import { CloseButton, Toast as ToastBootstrap, ToastProps } from "react-bootstrap";
 
 interface IProps extends ToastProps {
-    colors?: string
     message: string
-}
-
-// Exemplo
-interface IPropsTeste {
-    onClose: () => void
+    colors?: string
 }
 
 export const Toast = (props: IProps) => {
@@ -18,13 +10,14 @@ export const Toast = (props: IProps) => {
         <ToastBootstrap
             show={props.show}
             onClose={props.onClose}
-            delay={3000}
+            delay={5000}
             bg={props?.colors ? props.colors : 'success'}
             autohide
             style={{
                 position: 'absolute',
                 zIndex: 100,
-                right: 0
+                right: 0,
+                margin: '7px'
             }}
         >
             <ToastBootstrap.Body
@@ -33,8 +26,15 @@ export const Toast = (props: IProps) => {
                 }}
             >
                 {props.message}
+                <CloseButton 
+                    style={{
+                        color: "#FFF",
+                        float: 'right'
+                    }}
+                    variant="white"
+                    onClick={props.onClose}
+                />
             </ToastBootstrap.Body>
-
         </ToastBootstrap>
     )
 }

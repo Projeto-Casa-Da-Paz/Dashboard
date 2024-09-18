@@ -1,23 +1,28 @@
 import { jwtDecode } from "jwt-decode"
+import { IToken } from "../../interfaces/token"
 
-export const verificaTokenExpirado =
-//valida o token se existe, e se não estiver expirado 
+export const verificaTokenExpirado = () => {
+    let lsStorage = localStorage.getItem('americanos.token')
 
-    (token?: string | null) => {
+    let token: IToken | null = null
 
-        if (token) {
-            let decodedToken = jwtDecode(token)
-
-            if (
-                !decodedToken.exp
-                ||
-                decodedToken.exp < new Date().getTime() / 1000
-            ) {
-
-                return true
-
-            }
-            return false
-        }
-
+    if (typeof lsStorage === 'string') {
+        token = JSON.parse(lsStorage)
     }
+
+    if (token) {
+        let decodedToken = jwtDecode(token.accessToken)
+
+        if (
+            !decodedToken.exp
+            ||
+            decodedToken.exp < new Date().getTime() / 1000
+        ) {
+
+            return true
+
+        }
+        return false
+    }
+
+}
