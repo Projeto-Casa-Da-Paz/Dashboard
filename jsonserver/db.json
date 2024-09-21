@@ -8,5 +8,14 @@
             "permissoes": "admin"
         }
 
+    ],
+    "premios": [
+        {
+            "id": 1,
+            "nome": "Selo Top",
+            "categoria": "Business",
+            "data_recebimento": "2020-01-01",
+            "imagem": "premioLogo.png"
+        }
     ]
 }

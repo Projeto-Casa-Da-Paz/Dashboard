@@ -8,6 +8,7 @@ import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import Usuarios from "./pages/Usuarios"
 import GerenciarUsuarios from "./pages/Usuarios/Gerenciar"
+import Premios from "./pages/Premios"
 
 export const Rotas = () => {
 
@@ -35,6 +36,10 @@ export const Rotas = () => {
                 <Route
                     path="/usuarios/:id"
                     element={<GerenciarUsuarios />}
+                />
+                <Route
+                    path="/premios"
+                    element={<Premios />}
                 />
             </Routes>
 

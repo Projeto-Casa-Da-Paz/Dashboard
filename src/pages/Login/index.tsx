@@ -40,22 +40,16 @@ export default function Login() {
                 console.log(resposta.data)
 
                 localStorage.setItem(
-                    'americanos.token',
+                    'casadapaz.token',
                     JSON.stringify(resposta.data)
                 )
                
                 navigate('/dashboard')
-
-
             }).catch((erro) => {
-                console.log('deu ruim')
                 console.log(erro)
                 setLoading(false)
                 setToast(true)
             })
-
-
-
         } else {
             refForm.current.classList.add('was-validated')
         }

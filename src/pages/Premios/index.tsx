@@ -13,11 +13,12 @@ interface IPremios {
     imagem: string
 }
 
-export default function Usuarios() {
+export default function Premios() {
 
-    const navigate = useNavigate() //
+    const navigate = useNavigate()
     const [loading, setLoading] = useState(false) //estado
-    const [dadosUsers, setdadosUsers] = useState<Array<IUsers>>([]) //estado
+    const [dadosPremios, setdadosPremios] = useState<Array<IPremios>>([]) //estado
+    let premio: any;
 
     // Inicio, Update State, Destruir
     useEffect(() => {
@@ -28,17 +29,18 @@ export default function Usuarios() {
 
         setLoading(true)
 
-        axios.get(import.meta.env.VITE_URL + '/users')
+        axios.get(import.meta.env.VITE_URL + '/premios')
             .then((res) => {
-                setdadosUsers(res.data)
+                setdadosPremios(res.data)
                 setLoading(false)
+                console.log(res.data)
             })
             .catch((err) => {
+                setdadosPremios(err)
                 setLoading(false)
-                setdadosUsers(err)
             })
+        
     }, [])
-
     return (
         <>
             <Loading visible={loading} />
@@ -46,38 +48,49 @@ export default function Usuarios() {
                 <div
                     className="d-flex justify-content-between mt-3"
                 >
-                    <h1 className="h2">Users Salafrários</h1>
+                    <h1 className="h2">Prêmios</h1>
                     <button className="btn btn-success"
                         onClick={() => {
-                            navigate('/usuarios/add')
+                            navigate('/premios/add')
                         }}
                     >
                         Add
                     </button>
                 </div>
 
-                <table className="table table-striped">
+                <table className="table table-striped table-hover">
                     <thead>
-                        <tr>
+                        <tr className="text-center">
                             <th scope="col">#</th>
+                            <th scope="col">Imagem</th>
                             <th scope="col">Nome</th>
-                            <th scope="col">E-mail</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Data Recebimento</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        { /* <? > */}
-
+                    <tbody className="table-group-divider align-middle">
                         {
-                            dadosUsers.map((
-                                usuario,
+                            dadosPremios.map((
+                                premio,
                                 index
                             ) => {
                                 return (
-                                    <tr key={index} >
-                                        <th scope="col">{usuario.id}</th>
-                                        <td>{usuario.nome}</td>
-                                        <td>{usuario.email}</td>
+                                    <tr key={index} className="text-center">
+                                        <th scope="col">{premio.id}</th>
+                                        <th scope="col">
+                                            <img
+                                            className="img-thumbnail"
+                                            style={{
+                                                width: 100,
+                                                height: 100,
+                                                borderRadius: "50%"
+                                            }}
+                                            src={`images/${premio.imagem}`} alt="" />
+                                        </th>
+                                        <td>{premio.nome}</td>
+                                        <td>{premio.categoria}</td>
+                                        <td>{new Date(premio.data_recebimento + 'T00:00:00').toLocaleDateString("BR")}</td>
                                         <td>
                                             <button
                                                 className="btn btn-warning"
@@ -99,9 +112,7 @@ export default function Usuarios() {
                                     </tr>
 
                                 )
-                            })
-                        }
-
+                            })}
                     </tbody>
                 </table>
 
