@@ -18,7 +18,6 @@ export default function Premios() {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false) //estado
     const [dadosPremios, setdadosPremios] = useState<Array<IPremios>>([]) //estado
-    let premio: any;
 
     // Inicio, Update State, Destruir
     useEffect(() => {
@@ -33,7 +32,6 @@ export default function Premios() {
             .then((res) => {
                 setdadosPremios(res.data)
                 setLoading(false)
-                console.log(res.data)
             })
             .catch((err) => {
                 setdadosPremios(err)
