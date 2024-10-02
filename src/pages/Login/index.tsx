@@ -1,9 +1,11 @@
 import { SyntheticEvent, useCallback, useRef, useState } from 'react'
+import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import axios from 'axios'
 import styles from './styles.module.css'
-import { Loading } from '../../components/Loading';
-import { Toast } from '../../components/Toast';
-import { useNavigate } from 'react-router-dom';
+import { Loading } from '../../components/Loading'
+import { Toast } from '../../components/Toast'
+import { useNavigate } from 'react-router-dom'
+import { IToast } from '../../interfaces/toast'
 
 export default function Login() {
 
@@ -14,41 +16,40 @@ export default function Login() {
 
     const [loading, setLoading] = useState(false)
     const [toast, setToast] = useState(false)
+    const [objToast, setobjToast] = useState<IToast>({ message: "Erro ! !", colors: "danger" })
 
     const submitForm = useCallback((event: SyntheticEvent) => {
 
         event.preventDefault();
 
         if (refForm.current.checkValidity()) {
-
             setLoading(true)
-
             const target = event.target as typeof event.target & {
                 email: { value: string },
                 senha: { value: string }
             }
-
-
-            axios.post('http://localhost:3001/login',
+            axios.post(import.meta.env.VITE_URL + '/login',
                 {
                     email: target.email.value,
                     password: target.senha.value,
                 }
             ).then((resposta) => {
-
-                console.log('deu bao')
-                console.log(resposta.data)
-
                 localStorage.setItem(
                     'casadapaz.token',
                     JSON.stringify(resposta.data)
                 )
-               
-                navigate('/dashboard')
+                setToast(true)
+                setobjToast(
+                    { message: "Login autenticado, você será direcionado !", colors: "success" }
+                )
+                setTimeout(() => { navigate('/dashboard') }, 1500)
+
             }).catch((erro) => {
-                console.log(erro)
                 setLoading(false)
                 setToast(true)
+                setobjToast(
+                    { message: "Dados inválidos, tente novamente !", colors: "danger" }
+                )
             })
         } else {
             refForm.current.classList.add('was-validated')
@@ -63,94 +64,50 @@ export default function Login() {
             />
             <Toast
                 show={toast}
-                message='Dados inválidos'
-                colors='danger'
+                message={objToast.message}
+                colors={objToast.colors}
                 onClose={() => { setToast(false) }}
             />
-            <div
-                className={styles.main}
-            >
-                <div
-                    className={styles.border}
-                >
-                    <div
-                        className='d-flex flex-column align-items-center'
-                    >
-                        <h1 className='text-primary'>Login</h1>
-                        <p
-                            className='text-secondary'
-                        >
-                            Preencha os campos para logar
-                        </p>
-                    </div>
+            <div></div>
+            <Container fluid className={styles.main}>
+                <Row>
+                    {/* Coluna da Imagem */}
+                    <Col xs={12} md={6} className="login-image">
+                        {/* A imagem vai ocupar toda a área à esquerda */}
+                    </Col>
+                    {/* Coluna do Formulário */}
+                    <Col xs={12} md={6} className={`${styles.border} d-flex align-items-center justify-content-center`}>
+                        <div className="form-wrapper">
+                            <h1>Login</h1>
+                            <Form
+                                className='needs-validation align-items-center' noValidate
+                                onSubmit={submitForm}
+                                ref={refForm}
+                            >
+                                <Form.Group controlId="formBasicEmail" className="mb-3">
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control type="email" id='email' required placeholder="Digite seu email" />
+                                    <div className='invalid-feedback'>
+                                        Por favor digite seu email
+                                    </div>
+                                </Form.Group>
 
-                    <hr />
-                    
-                    <form
-                        className='needs-validation align-items-center'
-                        noValidate
-                        onSubmit={submitForm}
-                        ref={refForm}
-                    >
-                        <div
-                            className='col-md-12'
-                        >
-                            <label
-                                htmlFor='email'
-                                className='form-label'
-                            >
-                                Email
-                            </label>
-                            <input
-                                type='email'
-                                className='form-control'
-                                placeholder='Digite seu email'
-                                id='email'
-                                required
-                            />
-                            <div
-                                className='invalid-feedback'
-                            >
-                                Por favor digite seu email
-                            </div>
-                        </div>
+                                <Form.Group controlId="formBasicPassword" className="mb-3">
+                                    <Form.Label>Senha</Form.Label>
+                                    <Form.Control id='senha' required type="password" placeholder="Digite sua senha" />
+                                    <div className='invalid-feedback' >
+                                        Por favor digite sua senha
+                                    </div>
+                                </Form.Group>
 
-                        <div className='col-md-12 mt-1'>
-                            {/* comentario */}
-                            <label
-                                htmlFor='senha'
-                                className='form-label'
-                            >
-                                Senha
-                            </label>
-                            <input
-                                type='password'
-                                className='form-control'
-                                placeholder='Digite sua senha'
-                                id='senha'
-                                required
-                            />
-                            <div
-                                className='invalid-feedback'
-                            >
-                                Por favor digite sua senha
-                            </div>
+                                <Button id='botao' variant="primary" type="submit" className="w-100">
+                                    Entrar
+                                </Button>
+                            </Form>
                         </div>
-
-                        <div
-                            className='col-md-12 mt-3'
-                        >
-                            <button
-                                className='btn btn-primary w-100'
-                                type='submit'
-                                id='botao'
-                            >
-                                Enviar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                    </Col>
+                </Row>
+            </Container>
         </>
     )
 }

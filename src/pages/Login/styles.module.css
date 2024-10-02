@@ -8,8 +8,8 @@
 }
 
 .border {
-    border: 2px;
-    border-color: #ccc;
+    border-left: 2px;
+    border-left-color: #ccc;
     border-style: solid;
     padding: 20px;
 }

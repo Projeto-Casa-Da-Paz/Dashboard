@@ -26,7 +26,7 @@ export const Toast = (props: IProps) => {
                 }}
             >
                 {props.message}
-                <CloseButton 
+                <CloseButton
                     style={{
                         color: "#FFF",
                         float: 'right'
