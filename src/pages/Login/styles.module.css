@@ -13,3 +13,45 @@
     border-style: solid;
     padding: 20px;
 }
+
+/* Login.css */
+.login-container {
+    height: 100vh;
+}
+
+.login-image {
+    background-image: url('../../../public/images/banner-login.jpeg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+.login-form {
+    padding: 2rem;
+}
+
+.form-wrapper {
+    max-width: 400px;
+    width: 85%;
+}
+
+@media (max-width: 768px) {
+    .login-image {
+        display: none;
+    }
+
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-wrapper {
+        max-width: 450px;
+        width: 100%;
+    }
+
+    .login-form {
+        width: 100%;
+    }
+}

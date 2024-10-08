@@ -15,8 +15,6 @@ export default function Dashboard() {
         }
 
         console.log("Pode desfrutar do sistema :D")
-        
-
     }, [])
 
     return(

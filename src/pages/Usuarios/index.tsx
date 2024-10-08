@@ -42,39 +42,35 @@ export default function Usuarios() {
         <>
             <Loading visible={loading} />
             <LayoutDashboard>
-                <div
+            <div
                     className="d-flex justify-content-between mt-3"
                 >
-                    <h1 className="h2">Users Salafrários</h1>
-                    <button className="btn btn-success"
-                        onClick={() => {
-                            navigate('/usuarios/add')
-                        }}
+                    <h1 className="h2">Usuários</h1>
+                    <button
+                        type="button"
+                        className="btn btn-success"
+                        onClick={() => {navigate('/usuarios/criar/')}}
                     >
-                        Add
+                        Adicionar
                     </button>
                 </div>
-
                 <table className="table table-striped">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Nome</th>
-                            <th scope="col">E-mail</th>
+                            <th scope="col">Email</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        { /* <? > */}
-
                         {
                             dadosUsers.map((
-                                usuario,
-                                index
+                                usuario, index
                             ) => {
                                 return (
-                                    <tr key={index} >
-                                        <th scope="col">{usuario.id}</th>
+                                    < tr key={index}>
+                                        <th scope="row">{usuario.id}</th>
                                         <td>{usuario.nome}</td>
                                         <td>{usuario.email}</td>
                                         <td>
@@ -84,13 +80,16 @@ export default function Usuarios() {
                                                 style={{
                                                     marginRight: 5
                                                 }}
+                                                onClick={() => {navigate(`/usuarios/${usuario.id}`)}}
                                             >
                                                 Editar
                                             </button>
                                             <button
-
                                                 className="btn btn-danger"
                                                 type="submit"
+                                                style={{
+                                                    marginRight: 5
+                                                }}
                                             >
                                                 Excluir
                                             </button>
@@ -100,10 +99,8 @@ export default function Usuarios() {
                                 )
                             })
                         }
-
                     </tbody>
                 </table>
-
             </LayoutDashboard>
         </>
     )
