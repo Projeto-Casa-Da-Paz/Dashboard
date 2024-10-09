@@ -20,7 +20,7 @@
 }
 
 .login-image {
-    background-image: url('../../../public/images/banner-login.jpeg');
+    background-image: url('../../../public/banner-login.jpeg');
     background-size: cover;
     background-position: center;
     height: 100vh;

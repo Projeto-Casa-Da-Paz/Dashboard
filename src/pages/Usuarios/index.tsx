@@ -4,6 +4,9 @@ import { useEffect, useState } from "react"
 import { verificaTokenExpirado } from "../../services/token"
 import { Loading } from "../../components/Loading"
 import axios from "axios"
+import { IconButton } from "@mui/material"
+import { } from "@mui/icons-material"
+
 
 interface IUsers {
     id: number
@@ -42,14 +45,14 @@ export default function Usuarios() {
         <>
             <Loading visible={loading} />
             <LayoutDashboard>
-            <div
+                <div
                     className="d-flex justify-content-between mt-3"
                 >
                     <h1 className="h2">Usuários</h1>
                     <button
                         type="button"
                         className="btn btn-success"
-                        onClick={() => {navigate('/usuarios/criar/')}}
+                        onClick={() => { navigate('/usuarios/criar/') }}
                     >
                         Adicionar
                     </button>
@@ -80,19 +83,12 @@ export default function Usuarios() {
                                                 style={{
                                                     marginRight: 5
                                                 }}
-                                                onClick={() => {navigate(`/usuarios/${usuario.id}`)}}
+                                                onClick={() => { navigate(`/usuarios/${usuario.id}`) }}
                                             >
                                                 Editar
                                             </button>
-                                            <button
-                                                className="btn btn-danger"
-                                                type="submit"
-                                                style={{
-                                                    marginRight: 5
-                                                }}
-                                            >
-                                                Excluir
-                                            </button>
+                                            <IconButton aria-label="delete" size="large">
+                                            </IconButton>
                                         </td>
                                     </tr>
 

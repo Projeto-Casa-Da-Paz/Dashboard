@@ -35,7 +35,7 @@ export default function Login() {
                 email: { value: string },
                 senha: { value: string }
             }
-            axios.post(import.meta.env.VITE_URL + '/login',
+            axios.post(`${import.meta.env.VITE_URL}/login`,
                 {
                     email: target.email.value,
                     password: target.senha.value,
