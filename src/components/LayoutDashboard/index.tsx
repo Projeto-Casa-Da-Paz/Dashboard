@@ -84,7 +84,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Sistema Autenticação
+            Sistema Gestão - Página Casa da Paz
           </Typography>
           <IconButton
             color="inherit"
