@@ -1,0 +1,11 @@
+.aligned {
+    text-align: left; /* Alinhamento padrão */
+}
+
+.aligned.center {
+    text-align: center;
+}
+
+.aligned.right {
+    text-align: right;
+}

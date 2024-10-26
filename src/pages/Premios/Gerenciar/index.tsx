@@ -114,18 +114,18 @@ export default function GerenciarPremios() {
         }
     }, [imagemField]);
 
-    const handleFileChange = (file: File | null) => {
+    const handleFileChange = useCallback((file: File | null) => {
         if (file && file.type.startsWith('image/')) {
             setValue("imagem", file);
         } else {
             handleShowSnackbar('Por favor, selecione um arquivo de imagem válido.', 'error');
         }
-    };
+    }, [handleShowSnackbar, setValue]);
 
-    const handleDeleteImage = () => {
+    const handleDeleteImage = useCallback(() => {
         setValue("imagem", null);
         setPreviewUrl('');
-    };
+    }, [setValue]);
 
     const submitForm: SubmitHandler<IPremios> = useCallback((data) => {
         setLoading(true);
@@ -215,8 +215,7 @@ export default function GerenciarPremios() {
                                         {...field}
                                         fullWidth
                                         label="Data de Recebimento"
-                                        type="date"
-                                        InputLabelProps={{ shrink: true }}
+                                        type="date" 
                                         error={!!errors.data_recebimento}
                                         helperText={errors.data_recebimento?.message}
                                     />

@@ -11,6 +11,7 @@ import GerenciarUsuarios from "./pages/Usuarios/Gerenciar"
 import Premios from "./pages/Premios"
 import GerenciarPremios from "./pages/Premios/Gerenciar"
 import Instituicao from "./pages/Instituicao"
+import Historia from "./pages/Historia"
 
 export const Rotas = () => {
 
@@ -50,6 +51,10 @@ export const Rotas = () => {
                   <Route
                     path="/instituicao"
                     element={<Instituicao />}
+                />
+                 <Route
+                    path="/historia"
+                    element={<Historia />}
                 />
             </Routes>
 

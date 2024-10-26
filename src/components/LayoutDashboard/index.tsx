@@ -23,6 +23,7 @@ import {
   EmojiEvents as PrizeIcon,
   Logout as LogoutIcon,
   CorporateFare as InstitutionIcon,
+  Timeline as TimelineIcon,
 } from '@mui/icons-material';
 import { IToken } from '../../interfaces/token';
 
@@ -44,7 +45,9 @@ export const LayoutDashboard = ({ children }: IProps) => {
     { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
     { text: 'Usuários', path: '/usuarios', icon: <PersonIcon /> },
     { text: 'Prêmios', path: '/premios', icon: <PrizeIcon /> },
-    { text: 'Institução', path: '/instituicao', icon: <InstitutionIcon /> },
+    { text: 'Instituição', path: '/instituicao', icon: <InstitutionIcon /> },
+    { text: 'História', path: '/historia', icon: <TimelineIcon /> },
+
   ];
 
   const handleDrawerToggle = () => {

@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
@@ -26,7 +26,6 @@ import { Loading } from "../../components/Loading";
 import { SnackbarMui } from "../../components/Snackbar";
 import { verificaTokenExpirado } from "../../services/token";
 import { ConfirmationDialog } from "../../components/Dialog";
-import React from "react";
 
 // Interface para redes sociais
 interface ISocialMedia {
@@ -150,8 +149,7 @@ export default function Instituicao() {
 
     setLoading(true);
 
-    // Fetch instituição data
-    axios.get(import.meta.env.VITE_URL + '/instituicoes')
+    const fetchInstituicao = axios.get(import.meta.env.VITE_URL + '/instituicoes')
       .then((res) => {
         const instituicaoData = res.data[0];
         setContatoValue("nome", instituicaoData.nome || '');
@@ -161,28 +159,27 @@ export default function Instituicao() {
       })
       .catch(() => {
         handleShowSnackbar("Erro ao carregar dados da instituição", "error");
-      })
-      .finally(() => setLoading(false));
+      });
 
-    // Fetch Endereços
-    axios.get(import.meta.env.VITE_URL + '/enderecos')
+    const fetchEnderecos = axios.get(import.meta.env.VITE_URL + '/enderecos')
       .then((res) => {
         setLocaisValue("locais", res.data);
-      }).catch(() => {
-        handleShowSnackbar("Erro ao carregar endereços", "error");
       })
-      .finally(() => setLoading(false));
+      .catch(() => {
+        handleShowSnackbar("Erro ao carregar endereços", "error");
+      });
 
-    // Fetch social media data
-    axios.get(import.meta.env.VITE_URL + '/redes-sociais')
+    const fetchSocials = axios.get(import.meta.env.VITE_URL + '/redes-sociais')
       .then((res) => {
         setSocialsValue("socials", res.data);
       })
       .catch(() => {
         handleShowSnackbar("Erro ao carregar redes sociais", "error");
-      })
-      .finally(() => setLoading(false));
+      });
 
+    // Aguarda todas as requisições terminarem antes de finalizar o loading
+    Promise.all([fetchInstituicao, fetchEnderecos, fetchSocials])
+      .finally(() => setLoading(false));
 
   }, [navigate, setContatoValue, setSocialsValue, setLocaisValue]);
 
@@ -772,11 +769,10 @@ export default function Instituicao() {
                         control={socialsControl}
                         rules={{ required: "O tipo é obrigatório" }}
                         render={({ field }) => (
-                          <FormControl fullWidth size="small" error={!!socialsErros}>
+                          <FormControl fullWidth size="small" error={!!socialsErros?.socials?.[index]?.tipo}>
                             <InputLabel>Rede Social</InputLabel>
                             <Select
                               {...field}
-
                               label="Rede Social"
                               placeholder="Tipo de Rede Social"
                             >
@@ -804,7 +800,7 @@ export default function Instituicao() {
                             size="small"
                             label="Nome"
                             placeholder="Nome do Perfil"
-                            error={!!socialsErros}
+                            error={!!socialsErros?.socials?.[index]?.nome}
                             helperText={socialsErros?.socials?.[index]?.message}
                           />
                         )}
@@ -824,7 +820,7 @@ export default function Instituicao() {
                             label="URL ou @"
                             size="small"
                             placeholder="URL ou @"
-                            error={!!socialsErros}
+                            error={!!socialsErros?.socials?.[index]?.url}
                             helperText={socialsErros?.socials?.[index]?.message}
                           />
                         )}
