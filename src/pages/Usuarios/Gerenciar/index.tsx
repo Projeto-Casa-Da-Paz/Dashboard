@@ -17,11 +17,11 @@ import {
     TextField,
     Typography,
     Paper,
-    CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { LayoutDashboard } from "../../../components/LayoutDashboard";
 import { SnackbarMui } from "../../../components/Snackbar";
+import { Loading } from "../../../components/Loading";
 
 // Define a interface do formulário
 interface IForm {
@@ -108,8 +108,8 @@ export default function GerenciarUsuarios() {
             .then(() => {
                 handleShowSnackbar(
                     isEdit
-                    ? 'Usuário editado com sucesso!'
-                    : 'Usuário adicionado com sucesso!',
+                        ? 'Usuário editado com sucesso!'
+                        : 'Usuário adicionado com sucesso!',
                     'success'
                 );
                 setTimeout(() => { navigate('/usuarios') }, 1500)
@@ -118,129 +118,124 @@ export default function GerenciarUsuarios() {
             .finally(() => setLoading(false));
     }, [isEdit, id, navigate]);
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <CircularProgress />
-            </Box>
-        );
-    }
-
     return (
-        <LayoutDashboard>
-            <SnackbarMui
-                open={snackbarVisible}
-                message={message}
-                severity={severity}
-                onClose={() => setSnackbarVisible(false)}
-                position={{
-                    vertical: 'top',
-                    horizontal: 'center'
-                  }}
-            />
-            <Container maxWidth="md">
-                <StyledPaper elevation={3}>
-                    <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
-                        {isEdit ? "Editar Usuário" : "Adicionar Usuário"}
-                    </Typography>
+        <>
+            <Loading visible={loading} />
+            <LayoutDashboard>
+                <SnackbarMui
+                    open={snackbarVisible}
+                    message={message}
+                    severity={severity}
+                    onClose={() => setSnackbarVisible(false)}
+                    position={{
+                        vertical: 'top',
+                        horizontal: 'center'
+                    }}
+                />
+                <Container maxWidth="md">
+                    <StyledPaper elevation={3}>
+                        <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
+                            {isEdit ? "Editar Usuário" : "Adicionar Usuário"}
+                        </Typography>
 
-                    <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate>
-                        <Controller
-                            name="nome"
-                            control={control}
-                            rules={{
-                                required: 'Nome é obrigatório!',
-                                pattern: {
-                                    value: nameRegex,
-                                    message: 'O nome não pode conter números'
-                                }
-                            }}
-                            render={({ field }) => (
-                                <FormTextField
-                                    {...field}
-                                    fullWidth
-                                    label="Nome"
-                                    error={!!errors.nome}
-                                    helperText={errors.nome?.message}
-                                />
-                            )}
-                        />
+                        <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate>
+                            <Controller
+                                name="nome"
+                                control={control}
+                                rules={{
+                                    required: 'Nome é obrigatório!',
+                                    pattern: {
+                                        value: nameRegex,
+                                        message: 'O nome não pode conter números'
+                                    }
+                                }}
+                                render={({ field }) => (
+                                    <FormTextField
+                                        {...field}
+                                        fullWidth
+                                        label="Nome"
+                                        error={!!errors.nome}
+                                        helperText={errors.nome?.message}
+                                    />
+                                )}
+                            />
 
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{
-                                required: 'Email é obrigatório!',
-                                pattern: {
-                                    value: emailRegex,
-                                    message: 'Email inválido. Deve conter um domínio válido (ex: usuario@dominio.com)'
-                                }
-                            }}
-                            render={({ field }) => (
-                                <FormTextField
-                                    {...field}
-                                    fullWidth
-                                    label="Email"
-                                    type="email"
-                                    error={!!errors.email}
-                                    helperText={errors.email?.message}
-                                />
-                            )}
-                        />
+                            <Controller
+                                name="email"
+                                control={control}
+                                rules={{
+                                    required: 'Email é obrigatório!',
+                                    pattern: {
+                                        value: emailRegex,
+                                        message: 'Email inválido. Deve conter um domínio válido (ex: usuario@dominio.com)'
+                                    }
+                                }}
+                                render={({ field }) => (
+                                    <FormTextField
+                                        {...field}
+                                        fullWidth
+                                        label="Email"
+                                        type="email"
+                                        error={!!errors.email}
+                                        helperText={errors.email?.message}
+                                    />
+                                )}
+                            />
 
-                        <Controller
-                            name="permissao"
-                            control={control}
-                            rules={{ required: 'Perfil é obrigatório!' }}
-                            render={({ field }) => (
-                                <FormControl fullWidth error={!!errors.permissao} sx={{ mb: 2 }}>
-                                    <InputLabel>Perfil</InputLabel>
-                                    <Select {...field} label="Perfil">
-                                        <MenuItem value="">Selecione o tipo</MenuItem>
-                                        <MenuItem value="admin">Admin</MenuItem>
-                                        <MenuItem value="colaborador">Colaborador</MenuItem>
-                                    </Select>
-                                    {errors.permissao && (
-                                        <FormHelperText>{errors.permissao.message}</FormHelperText>
-                                    )}
-                                </FormControl>
-                            )}
-                        />
+                            <Controller
+                                name="permissao"
+                                control={control}
+                                rules={{ required: 'Perfil é obrigatório!' }}
+                                render={({ field }) => (
+                                    <FormControl fullWidth error={!!errors.permissao} sx={{ mb: 2 }}>
+                                        <InputLabel>Perfil</InputLabel>
+                                        <Select {...field} label="Perfil">
+                                            <MenuItem value="">Selecione o tipo</MenuItem>
+                                            <MenuItem value="admin">Admin</MenuItem>
+                                            <MenuItem value="colaborador">Colaborador</MenuItem>
+                                        </Select>
+                                        {errors.permissao && (
+                                            <FormHelperText>{errors.permissao.message}</FormHelperText>
+                                        )}
+                                    </FormControl>
+                                )}
+                            />
 
-                        <Controller
-                            name="password"
-                            control={control}
-                            rules={{
-                                required: 'Senha é obrigatória!',
-                                pattern: {
-                                    value: passwordRegex,
-                                    message: 'A senha deve conter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial'
-                                }
-                            }}
-                            render={({ field }) => (
-                                <FormTextField
-                                    {...field}
-                                    fullWidth
-                                    label="Senha"
-                                    type="password"
-                                    error={!!errors.password}
-                                    helperText={errors.password?.message}
-                                />
-                            )}
-                        />
+                            <Controller
+                                name="password"
+                                control={control}
+                                rules={{
+                                    required: 'Senha é obrigatória!',
+                                    pattern: {
+                                        value: passwordRegex,
+                                        message: 'A senha deve conter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial'
+                                    }
+                                }}
+                                render={({ field }) => (
+                                    <FormTextField
+                                        {...field}
+                                        fullWidth
+                                        label="Senha"
+                                        type="password"
+                                        error={!!errors.password}
+                                        helperText={errors.password?.message}
+                                    />
+                                )}
+                            />
 
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            size="large"
-                        >
-                            Salvar
-                        </Button>
-                    </Box>
-                </StyledPaper>
-            </Container>
-        </LayoutDashboard>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                size="large"
+                            >
+                                Salvar
+                            </Button>
+                        </Box>
+                    </StyledPaper>
+                </Container>
+            </LayoutDashboard>
+        </>
     );
 }

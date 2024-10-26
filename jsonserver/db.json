@@ -24,12 +24,6 @@
       "imagem": "premioLogo.png"
     },
     {
-      "id": 2
-    },
-    {
-      "id": 3
-    },
-    {
       "id": 4,
       "nome": "Adenilson1",
       "categoria": "academico",
@@ -42,6 +36,46 @@
       "categoria": "academico",
       "data_recebimento": "2024-10-09",
       "imagem": {}
+    },
+    {
+      "id": 6,
+      "nome": "Adenilson2",
+      "categoria": "honraria",
+      "data_recebimento": "2020-01-01",
+      "imagem": {}
+    }
+  ],
+  "instituicoes": [
+    {
+      "id": 1,
+      "nome": "Casa da Paz",
+      "cnpj": "123456789",
+      "email": "Casa da Paz",
+      "telefone": "123456789",
+      "endereco": "Casa da Paz",
+      "imagem": "instituicaoLogo.png"
+    }
+  ],
+  "redes-sociais": [
+    {
+      "id": 1,
+      "tipo": "Fanpage",
+      "nome": "Casa da Paz",
+      "url": "casadapaz_umuaramas"
+    }
+  ],
+  "enderecos": [
+    {
+      "id": 1,
+      "local": "Sede - Casa da Paz",
+      "cep": "12345678",
+      "rua": "Casa da Paz",
+      "numero": "123",
+      "complemento": "Casa da Paz",
+      "bairro": "Casa da Paz",
+      "cidade": "Casa da Paz",
+      "estado": "Casa da Paz",
+      "instituicao": 1
     }
   ]
 }

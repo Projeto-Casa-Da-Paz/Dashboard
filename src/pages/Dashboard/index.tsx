@@ -14,7 +14,6 @@ export default function Dashboard() {
             navigate("/")
         }
 
-        console.log("Pode desfrutar do sistema :D")
     }, [])
 
     return(

@@ -84,7 +84,7 @@ export default function Premios() {
                                                 height: 100,
                                                 borderRadius: "50%"
                                             }}
-                                            src={`images/${premio.imagem}`} alt="" />
+                                            src={`public/${premio.imagem}`} alt="" />
                                         </th>
                                         <td>{premio.nome}</td>
                                         <td>{premio.categoria}</td>
@@ -96,6 +96,7 @@ export default function Premios() {
                                                 style={{
                                                     marginRight: 5
                                                 }}
+                                                onClick={() => { navigate(`/premios/${premio.id}`) }}
                                             >
                                                 Editar
                                             </button>
