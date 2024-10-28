@@ -77,5 +77,14 @@
       "estado": "Casa da Paz",
       "instituicao": 1
     }
+  ],
+  "voluntarios": [
+    {
+      "id": 1,
+      "nome": "Adenilson",
+      "email": "admin@gmail.com",
+      "telefone": "123456789",
+      "data_nascimento": "2020-01-01"
+    }
   ]
 }

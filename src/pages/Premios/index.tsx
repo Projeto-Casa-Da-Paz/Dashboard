@@ -15,9 +15,7 @@ import {
   DataGrid,
   GridColDef,
   GridValueGetter,
-  GridRenderCellParams,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
+  GridRenderCellParams
 } from '@mui/x-data-grid'
 import { ptBR } from '@mui/x-data-grid/locales'
 import AddIcon from '@mui/icons-material/Add'
@@ -172,8 +170,8 @@ export default function Premios() {
                             disableColumnResize
                             disableRowSelectionOnClick
                             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-                            pagination={true} 
                             sx={{
+                                height: 450,
                                 boxShadow: 2,
                                 border: 2,
                                 borderColor: 'primary.light',
@@ -194,10 +192,12 @@ export default function Premios() {
                                 '& .MuiDataGrid-footerContainer': {
                                     borderTop: '2px solid #e0e0e0',
                                     backgroundColor: '#f5f5f5',
-                                    pt: 0, // remove margin
                                 },
                                 '& .MuiTablePagination-displayedRows, .MuiTablePagination-selectLabel': {
                                     margin: 0,
+                                },
+                                '& .MuiTablePagination-root': {
+                                    overflow: 'hidden',
                                 }
                             }}
                         />
