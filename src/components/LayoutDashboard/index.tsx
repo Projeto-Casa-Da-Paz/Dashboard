@@ -158,7 +158,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
             bgcolor: 'background.default',
           }}
         >
-          <Box sx={{ p: 3 }}>
+          <Box sx={{ pl: 3, pr: 3 }}>
             {children}
           </Box>
         </Box>

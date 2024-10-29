@@ -50,10 +50,8 @@
       "id": 1,
       "nome": "Casa da Paz",
       "cnpj": "123456789",
-      "email": "Casa da Paz",
-      "telefone": "123456789",
-      "endereco": "Casa da Paz",
-      "imagem": "instituicaoLogo.png"
+      "email": "casa@dapaz.com",
+      "telefone": "123456789"
     }
   ],
   "redes-sociais": [

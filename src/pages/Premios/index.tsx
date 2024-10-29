@@ -143,7 +143,7 @@ export default function Premios() {
         <>
             <Loading visible={loading} />
             <LayoutDashboard>
-                <Container maxWidth="xl" sx={{ mb: 4 }}>
+                <Container maxWidth="xl" sx={{ mb: 4, mt: 3 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                         <Typography variant="h4" component="h1">
                             Prêmios
