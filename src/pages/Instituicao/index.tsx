@@ -7,6 +7,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import PlaceIcon from '@mui/icons-material/Place';
 import PublicIcon from '@mui/icons-material/Public';
 import { Contato } from './components/Contato';
+import { Endereco } from './components/Endereco';
 
 export default function Instituicao() {
     const [value, setValue] = useState(0);
@@ -25,6 +26,8 @@ export default function Instituicao() {
                         <Tab value={2} label="Rede Social" icon={<PublicIcon />}/>
                     </Tabs>
                          {value === 0 && <Contato />}
+                         {value === 1 && <Endereco />}
+
                 </Box>
             </LayoutDashboard>
         </>

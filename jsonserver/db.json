@@ -65,15 +65,29 @@
   "enderecos": [
     {
       "id": 1,
-      "local": "Sede - Casa da Paz",
-      "cep": "12345678",
+      "local": "Sede - Casa da Paz 2",
+      "cep": "87506648",
       "rua": "Casa da Paz",
       "numero": "123",
       "complemento": "Casa da Paz",
       "bairro": "Casa da Paz",
       "cidade": "Casa da Paz",
       "estado": "Casa da Paz",
-      "instituicao": 1
+      "instituicao": 1,
+      "logradouro": "Felipe"
+    },
+    {
+      "id": 2,
+      "local": "Bazar - Casa da Paz",
+      "cep": "12345678",
+      "rua": "Casa da Paz",
+      "numero": "123",
+      "complemento": "Casa dasdsads Paz",
+      "bairro": "Casa da Paz",
+      "cidade": "Casa da Paz",
+      "estado": "Casa da Paz",
+      "instituicao": 1,
+      "logradouro": "Felipe"
     }
   ],
   "voluntarios": [

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -17,11 +16,8 @@ import {
     IconButton,
     InputLabel,
 } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
-import Grid from "@mui/material/Grid2"; // Grid v2
+import Grid from "@mui/material/Grid2";
 import { styled } from "@mui/material/styles";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { verificaTokenExpirado } from "../../../../services/token";
 import { SnackbarMui } from "../../../../components/Snackbar";
 import { Loading } from "../../../../components/Loading";
@@ -36,10 +32,8 @@ interface IEndereco {
     cidade: string;
     estado: string;
     cep: string;
-    isNew?: boolean;
 }
 
-// Componentes estilizados mantidos como estavam...
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -48,6 +42,13 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const FormTextField = styled(TextField)({
     marginBottom: '1rem',
 });
+
+const AddressBox = styled(Box)(({ theme }) => ({
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: theme.shape.borderRadius,
+}));
 
 export const Endereco = () => {
     const [loading, setLoading] = useState(false);
@@ -61,6 +62,7 @@ export const Endereco = () => {
         handleSubmit: handleLocaisSubmit,
         setValue: setLocaisValue,
         formState: { errors: locaisErrors },
+        watch,
     } = useForm<{ locais: IEndereco[] }>({
         defaultValues: {
             locais: [{
@@ -73,7 +75,6 @@ export const Endereco = () => {
                 cidade: "",
                 estado: "",
                 cep: "",
-                isNew: true
             }]
         }
     });
@@ -97,124 +98,75 @@ export const Endereco = () => {
         axios.get(import.meta.env.VITE_URL + '/enderecos')
             .then((res) => {
                 setLocaisValue("locais", res.data);
+                setLoading(false);
             })
             .catch(() => {
                 handleShowSnackbar("Erro ao carregar endereços", "error");
+                setLoading(false);
             });
-
-
     }, [navigate, setLocaisValue]);
 
-    const submitLocais = useCallback(async (data: { locais: IEndereco[] }) => {
+    const submitLocais: SubmitHandler<{ locais: IEndereco[] }> = useCallback((data) => {
         setLoading(true);
 
-        const newLocais = data.locais
-            .filter(local => local.isNew)  // Filtra apenas os novos
-            .map(({ id, isNew, ...rest }) => rest); // Remove os campos 'id' e 'isNew'
+        const promises = data.locais.map(endereco =>
+            axios.put(`${import.meta.env.VITE_URL}/enderecos/${endereco.id}`, endereco)
+        );
 
-        const existingLocais = data.locais
-            .filter(local => !local.isNew) // Filtra os já existentes
-            .map(({ isNew, ...rest }) => rest); // Remove o campo 'isNew'
+        Promise.all(promises)
+            .then(() => {
+                handleShowSnackbar("Endereços atualizados com sucesso", "success");
+                setLoading(false);
+            })
+            .catch((error) => {
+                handleShowSnackbar(error.response?.data || "Erro ao salvar endereços", "error");
+                setLoading(false);
+            });
+    }, [handleShowSnackbar]);
 
-        try {
-            if (newLocais.length > 0) {
-                await Promise.all(newLocais.map(local =>
-                    axios.post(import.meta.env.VITE_URL + `/enderecos`, local)
-                ));
-            }
-
-            if (existingLocais.length > 0) {
-                await Promise.all(existingLocais.map(local =>
-                    axios.put(import.meta.env.VITE_URL + `/enderecos/${local.id}`, local)
-                ));
-            }
-
-            handleShowSnackbar("Endereços atualizados com sucesso", "success");
-        } catch (error: any) {
-            handleShowSnackbar(error.response?.data || "Erro ao salvar endereços", "error");
-        } finally {
-            setLoading(false);
-        }
-    }, [handleShowSnackbar, setLoading]);
-
-    const onCepBlur = useCallback(async (cep: string, id: number) => {
+    const onCepBlur = useCallback(async (cep: string, index: number) => {
         if (cep.length === 8) {
             try {
                 const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
                 const { logradouro, complemento, bairro, localidade, uf } = response.data;
 
-                // Preenche os campos automaticamente
-                setLocaisValue(`locais.${id}.logradouro`, logradouro);
-                setLocaisValue(`locais.${id}.complemento`, complemento);
-                setLocaisValue(`locais.${id}.bairro`, bairro);
-                setLocaisValue(`locais.${id}.cidade`, localidade);
-                setLocaisValue(`locais.${id}.estado`, uf);
-                setLocaisValue(`locais.${id}.cep`, cep);
+                setLocaisValue(`locais.${index}.logradouro`, logradouro);
+                setLocaisValue(`locais.${index}.complemento`, complemento);
+                setLocaisValue(`locais.${index}.bairro`, bairro);
+                setLocaisValue(`locais.${index}.cidade`, localidade);
+                setLocaisValue(`locais.${index}.estado`, uf);
+                setLocaisValue(`locais.${index}.cep`, cep);
             } catch (error) {
                 console.error("Erro ao buscar o CEP:", error);
-                // Você pode adicionar um tratamento de erro aqui se desejar
             }
         }
     }, [setLocaisValue]);
 
+    const watchLocais = watch("locais");
+
     return (
         <>
+            <SnackbarMui
+                open={snackbarVisible}
+                message={message}
+                severity={severity}
+                onClose={() => setSnackbarVisible(false)}
+                position={{
+                    vertical: 'top',
+                    horizontal: 'center'
+                }}
+            />
             <StyledPaper elevation={3}>
-                <ConfirmationDialog
-                    open={dialogState.open}
-                    title="Confirmar exclusão"
-                    message="Tem certeza que deseja excluir esta rede social?"
-                    onConfirm={handleConfirmedDeleteSocial}
-                    onClose={() => setDialogState({ open: false, id: null })}
-                />
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-                    <Typography variant="h5">Endereços</Typography>
-                    <Button
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        onClick={addLocal}
-                        size="small"
-                    >
-                        Adicionar
-                    </Button>
-                </Box>
+                <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>Endereços</Typography>
 
                 <Box component="form" onSubmit={handleLocaisSubmit(submitLocais)} noValidate>
-                    {locais?.map((local, index) => (
-                        <SocialMediaCard key={local.id} sx={{ p: 1.5 }}>
+                    {watchLocais.map((local, index) => (
+                        <AddressBox key={index}>
                             <Typography variant="body1" sx={{ mb: 1.5, pl: 0.5 }}>
-                                <strong>{local.isNew ? "Novo" : "ID: " + local.id}</strong>
-                                <DeleteButton
-                                    color="error"
-                                    onClick={() => removeLocal(local.id)}
-                                    size="small"
-                                >
-                                    <DeleteIcon />
-                                </DeleteButton>
-
+                                <strong>{`${local.local}`}</strong>
                             </Typography>
 
-
-                            <Grid container spacing={{ xs: 2, md: 2 }} columns={{ xs: 4, sm: 4, md: 12 }} >
-                                <Grid size={{ md: 4, sm: 12, xs: 4 }}>
-                                    <Controller
-                                        name={`locais.${index}.local`}
-                                        control={locaisControl}
-                                        rules={{ required: "O nome do local é obrigatório" }}
-                                        render={({ field }) => (
-                                            <FormTextField
-                                                {...field}
-                                                fullWidth
-                                                sx={{ mb: 0 }}
-                                                size="small"
-                                                label="Nome do Local"
-                                                placeholder="Ex: Sede, Bazar"
-                                                error={!!locaisErrors.locais?.[index]?.local}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
+                            <Grid container spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
 
                                 <Grid size={{ md: 4, sm: 12, xs: 4 }}>
                                     <Controller
@@ -226,12 +178,11 @@ export const Endereco = () => {
                                                 {...field}
                                                 onBlur={() => onCepBlur(field.value, index)}
                                                 fullWidth
-                                                sx={{ mb: 0 }}
                                                 size="small"
                                                 label="CEP"
                                                 placeholder="00000-000"
                                                 error={!!locaisErrors.locais?.[index]?.cep}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
+                                                helperText={locaisErrors?.locais?.[index]?.cep?.message}
                                             />
                                         )}
                                     />
@@ -241,17 +192,16 @@ export const Endereco = () => {
                                     <Controller
                                         name={`locais.${index}.logradouro`}
                                         control={locaisControl}
-                                        rules={{ required: "O Lograduro é obrigatório" }}
+                                        rules={{ required: "O Logradouro é obrigatório" }}
                                         render={({ field }) => (
                                             <FormTextField
                                                 {...field}
                                                 fullWidth
-                                                sx={{ mb: 0 }}
                                                 size="small"
                                                 label="Logradouro"
                                                 placeholder="Rua, Av. ou outros"
                                                 error={!!locaisErrors.locais?.[index]?.logradouro}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
+                                                helperText={locaisErrors?.locais?.[index]?.logradouro?.message}
                                             />
                                         )}
                                     />
@@ -266,12 +216,11 @@ export const Endereco = () => {
                                             <FormTextField
                                                 {...field}
                                                 fullWidth
-                                                sx={{ mb: 0 }}
                                                 size="small"
                                                 label="Nº"
                                                 placeholder="Ex: 123 ou 0 em caso de sem nº"
                                                 error={!!locaisErrors.locais?.[index]?.numero}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
+                                                helperText={locaisErrors?.locais?.[index]?.numero?.message}
                                             />
                                         )}
                                     />
@@ -286,12 +235,11 @@ export const Endereco = () => {
                                             <FormTextField
                                                 {...field}
                                                 fullWidth
-                                                sx={{ mb: 0 }}
                                                 size="small"
                                                 label="Complemento"
                                                 placeholder="Ex: Casa, Prédio Comercial"
                                                 error={!!locaisErrors.locais?.[index]?.complemento}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
+                                                helperText={locaisErrors?.locais?.[index]?.complemento?.message}
                                             />
                                         )}
                                     />
@@ -306,33 +254,30 @@ export const Endereco = () => {
                                             <FormTextField
                                                 {...field}
                                                 fullWidth
-                                                sx={{ mb: 0 }}
                                                 size="small"
                                                 label="Bairro"
                                                 placeholder="Nome do bairro"
                                                 error={!!locaisErrors.locais?.[index]?.bairro}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
+                                                helperText={locaisErrors?.locais?.[index]?.bairro?.message}
                                             />
                                         )}
                                     />
                                 </Grid>
 
-
                                 <Grid size={{ md: 4, sm: 12, xs: 4 }}>
                                     <Controller
                                         name={`locais.${index}.cidade`}
                                         control={locaisControl}
-                                        rules={{ required: "A cidade é obrigatório" }}
+                                        rules={{ required: "A cidade é obrigatória" }}
                                         render={({ field }) => (
                                             <FormTextField
                                                 {...field}
                                                 fullWidth
-                                                sx={{ mb: 0 }}
                                                 size="small"
                                                 label="Cidade"
                                                 placeholder="Cidade"
                                                 error={!!locaisErrors.locais?.[index]?.cidade}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
+                                                helperText={locaisErrors?.locais?.[index]?.cidade?.message}
                                             />
                                         )}
                                     />
@@ -347,19 +292,36 @@ export const Endereco = () => {
                                             <FormTextField
                                                 {...field}
                                                 fullWidth
-                                                sx={{ mb: 0 }}
                                                 size="small"
                                                 label="Estado"
                                                 placeholder="UF Ex: SP"
                                                 error={!!locaisErrors.locais?.[index]?.estado}
-                                                helperText={locaisErrors?.locais?.[index]?.message}
+                                                helperText={locaisErrors?.locais?.[index]?.estado?.message}
                                             />
                                         )}
                                     />
                                 </Grid>
 
+                                <Grid size={{ md: 4, sm: 12, xs: 4 }}>
+                                    <Controller
+                                        name={`locais.${index}.local`}
+                                        control={locaisControl}
+                                        rules={{ required: "O nome do local é obrigatório" }}
+                                        render={({ field }) => (
+                                            <FormTextField
+                                                {...field}
+                                                fullWidth
+                                                size="small"
+                                                label="Nome do Local"
+                                                placeholder="Ex: Sede, Bazar"
+                                                error={!!locaisErrors.locais?.[index]?.local}
+                                                helperText={locaisErrors?.locais?.[index]?.local?.message}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
                             </Grid>
-                        </SocialMediaCard>
+                        </AddressBox>
                     ))}
 
                     <Button
@@ -374,6 +336,8 @@ export const Endereco = () => {
                     </Button>
                 </Box>
             </StyledPaper>
+
+            {loading && <Loading />}
         </>
-    )
-}
+    );
+};
