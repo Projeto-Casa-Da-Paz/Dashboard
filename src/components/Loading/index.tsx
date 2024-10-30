@@ -12,7 +12,7 @@ export const Loading = (props: IProps) => {
             className="d-flex justify-content-center align-items-center"
             style={{
                 position: 'fixed',
-                zIndex: '',
+                zIndex: 1000,
                 width: '100%',
                 height: '100%',
                 backgroundColor: 'rgb(0,0,0,0.3)'

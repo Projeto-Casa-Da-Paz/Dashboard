@@ -76,7 +76,8 @@ export default function GerenciarPremios() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
-
+    const imagemField = watch("imagem");
+    
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
@@ -97,22 +98,21 @@ export default function GerenciarPremios() {
                     if (premioData.imagem) {
                         setPreviewUrl(`http://localhost:3001/uploads/${premioData.imagem}`);
                     }
+                    setLoading(false)
                 })
-                .catch(console.error)
-                .finally(() => setLoading(false));
-        }
-    }, [id, navigate, setValue]);
+                .catch(console.error)}
 
-    const imagemField = watch("imagem");
-    useEffect(() => {
-        if (imagemField && imagemField instanceof File) {
-            const fileReader = new FileReader();
-            fileReader.onloadend = () => {
-                setPreviewUrl(fileReader.result as string);
-            };
-            fileReader.readAsDataURL(imagemField);
-        }
-    }, [imagemField]);
+            if (imagemField && imagemField instanceof File) {
+                const fileReader = new FileReader();
+                fileReader.onloadend = () => {
+                    setPreviewUrl(fileReader.result as string);
+                };
+                fileReader.readAsDataURL(imagemField);
+            }
+        
+    }, [id, navigate, setValue, imagemField]);
+
+   
 
     const handleFileChange = useCallback((file: File | null) => {
         if (file && file.type.startsWith('image/')) {
@@ -129,11 +129,34 @@ export default function GerenciarPremios() {
 
     const submitForm: SubmitHandler<IPremios> = useCallback((data) => {
         setLoading(true);
-
+    
+        // Criar um novo FormData
+        const formData = new FormData();
+        
+        // Adicionar todos os campos do formulário ao FormData, exceto a imagem
+        Object.keys(data).forEach(key => {
+            if (key !== 'imagem') {
+                formData.append(key, (data as Record<string, any>)[key]); // Cast genérico para acessar as chaves dinamicamente
+            }
+        });
+    
+        // Verificar se o campo 'imagem' contém um arquivo e adicioná-lo ao FormData
+        if (data.imagem instanceof FileList && data.imagem.length > 0) {
+            formData.append('imagem', data.imagem[0]); // Adiciona apenas o primeiro arquivo
+        }
+    
+        // Configurar headers específicos para FormData
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        };
+    
+        // Decidir entre criar ou editar com base em isEdit
         const request = isEdit
-            ? axios.put(`http://localhost:3001/premios/${id}`, data)
-            : axios.post('http://localhost:3001/premios/', data);
-
+            ? axios.put(`${import.meta.env.VITE_URL}/premios/${id}`, formData, config)
+            : axios.post(`${import.meta.env.VITE_URL}/premios/`, formData, config);
+    
         request
             .then(() => {
                 handleShowSnackbar(
@@ -142,12 +165,16 @@ export default function GerenciarPremios() {
                         : 'Prêmio adicionado com sucesso!',
                     'success'
                 );
-                setTimeout(() => { navigate('/premios') }, 1500);
+                setTimeout(() => { navigate('/premios'); }, 1500);
             })
-            .catch((error) => handleShowSnackbar(error.response.data, 'error'))
+            .catch((error) => {
+                const errorMessage = error.response?.data || 'Erro ao processar a requisição';
+                handleShowSnackbar(errorMessage, 'error');
+            })
             .finally(() => setLoading(false));
-    }, [isEdit, id, navigate]); 
-
+    }, [isEdit, id, navigate]);
+    
+    
     return (
         <>
             <Loading visible={loading} />
@@ -215,7 +242,7 @@ export default function GerenciarPremios() {
                                         {...field}
                                         fullWidth
                                         label="Data de Recebimento"
-                                        type="date" 
+                                        type="date"
                                         error={!!errors.data_recebimento}
                                         helperText={errors.data_recebimento?.message}
                                     />

@@ -50,8 +50,11 @@ const AddressBox = styled(Box)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
 }));
 
-export const Endereco = () => {
-    const [loading, setLoading] = useState(false);
+interface IProps {
+    setLoading: (val: boolean) => void
+}
+
+export const Endereco = ({ setLoading }: IProps) => {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
@@ -162,7 +165,7 @@ export const Endereco = () => {
                 <Box component="form" onSubmit={handleLocaisSubmit(submitLocais)} noValidate>
                     {watchLocais.map((local, index) => (
                         <AddressBox key={index}>
-                            <Typography variant="body1" sx={{ mb: 1.5, pl: 0.5 }}>
+                            <Typography variant="body1" sx={{ mb: 3, pl: 0.5 }}>
                                 <strong>{`${local.local}`}</strong>
                             </Typography>
 
@@ -336,8 +339,6 @@ export const Endereco = () => {
                     </Button>
                 </Box>
             </StyledPaper>
-
-            {loading && <Loading />}
         </>
     );
 };

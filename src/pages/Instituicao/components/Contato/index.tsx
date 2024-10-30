@@ -48,8 +48,10 @@ const FormTextField = styled(TextField)({
 const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
-export const Contato = () => {
-    const [loading, setLoading] = useState(false);
+interface IProps {
+    setLoading: (val: boolean) => void
+}
+export const Contato = ({ setLoading }: IProps) => {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
@@ -84,7 +86,7 @@ export const Contato = () => {
             navigate("/");
         }
 
-        
+
         setLoading(true);
         axios.get(import.meta.env.VITE_URL + '/instituicoes')
             .then((res) => {
@@ -106,7 +108,7 @@ export const Contato = () => {
 
     const submitContato: SubmitHandler<IContato> = useCallback((data) => {
         setLoading(true);
-        axios.put(import.meta.env.VITE_URL + `/instituicoes`+`/${data.id}`, data)
+        axios.put(import.meta.env.VITE_URL + `/instituicoes` + `/${data.id}`, data)
             .then(() => {
                 handleShowSnackbar("Informações da instituição editadas com sucesso", "success");
                 setLoading(false)
@@ -119,7 +121,6 @@ export const Contato = () => {
 
     return (
         <>
-            <Loading visible={loading} />
             <SnackbarMui
                 open={snackbarVisible}
                 message={message}
@@ -215,7 +216,6 @@ export const Contato = () => {
                         color="primary"
                         size="large"
                         fullWidth
-                        loading={loading}
                     >
                         Salvar Informações
                     </LoadingButton>

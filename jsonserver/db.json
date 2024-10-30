@@ -13,6 +13,13 @@
       "permissao": "admin",
       "password": "$2a$10$gtLKYPsy5v5CAVzJXlGN7.H5upiHgxVgk8hPVRZtE01AhN1tXDXke",
       "id": 2
+    },
+    {
+      "email": "44@teste.com",
+      "password": "$2a$10$xIBPzc4H31kweSFOpvcPXe3W.6Z2VSUBZU1.qdj7B.jzqvMsiOLDK",
+      "nome": "asade",
+      "permissao": "admin",
+      "id": 3
     }
   ],
   "premios": [
@@ -43,6 +50,19 @@
       "categoria": "honraria",
       "data_recebimento": "2020-01-01",
       "imagem": {}
+    },
+    {
+      "id": 7,
+      "nome": "teste",
+      "categoria": "academico",
+      "data_recebimento": "2024-10-08",
+      "imagem": {}
+    },
+    {
+      "id": 8
+    },
+    {
+      "id": 9
     }
   ],
   "instituicoes": [
@@ -79,7 +99,7 @@
     {
       "id": 2,
       "local": "Bazar - Casa da Paz",
-      "cep": "12345678",
+      "cep": "87506550",
       "rua": "Casa da Paz",
       "numero": "123",
       "complemento": "Casa dasdsads Paz",

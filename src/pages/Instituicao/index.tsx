@@ -8,9 +8,12 @@ import PlaceIcon from '@mui/icons-material/Place';
 import PublicIcon from '@mui/icons-material/Public';
 import { Contato } from './components/Contato';
 import { Endereco } from './components/Endereco';
+import { Loading } from '../../components/Loading';
 
 export default function Instituicao() {
     const [value, setValue] = useState(0);
+    const [loading, setLoading] = useState(true);
+
 
     const handleChange = (event: any, newValue: SetStateAction<number>) => {
         setValue(newValue);
@@ -18,15 +21,16 @@ export default function Instituicao() {
 
     return (
         <>
+            <Loading visible={loading} />
             <LayoutDashboard>
-                <Box sx={{  width: '100%', bgcolor: 'background.paper' }}>
+                <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
                     <Tabs value={value} onChange={handleChange} centered>
-                        <Tab value={0} label="Contato" icon={<AccountBoxIcon />}/>
+                        <Tab value={0} label="Contato" icon={<AccountBoxIcon />} />
                         <Tab value={1} label="Endereço" icon={<PlaceIcon />} />
-                        <Tab value={2} label="Rede Social" icon={<PublicIcon />}/>
+                        <Tab value={2} label="Rede Social" icon={<PublicIcon />} />
                     </Tabs>
-                         {value === 0 && <Contato />}
-                         {value === 1 && <Endereco />}
+                    {value === 0 && <Contato setLoading={setLoading} />}
+                    {value === 1 && <Endereco setLoading={setLoading} />}
 
                 </Box>
             </LayoutDashboard>

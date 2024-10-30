@@ -55,8 +55,8 @@ export const LayoutDashboard = ({ children }: IProps) => {
   };
 
   const drawer = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <List sx={{ flexGrow: 1 }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', zIndex: 0 }}>
+      <List sx={{ flexGrow: 1,  }}>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
@@ -102,7 +102,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <Box sx={{ display: 'flex', flexGrow: 1, zIndex: 0 }}>
         <Box
           component="nav"
           sx={{ 
