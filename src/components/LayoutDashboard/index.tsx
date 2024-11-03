@@ -24,6 +24,7 @@ import {
   Logout as LogoutIcon,
   CorporateFare as InstitutionIcon,
   Timeline as TimelineIcon,
+  PeopleAlt,
 } from '@mui/icons-material';
 import { IToken } from '../../interfaces/token';
 
@@ -47,6 +48,8 @@ export const LayoutDashboard = ({ children }: IProps) => {
     { text: 'Prêmios', path: '/premios', icon: <PrizeIcon /> },
     { text: 'Instituição', path: '/instituicao', icon: <InstitutionIcon /> },
     { text: 'História', path: '/historia', icon: <TimelineIcon /> },
+    { text: 'Parceiros', path: '/parceiros', icon: <PeopleAlt /> },
+
 
   ];
 

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { verificaTokenExpirado } from "../../services/token"
 import { Loading } from "../../components/Loading"
 import axios from "axios"
@@ -20,6 +20,8 @@ import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { LayoutDashboard } from "../../components/LayoutDashboard"
+import { ConfirmationDialog } from "../../components/Dialog"
+import { SnackbarMui } from "../../components/Snackbar"
 
 
 interface IUsers {
@@ -30,13 +32,19 @@ interface IUsers {
 }
 
 export default function Usuarios() {
-
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [message, setMessage] = useState("");
+    const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [dadosUsers, setdadosUsers] = useState<Array<IUsers>>([])
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 10,
+    })
+    const [dialogState, setDialogState] = useState({
+        open: false,
+        id: null as number | null
     })
 
     // Inicio, Update State, Destruir
@@ -58,6 +66,15 @@ export default function Usuarios() {
                 setdadosUsers(err)
             })
     }, [])
+
+    const handleShowSnackbar = useCallback((
+        message: string,
+        severity: 'success' | 'error' | 'warning' | 'info'
+    ) => {
+        setSnackbarVisible(true);
+        setMessage(message);
+        setSeverity(severity);
+    }, [setSnackbarVisible, setMessage, setSeverity]);
 
     const columns: GridColDef[] = [
         {
@@ -112,6 +129,7 @@ export default function Usuarios() {
                     <IconButton
                         color="error"
                         size="large"
+                        onClick={() => removeUser(params.row.id)}
                     >
                         <DeleteIcon />
                     </IconButton>
@@ -120,11 +138,52 @@ export default function Usuarios() {
         },
     ]
 
+    const removeUser = useCallback((id: number) => {
+        // Abre o dialog e guarda o ID para usar depois
+        setDialogState({
+            open: true,
+            id: id
+        });
+    }, []);
+
+    const handleConfirmedDelete = useCallback(() => {
+        const id = dialogState.id;
+
+        axios.delete(import.meta.env.VITE_URL + `/users/${id}`)
+            .then(() => {
+                handleShowSnackbar("Usuário removido com sucesso", "success");
+                setdadosUsers((prevRows) => prevRows.filter((row) => row.id !== id));
+                setLoading(false)
+            })
+            .catch((error) => {
+                const errorMessage = error.response?.data || "Erro ao remover usuário";
+                setLoading(false)
+                handleShowSnackbar(errorMessage, "error");
+            })
+    }, [dialogState.id, setLoading]);
+
     return (
         <>
             <Loading visible={loading} />
+            <SnackbarMui
+                open={snackbarVisible}
+                message={message}
+                severity={severity}
+                onClose={() => setSnackbarVisible(false)}
+                position={{
+                    vertical: "top",
+                    horizontal: "center",
+                }}
+            />
             <LayoutDashboard>
-                <Container maxWidth="xl" sx={{ mb: 4 }}>
+                <Container maxWidth="xl" sx={{ mb: 4, mt: 3 }}>
+                    <ConfirmationDialog
+                        open={dialogState.open}
+                        title="Confirmar exclusão"
+                        message="Tem certeza que deseja excluir este usuário?"
+                        onConfirm={handleConfirmedDelete}
+                        onClose={() => setDialogState({ open: false, id: null })}
+                    />
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                         <Typography variant="h4" component="h1">
                             Usuários
@@ -139,7 +198,7 @@ export default function Usuarios() {
                         </Button>
                     </Box>
 
-                    <Box sx={{ width: '100%'}}>
+                    <Box sx={{ width: '100%' }}>
                         <DataGrid
                             rows={dadosUsers}
                             columns={columns}

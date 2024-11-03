@@ -13,13 +13,6 @@
       "permissao": "admin",
       "password": "$2a$10$gtLKYPsy5v5CAVzJXlGN7.H5upiHgxVgk8hPVRZtE01AhN1tXDXke",
       "id": 2
-    },
-    {
-      "email": "44@teste.com",
-      "password": "$2a$10$xIBPzc4H31kweSFOpvcPXe3W.6Z2VSUBZU1.qdj7B.jzqvMsiOLDK",
-      "nome": "asade",
-      "permissao": "admin",
-      "id": 3
     }
   ],
   "premios": [
@@ -59,10 +52,11 @@
       "imagem": {}
     },
     {
-      "id": 8
-    },
-    {
-      "id": 9
+      "id": 16,
+      "nome": "Felipe Gustavo Ferreira Cruz",
+      "categoria": "profissional",
+      "data_recebimento": "2024-11-07",
+      "imagem": {}
     }
   ],
   "instituicoes": [
@@ -77,8 +71,20 @@
   "redes-sociais": [
     {
       "id": 1,
-      "tipo": "Fanpage",
-      "nome": "Casa da Paz",
+      "tipo": "Facebook",
+      "nome": "Casa da Paz ",
+      "url": "casadapaz_umuaramas"
+    },
+    {
+      "id": 2,
+      "tipo": "Instagram",
+      "nome": "Casa da Paz - Bazar",
+      "url": "casadapaz_umuaramas"
+    },
+    {
+      "id": 3,
+      "tipo": "LinkedIn",
+      "nome": "Casa da Paz - Fanclub",
       "url": "casadapaz_umuaramas"
     }
   ],
@@ -117,6 +123,34 @@
       "email": "admin@gmail.com",
       "telefone": "123456789",
       "data_nascimento": "2020-01-01"
+    }
+  ],
+  "historias": [
+    {
+      "id": 1,
+      "ano_fundacao": "2020-01-10",
+      "MVV": "Nosso valores são x, nossa missão é y e temos z valores",
+      "PMH": "Inauguração - X, Inaugurado - y, Inaugurando - z",
+      "texto_institucional": "Somos a Casa da Paz e temos x e y e z valores, em x temos o valor de x, e em y temos o valor de y e em z temos o valor de z.",
+      "foto_capa": "capa.jpg"
+    }
+  ],
+  "colaboradores": [
+    {
+      "id": 1,
+      "nome": "Adenilson",
+      "profissao": "Programador",
+      "classificacao": "diretor",
+      "foto": "colaborador.jpg"
+    }
+  ],
+  "parceiros": [
+    {
+      "id": 1,
+      "nome": "Sede Casa da Paz",
+      "classificacao": "comunidade",
+      "data_inicio": "2024-11-05",
+      "imagem": {}
     }
   ]
 }

@@ -9,6 +9,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import { Contato } from './components/Contato';
 import { Endereco } from './components/Endereco';
 import { Loading } from '../../components/Loading';
+import { RedeSocial } from './components/RedeSocial';
 
 export default function Instituicao() {
     const [value, setValue] = useState(0);
@@ -31,7 +32,7 @@ export default function Instituicao() {
                     </Tabs>
                     {value === 0 && <Contato setLoading={setLoading} />}
                     {value === 1 && <Endereco setLoading={setLoading} />}
-
+                    {value === 2 && <RedeSocial setLoading={setLoading} />}
                 </Box>
             </LayoutDashboard>
         </>

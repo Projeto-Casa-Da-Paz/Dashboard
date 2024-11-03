@@ -25,12 +25,12 @@ import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
 
 // Define a interface do formulário
-interface IPremios {
-    id: number;
-    nome: string;
-    categoria: string;
-    data_recebimento: string;
-    imagem: File | null;
+interface IParceiros {
+    id: number
+    nome: string
+    classificacao: string
+    data_inicio: string
+    imagem: File | null
 }
 
 // Componentes estilizados
@@ -44,19 +44,19 @@ const FormTextField = styled(TextField)({
 });
 
 
-export default function GerenciarPremios() {
+export default function GerenciarParceiros() {
     const {
         control,
         handleSubmit,
         setValue,
         watch,
         formState: { errors },
-    } = useForm<IPremios>({
+    } = useForm<IParceiros>({
         defaultValues: {
             id: 0,
             nome: '',
-            categoria: '',
-            data_recebimento: '',
+            classificacao: '',
+            data_inicio: '',
             imagem: null
         }
     });
@@ -84,23 +84,26 @@ export default function GerenciarPremios() {
             return;
         }
 
-        const premioId = Number(id);
-        if (!isNaN(premioId)) {
+        const parceiroId = Number(id);
+        if (!isNaN(parceiroId)) {
             setLoading(true);
-            axios.get(`http://localhost:3001/premios?id=${premioId}`)
+            axios.get(`http://localhost:3001/premios?id=${parceiroId}`)
                 .then((res) => {
-                    const premioData = res.data[0];
+                    const parceiroData = res.data[0];
                     setIsEdit(true);
-                    setValue("id", premioData.id || 0);
-                    setValue("nome", premioData.nome || '');
-                    setValue("categoria", premioData.categoria || '');
-                    setValue("data_recebimento", premioData.data_recebimento || '');
-                    if (premioData.imagem) {
-                        setPreviewUrl(`http://localhost:3001/uploads/${premioData.imagem}`);
+                    setValue("id", parceiroData.id || 0);
+                    setValue("nome", parceiroData.nome || '');
+                    setValue("classificacao", parceiroData.classificacao || '');
+                    setValue("data_inicio", parceiroData.data_inicio || '');
+                    if (parceiroData.imagem) {
+                        setPreviewUrl(`http://localhost:3001/uploads/${parceiroData.imagem}`);
                     }
                     setLoading(false)
                 })
-                .catch(console.error)
+                .catch((err) => {
+                    console.error(err)
+                    setLoading(false)
+                })
         }
 
         if (imagemField && imagemField instanceof File) {
@@ -128,7 +131,7 @@ export default function GerenciarPremios() {
         setPreviewUrl('');
     }, [setValue]);
 
-    const submitForm: SubmitHandler<IPremios> = useCallback((data) => {
+    const submitForm: SubmitHandler<IParceiros> = useCallback((data) => {
         setLoading(true);
 
         console.log('Dados enviados:', data);
@@ -139,8 +142,8 @@ export default function GerenciarPremios() {
         const payload = {
             id: data.id,
             nome: data.nome,
-            categoria: data.categoria,
-            data_recebimento: data.data_recebimento,
+            classificacao: data.classificacao,
+            data_recebimento: data.data_inicio,
             imagem: data.imagem || '',
         };
 
@@ -151,20 +154,20 @@ export default function GerenciarPremios() {
         };
 
         const request = isEdit
-            ? axios.put(`${import.meta.env.VITE_URL}/premios/${id}`, payload, config)
-            : axios.post(`${import.meta.env.VITE_URL}/premios/`, payload, config);
+            ? axios.put(`${import.meta.env.VITE_URL}/parceiros/${id}`, payload, config)
+            : axios.post(`${import.meta.env.VITE_URL}/parceiros/`, payload, config);
 
         request
             .then((response) => {
                 console.log('Resposta da API:', response);
                 handleShowSnackbar(
                     isEdit
-                        ? 'Prêmio editado com sucesso!'
-                        : 'Prêmio adicionado com sucesso!',
+                        ? 'Parceiro editado com sucesso!'
+                        : 'Parceiro adicionado com sucesso!',
                     'success'
                 );
                 setLoading(false);
-                setTimeout(() => { navigate('/premios'); }, 1500);
+                setTimeout(() => { navigate('/parceiros'); }, 1500);
             })
             .catch((error) => {
                 console.error('Erro na requisição:', error.response);
@@ -192,7 +195,7 @@ export default function GerenciarPremios() {
                 <Container maxWidth="md">
                     <StyledPaper elevation={3}>
                         <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
-                            {isEdit ? "Editar Prêmio" : "Adicionar Prêmio"}
+                            {isEdit ? "Editar Parceiro" : "Adicionar Parceiro"}
                         </Typography>
 
                         <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate>
@@ -206,7 +209,7 @@ export default function GerenciarPremios() {
                                     <FormTextField
                                         {...field}
                                         fullWidth
-                                        label="Nome do Prêmio"
+                                        label="Nome do Parceiro"
                                         error={!!errors.nome}
                                         helperText={errors.nome?.message}
                                     />
@@ -214,39 +217,43 @@ export default function GerenciarPremios() {
                             />
 
                             <Controller
-                                name="categoria"
+                                name="classificacao"
                                 control={control}
-                                rules={{ required: 'Categoria é obrigatória!' }}
+                                rules={{ required: 'Classificação é obrigatória!' }}
                                 render={({ field }) => (
-                                    <FormControl fullWidth error={!!errors.categoria} sx={{ mb: 2 }}>
+                                    <FormControl fullWidth error={!!errors.classificacao} sx={{ mb: 2 }}>
                                         <InputLabel>Categoria</InputLabel>
                                         <Select {...field} label="Categoria">
                                             <MenuItem value="">Selecione a categoria</MenuItem>
-                                            <MenuItem value="academico">Acadêmico</MenuItem>
-                                            <MenuItem value="profissional">Profissional</MenuItem>
-                                            <MenuItem value="honraria">Honraria</MenuItem>
+                                            <MenuItem value="presidente">Presidente</MenuItem>
+                                            <MenuItem value="diretor">Diretor(a)</MenuItem>
+                                            <MenuItem value="tesoureiro">Tesoureiro(a)</MenuItem>
+                                            <MenuItem value="secretario">Secretário(a)</MenuItem>
+                                            <MenuItem value="outros">Secretário(a)</MenuItem>
                                         </Select>
-                                        {errors.categoria && (
-                                            <FormHelperText>{errors.categoria.message}</FormHelperText>
+                                        {errors.classificacao && (
+                                            <FormHelperText>{errors.classificacao.message}</FormHelperText>
                                         )}
                                     </FormControl>
                                 )}
                             />
 
                             <Controller
-                                name="data_recebimento"
+                                name="data_inicio"
                                 control={control}
-                                rules={{ required: 'Data de recebimento é obrigatória!' }}
+                                rules={{ required: 'Data de Inicio de Atuação é obrigatória!' }}
                                 render={({ field }) => (
                                     <FormTextField
                                         {...field}
-                                        aria-label="Data de Recebimento"
+                                        aria-label="Data de Inicio"
                                         fullWidth
-                                        label="Data de Recebimento"
+                                        label="Data de Inicio"
                                         type="date"
-                                        error={!!errors.data_recebimento}
-                                        helperText={errors.data_recebimento?.message}
-                                        InputLabelProps={{ shrink: true }}
+                                        error={!!errors.data_inicio}
+                                        helperText={errors.data_inicio?.message}
+                                        InputLabelProps={{
+                                            shrink: true
+                                        }}
                                     />
                                 )}
                             />

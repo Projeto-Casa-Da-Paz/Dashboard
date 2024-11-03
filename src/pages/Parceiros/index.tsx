@@ -22,25 +22,25 @@ import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { LayoutDashboard } from "../../components/LayoutDashboard"
-import { ConfirmationDialog } from "../../components/Dialog"
-import { set } from "react-hook-form"
 import { SnackbarMui } from "../../components/Snackbar"
+import { ConfirmationDialog } from "../../components/Dialog"
 
-interface IPremios {
+interface IParceiros {
     id: number
     nome: string
-    categoria: string
-    data_recebimento: string
+    classificacao: string
+    descricao: string
+    data_inicio: Date
     imagem: string
 }
 
-export default function Premios() {
+export default function Parceiros() {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
-    const [dadosPremios, setdadosPremios] = useState<Array<IPremios>>([])
+    const [dadosParceiros, setdadosParceiros] = useState<Array<IParceiros>>([])
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 10,
@@ -57,16 +57,24 @@ export default function Premios() {
 
         setLoading(true)
 
-        axios.get(import.meta.env.VITE_URL + '/premios')
+        axios.get(import.meta.env.VITE_URL + '/parceiros')
             .then((res) => {
-                setdadosPremios(res.data)
+                setdadosParceiros(res.data)
                 setLoading(false)
             })
             .catch((err) => {
-                setdadosPremios(err)
+                setdadosParceiros(err)
                 setLoading(false)
             })
     }, [])
+
+    const removeParceiro = useCallback((id: number) => {
+        // Abre o dialog e guarda o ID para usar depois
+        setDialogState({
+            open: true,
+            id: id
+        });
+    }, []);
 
     const handleShowSnackbar = useCallback((
         message: string,
@@ -99,7 +107,7 @@ export default function Premios() {
             renderCell: (params: GridRenderCellParams) => (
                 <Avatar
                     src={`public/${params.value}`}
-                    alt="Imagem do prêmio"
+                    alt="Imagem do Parceiro"
                     sx={{ width: 75, height: 75 }}
                 />
             ),
@@ -111,16 +119,16 @@ export default function Premios() {
             filterable: true,
         },
         {
-            field: 'categoria',
-            headerName: 'Categoria',
-            width: 150,
+            field: 'classificacao',
+            headerName: 'Classificacao',
+            width: 200,
             filterable: true,
             headerAlign: 'center',
             align: 'center',
         },
         {
-            field: 'data_recebimento',
-            headerName: 'Data Recebimento',
+            field: 'data_inicio',
+            headerName: 'Inicio da Parceria',
             width: 200,
             filterable: true,
             headerAlign: 'center',
@@ -142,7 +150,7 @@ export default function Premios() {
                 <Box >
                     <IconButton
                         color="primary"
-                        onClick={() => navigate(`/premios/${params.row.id}`)}
+                        onClick={() => navigate(`/parceiros/${params.row.id}`)}
                         size="large"
                     >
                         <EditIcon />
@@ -150,7 +158,7 @@ export default function Premios() {
                     <IconButton
                         color="error"
                         size="large"
-                        onClick={() => removePremios(params.row.id)}
+                        onClick={() => removeParceiro(params.row.id)}
                     >
                         <DeleteIcon />
                     </IconButton>
@@ -158,26 +166,17 @@ export default function Premios() {
             ),
         },
     ]
-
-    const removePremios = useCallback((id: number) => {
-        // Abre o dialog e guarda o ID para usar depois
-        setDialogState({
-            open: true,
-            id: id
-        });
-    }, []);
-
     const handleConfirmedDelete = useCallback(() => {
         const id = dialogState.id;
 
-        axios.delete(import.meta.env.VITE_URL + `/premios/${id}`)
+        axios.delete(import.meta.env.VITE_URL + `/parceiros/${id}`)
             .then(() => {
-                handleShowSnackbar("Usuário removido com sucesso", "success");
-                setdadosPremios((prevRows) => prevRows.filter((row) => row.id !== id));
+                handleShowSnackbar("Parceiro removido com sucesso", "success");
+                setdadosParceiros((prevRows) => prevRows.filter((row) => row.id !== id));
                 setLoading(false)
             })
             .catch((error) => {
-                const errorMessage = error.response?.data || "Erro ao remover usuário";
+                const errorMessage = error.response?.data || "Erro ao remover parceiro";
                 setLoading(false)
                 handleShowSnackbar(errorMessage, "error");
             })
@@ -201,19 +200,19 @@ export default function Premios() {
                     <ConfirmationDialog
                         open={dialogState.open}
                         title="Confirmar exclusão"
-                        message="Tem certeza que deseja excluir este Prêmio?"
+                        message="Tem certeza que deseja excluir este Parceiro?"
                         onConfirm={handleConfirmedDelete}
                         onClose={() => setDialogState({ open: false, id: null })}
                     />
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                         <Typography variant="h4" component="h1">
-                            Prêmios
+                            Parceiros
                         </Typography>
                         <Button
                             variant="contained"
                             color="success"
                             startIcon={<AddIcon />}
-                            onClick={() => navigate('/premios/add')}
+                            onClick={() => navigate('/parceiros/add')}
                         >
                             Adicionar
                         </Button>
@@ -221,7 +220,7 @@ export default function Premios() {
 
                     <Box sx={{ width: '100%' }}>
                         <DataGrid
-                            rows={dadosPremios}
+                            rows={dadosParceiros}
                             columns={columns}
                             rowHeight={90}
                             density="standard"
