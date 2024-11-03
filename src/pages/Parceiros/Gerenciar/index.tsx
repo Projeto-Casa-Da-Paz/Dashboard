@@ -38,6 +38,7 @@ interface IParceiros {
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
 }));
 
 const FormTextField = styled(TextField)({

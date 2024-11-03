@@ -55,7 +55,7 @@ export const Rotas = () => {
                     element={<Instituicao />}
                 />
                  <Route
-                    path="/historia"
+                    path="/historia/:id"
                     element={<Historia />}
                 />
                 <Route

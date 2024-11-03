@@ -73,19 +73,19 @@
       "id": 1,
       "tipo": "Facebook",
       "nome": "Casa da Paz ",
-      "url": "casadapaz_umuaramas"
+      "url": "casadapaz_umuarama"
     },
     {
       "id": 2,
       "tipo": "Instagram",
       "nome": "Casa da Paz - Bazar",
-      "url": "casadapaz_umuaramas"
+      "url": "casadapaz_umuarama"
     },
     {
       "id": 3,
-      "tipo": "LinkedIn",
+      "tipo": "Twitter",
       "nome": "Casa da Paz - Fanclub",
-      "url": "casadapaz_umuaramas"
+      "url": "casadapaz_umuarama"
     }
   ],
   "enderecos": [
@@ -129,8 +129,8 @@
     {
       "id": 1,
       "ano_fundacao": "2020-01-10",
-      "MVV": "Nosso valores são x, nossa missão é y e temos z valores",
-      "PMH": "Inauguração - X, Inaugurado - y, Inaugurando - z",
+      "mvv": "Nosso valores são x, nossa missão é y e temos z valores",
+      "pmh": "Inauguração - X, Inaugurado - y, Inaugurando - z",
       "texto_institucional": "Somos a Casa da Paz e temos x e y e z valores, em x temos o valor de x, e em y temos o valor de y e em z temos o valor de z.",
       "foto_capa": "capa.jpg"
     }

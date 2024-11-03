@@ -47,7 +47,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
     { text: 'Usuários', path: '/usuarios', icon: <PersonIcon /> },
     { text: 'Prêmios', path: '/premios', icon: <PrizeIcon /> },
     { text: 'Instituição', path: '/instituicao', icon: <InstitutionIcon /> },
-    { text: 'História', path: '/historia', icon: <TimelineIcon /> },
+    { text: 'História', path: '/historia/1', icon: <TimelineIcon /> },
     { text: 'Parceiros', path: '/parceiros', icon: <PeopleAlt /> },
 
 
