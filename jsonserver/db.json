@@ -166,5 +166,62 @@
       "data_inicio": "2024-11-05",
       "imagem": {}
     }
+  ],
+  "fotos": [
+    {
+      "id": 1,
+      "src": "/imagens/galeria/fotos/DSC_0293 (1).jpg",
+      "alt": "Foto da Casa da Paz 1"
+    },
+    {
+      "id": 2,
+      "src": "/imagens/galeria/fotos/DSC_0293 (2).jpg",
+      "alt": "Foto da Casa da Paz 2"
+    },
+    {
+      "id": 3,
+      "src": "/imagens/galeria/fotos/DSC_0293 (1).jpg",
+      "alt": "Foto da Casa da Paz 1"
+    },
+    {
+      "id": 4,
+      "src": "/imagens/galeria/fotos/DSC_0293 (2).jpg",
+      "alt": "Foto da Casa da Paz 2"
+    },
+    {
+      "id": 5,
+      "src": "/imagens/galeria/fotos/DSC_0293 (1).jpg",
+      "alt": "Foto da Casa da Paz 1"
+    },
+    {
+      "id": 6,
+      "src": "/imagens/galeria/fotos/DSC_0293 (2).jpg",
+      "alt": "Foto da Casa da Paz 2"
+    },
+    {
+      "id": 7,
+      "src": "/imagens/galeria/fotos/DSC_0293 (1).jpg",
+      "alt": "Foto da Casa da Paz 1"
+    },
+    {
+      "id": 8,
+      "src": "/imagens/galeria/fotos/DSC_0293 (2).jpg",
+      "alt": "Foto da Casa da Paz 2"
+    },
+    {
+      "id": 9,
+      "src": "/imagens/galeria/fotos/DSC_0293 (1).jpg",
+      "alt": "Foto da Casa da Paz 1"
+    },
+    {
+      "id": 10,
+      "src": "/imagens/galeria/fotos/DSC_0293 (2).jpg",
+      "alt": "Foto da Casa da Paz 2"
+    },
+    {
+      "id": 129,
+      "src": "/imagens/galeria/fotos/DSC_0293 (129).jpg",
+      "alt": "Foto da Casa da Paz 129"
+    }
   ]
 }
