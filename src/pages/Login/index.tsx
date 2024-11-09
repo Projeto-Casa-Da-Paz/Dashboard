@@ -17,7 +17,7 @@ import './login.styles.css';
 
 type ILogin = {
     email: string;
-    senha: string;
+    password: string;
 };
 
 export default function Login() {
@@ -44,13 +44,14 @@ export default function Login() {
         try {
             const response = await axios.post(`${import.meta.env.VITE_URL}/login`, {
                 email: data.email,
-                password: data.senha,
+                password: data.password,
             });
 
             localStorage.setItem(
                 'casadapaz.token',
-                JSON.stringify(response.data)
+               JSON.stringify(response.data)
             );
+
             handleShowSnackbar("Login efetuado com sucesso!", 'success');
             setTimeout(() => { navigate('/dashboard'); }, 1500);
         } catch (error) {
@@ -110,18 +111,18 @@ export default function Login() {
 
                             <div className="form-field">
                                 <TextField
-                                    {...register('senha', {
+                                    {...register('password', {
                                         required: "Por favor digite sua senha"
                                     })}
-                                    id="senha"
+                                    id="password"
                                     label="Senha"
                                     type="password"
                                     size='small'
                                     fullWidth
                                     required
                                     sx={{ mb: 2 }}
-                                    error={!!errors.senha}
-                                    helperText={errors.senha?.message || ""}
+                                    error={!!errors.password}
+                                    helperText={errors.password?.message || ""}
                                     variant="outlined"
                                 />
                             </div>

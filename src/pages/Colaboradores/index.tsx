@@ -22,6 +22,7 @@ import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { LayoutDashboard } from "../../components/LayoutDashboard"
+import { IToken } from "../../interfaces/token"
 
 interface IParceiros {
     id: number
@@ -48,7 +49,12 @@ export default function Premios() {
 
         setLoading(true)
 
-        axios.get(import.meta.env.VITE_URL + '/parceiros')
+        const token = JSON.parse(localStorage.getItem('token') || '') as IToken
+
+            axios.get(import.meta.env.VITE_URL + '/parceiros',{
+                headers: {
+                "Authorization": 'Bearer' + token?.access_token
+            }})
             .then((res) => {
                 setdadosParceiros(res.data)
                 setLoading(false)

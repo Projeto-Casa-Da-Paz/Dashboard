@@ -27,6 +27,7 @@ import {
   PeopleAlt,
 } from '@mui/icons-material';
 import { IToken } from '../../interfaces/token';
+import CollectionsIcon from '@mui/icons-material/Collections';
 
 interface IProps {
   children: ReactNode;
@@ -49,8 +50,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
     { text: 'Instituição', path: '/instituicao', icon: <InstitutionIcon /> },
     { text: 'História', path: '/historia/1', icon: <TimelineIcon /> },
     { text: 'Parceiros', path: '/parceiros', icon: <PeopleAlt /> },
-
-
+    { text: 'Galerias', path: '/galerias', icon: <CollectionsIcon /> },
   ];
 
   const handleDrawerToggle = () => {

@@ -22,13 +22,14 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { LayoutDashboard } from "../../components/LayoutDashboard"
 import { ConfirmationDialog } from "../../components/Dialog"
 import { SnackbarMui } from "../../components/Snackbar"
+import { IToken } from "../../interfaces/token"
 
 
 interface IUsers {
     id: number
     nome: string
     email: string
-    permissoes: string
+    perfil: string
 }
 
 export default function Usuarios() {
@@ -47,6 +48,8 @@ export default function Usuarios() {
         id: null as number | null
     })
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
     // Inicio, Update State, Destruir
     useEffect(() => {
 
@@ -55,14 +58,16 @@ export default function Usuarios() {
         }
 
         setLoading(true)
-
-        axios.get(import.meta.env.VITE_URL + '/users')
+        console.log(token)
+        axios.get(import.meta.env.VITE_URL + '/usuarios', { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
-                setdadosUsers(res.data)
+                setdadosUsers(res.data.data)
                 setLoading(false)
+                console.log(res.data.data)
             })
             .catch((err) => {
                 setLoading(false)
+                handleShowSnackbar(err.response.data, 'error')
                 setdadosUsers(err)
             })
     }, [])
@@ -101,8 +106,8 @@ export default function Usuarios() {
             align: 'center',
         },
         {
-            field: 'permissao',
-            headerName: 'Permissão',
+            field: 'perfil',
+            headerName: 'Perfil',
             width: 200,
             filterable: true,
             headerAlign: 'center',
@@ -112,7 +117,7 @@ export default function Usuarios() {
             field: 'acoes',
             headerName: 'Ações',
             flex: 2,
-            minWidth: 100, // Define uma largura mínima
+            minWidth: 150, // Define uma largura mínima
             filterable: false,
             sortable: false,
             headerAlign: 'center',

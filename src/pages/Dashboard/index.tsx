@@ -18,7 +18,7 @@ export default function Dashboard() {
 
     return(
         <LayoutDashboard>
-            <h1>Graficos</h1>
+            <h1 style={{marginTop: "1rem"}}>Gráficos</h1>
         </LayoutDashboard>
     )
 }

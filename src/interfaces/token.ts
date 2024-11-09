@@ -4,6 +4,6 @@ export interface IToken {
         id: number
         nome: string
         email: string
-        permissoes: string
+        perfil: string
     }
 }

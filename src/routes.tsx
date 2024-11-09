@@ -14,6 +14,9 @@ import Instituicao from "./pages/Instituicao"
 import Historia from "./pages/Historia"
 import Parceiros from "./pages/Parceiros"
 import GerenciarParceiros from "./pages/Parceiros/Gerenciar"
+import Galerias from "./pages/Galeria"
+import GerenciarGalerias from "./pages/Galeria/Gerenciar"
+import Fotos from "./pages/Fotos"
 
 export const Rotas = () => {
 
@@ -50,11 +53,11 @@ export const Rotas = () => {
                     path="/premios/:id"
                     element={<GerenciarPremios />}
                 />
-                  <Route
+                <Route
                     path="/instituicao"
                     element={<Instituicao />}
                 />
-                 <Route
+                <Route
                     path="/historia/:id"
                     element={<Historia />}
                 />
@@ -65,6 +68,18 @@ export const Rotas = () => {
                 <Route
                     path="/parceiros/:id"
                     element={<GerenciarParceiros />}
+                />
+                <Route
+                    path="/galerias/"
+                    element={<Galerias />}
+                />
+                <Route
+                    path="/galerias/:id"
+                    element={<GerenciarGalerias />}
+                />
+                <Route
+                    path="/fotos/:id"
+                    element={<Fotos />}
                 />
             </Routes>
 

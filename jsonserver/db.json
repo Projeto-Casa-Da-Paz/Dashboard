@@ -6,13 +6,6 @@
       "email": "admin@gmail.com",
       "permissao": "admin",
       "password": "$2a$10$Y4/4ws04wYotZQg2RB1bwurp7W6RCq.NLrUEEONlOZEdjLXCVG/LW"
-    },
-    {
-      "nome": "felipe",
-      "email": "felie@gmail.com",
-      "permissao": "admin",
-      "password": "$2a$10$gtLKYPsy5v5CAVzJXlGN7.H5upiHgxVgk8hPVRZtE01AhN1tXDXke",
-      "id": 2
     }
   ],
   "premios": [
@@ -151,6 +144,38 @@
       "classificacao": "comunidade",
       "data_inicio": "2024-11-05",
       "imagem": {}
+    }
+  ],
+  "galerias": [
+    {
+      "id": 1,
+      "nome": "Sede Casa da Paz",
+      "descricao": "Esse album foi criado...",
+      "data": "2024-11-05"
+    },
+    {
+      "id": 2,
+      "nome": "Dia internacional de ontem",
+      "descricao": "Opa tiramos ontem",
+      "data": "2024-11-08"
+    },
+    {
+      "id": 3,
+      "nome": "teste",
+      "descricao": "teste",
+      "data": "2024-11-07"
+    }
+  ],
+  "fotos": [
+    {
+      "id": 1,
+      "id_galeria": 1,
+      "imagem": "casadapaz1.jpg"
+    },
+    {
+      "id": 2,
+      "id_galeria": 1,
+      "imagem": "casadapaz2.jpg"
     }
   ]
 }

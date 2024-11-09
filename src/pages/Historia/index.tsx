@@ -9,6 +9,7 @@ import { Box, Button, Container, FormControl, InputLabel, Paper, styled, TextFie
 import { SnackbarMui } from "../../components/Snackbar";
 import { CustomTextarea } from "../../components/CustomTextArea";
 import DropZone from "../../components/Dropzone";
+import { IToken } from "../../interfaces/token";
 
 interface IHistoria {
     id: number
@@ -60,6 +61,7 @@ export default function Historia() {
     const { id } = useParams();
     const imagemField = watch("foto_capa");
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
     useEffect(() => {
         if (localStorage.length == 0 || verificaTokenExpirado()) {
@@ -68,7 +70,7 @@ export default function Historia() {
 
         const HistoriaId = Number(id);
         setLoading(true);
-        axios.get(`http://localhost:3001/historias?id=${HistoriaId}`)
+        axios.get(`http://localhost:3001/historias?id=${HistoriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 const historiaData = res.data[0];
                 setValue("id", historiaData.id || 0);
@@ -111,9 +113,28 @@ export default function Historia() {
         setPreviewUrl('');
     }, [setValue]);
 
-    function submitForm(data: IHistoria, event?: BaseSyntheticEvent<object, any, any> | undefined): unknown {
-        throw new Error("Function not implemented.");
-    }
+    const submitForm: SubmitHandler<IHistoria> = useCallback((data) => {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append('ano_fundacao', data.ano_fundacao);
+        formData.append('mvv', data.mvv);
+        formData.append('pmh', data.pmh);
+        formData.append('texto_institucional', data.texto_institucional);
+        formData.append('foto_capa', data.foto_capa || '');
+        axios.put(`http://localhost:3001/historias?id=${id}`, formData, {
+            headers: {
+                "Authorization": 'Bearer' + token?.access_token
+            }
+        })
+            .then((res) => {
+                setLoading(false);
+                handleShowSnackbar('Historia atualizada com sucesso!', 'success');
+            })
+            .catch((err) => {
+                setLoading(false);
+                handleShowSnackbar('Erro ao atualizar historia', 'error');
+            })
+        }, [id, handleShowSnackbar, setValue])
 
     return (
         <>
@@ -168,8 +189,8 @@ export default function Historia() {
                                         placeholder={"Exemplo:\nNosso valores são . . .\nNossa missão é . . .\nTemos . . . valores"}
                                         aria-label="Missão, Visão e Valores"
                                         label="Missão, Visão e Valores"
-                                        error={!!errors.MVV}
-                                        helperText={errors.MVV?.message}
+                                        error={!!errors.mvv}
+                                        helperText={errors.mvv?.message}
                                     />
                                 )}
                             />
@@ -187,8 +208,8 @@ export default function Historia() {
                                         placeholder={"Exemplo:\nem 2020: fizemos . . .\nem 2021: tivemos X conquistas . . .\nem 2024: temos uma melhora na qualidade. . ."}
                                         aria-label="Principais Marcos Históricos"
                                         label="Principais Marcos Históricos"
-                                        error={!!errors.PMH}
-                                        helperText={errors.PMH?.message}
+                                        error={!!errors.pmh}
+                                        helperText={errors.pmh?.message}
                                     />
                                 )}
                             />
@@ -206,8 +227,8 @@ export default function Historia() {
                                         placeholder={"Exemplo:\nA nossa instituição busca oferecer uma educação de qualidade para as crianças e adolescentes.\nNosso objetivo é formar cidadãos críticos, éticos e responsáveis, capazes de contribuir para o desenvolvimento da sociedade.\nPara isso, contamos com uma equipe de profissionais qualificados e comprometidos, que buscam inovar e melhorar constantemente o nosso trabalho.\n"}
                                         aria-label="Texto institucional"
                                         label="Texto institucional"
-                                        error={!!errors.PMH}
-                                        helperText={errors.PMH?.message}
+                                        error={!!errors.texto_institucional}
+                                        helperText={errors.texto_institucional?.message}
                                     />
                                 )}
                             />

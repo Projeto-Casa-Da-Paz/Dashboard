@@ -22,12 +22,13 @@ import { styled } from "@mui/material/styles";
 import { LayoutDashboard } from "../../../components/LayoutDashboard";
 import { SnackbarMui } from "../../../components/Snackbar";
 import { Loading } from "../../../components/Loading";
+import { IToken } from "../../../interfaces/token";
 
 // Define a interface do formulário
 interface IForm {
     nome: string;
     email: string;
-    permissao: string;
+    perfil: string;
     password: string;
 }
 
@@ -57,7 +58,7 @@ export default function GerenciarUsuarios() {
         defaultValues: {
             nome: '',
             email: '',
-            permissao: '',
+            perfil: '',
             password: ''
         }
     });
@@ -77,6 +78,8 @@ export default function GerenciarUsuarios() {
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
@@ -86,14 +89,14 @@ export default function GerenciarUsuarios() {
         const idUser = Number(id);
         if (!isNaN(idUser)) {
             setLoading(true);
-            axios.get(`http://localhost:3001/users?id=${idUser}`)
+            axios.get(import.meta.env.VITE_URL + `/usuarios?id=${idUser}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
-                    const userData = res.data[0];
+                    const userData = res.data.data[0];
                     setIsEdit(true);
                     // Atualiza os campos individualmente
                     setValue("nome", userData.nome || '');
                     setValue("email", userData.email || '');
-                    setValue("permissao", userData.permissoes || '');
+                    setValue("perfil", userData.permissoes || '');
                 })
                 .catch(console.error)
                 .finally(() => setLoading(false));
@@ -103,8 +106,9 @@ export default function GerenciarUsuarios() {
     const submitForm: SubmitHandler<IForm> = useCallback((data) => {
         setLoading(true);
         const request = isEdit
-            ? axios.put(`http://localhost:3001/users/${id}`, data)
-            : axios.post('http://localhost:3001/users/', data)
+            ? axios.put(import.meta.env.VITE_URL + `/usuarios/${id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            : axios.post(import.meta.env.VITE_URL + '/usuarios/', data, { headers: { Authorization: `Bearer ${token.access_token}` } })
+
         request
             .then(() => {
                 handleShowSnackbar(
@@ -184,19 +188,19 @@ export default function GerenciarUsuarios() {
                             />
 
                             <Controller
-                                name="permissao"
+                                name="perfil"
                                 control={control}
                                 rules={{ required: 'Perfil é obrigatório!' }}
                                 render={({ field }) => (
-                                    <FormControl fullWidth error={!!errors.permissao} sx={{ mb: 2 }}>
+                                    <FormControl fullWidth error={!!errors.perfil} sx={{ mb: 2 }}>
                                         <InputLabel>Perfil</InputLabel>
                                         <Select {...field} label="Perfil">
                                             <MenuItem value="">Selecione o tipo</MenuItem>
                                             <MenuItem value="admin">Admin</MenuItem>
                                             <MenuItem value="colaborador">Colaborador</MenuItem>
                                         </Select>
-                                        {errors.permissao && (
-                                            <FormHelperText>{errors.permissao.message}</FormHelperText>
+                                        {errors.perfil && (
+                                            <FormHelperText>{errors.perfil.message}</FormHelperText>
                                         )}
                                     </FormControl>
                                 )}
