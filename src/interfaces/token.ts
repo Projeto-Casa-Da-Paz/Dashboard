@@ -1,5 +1,5 @@
 export interface IToken {
-    accessToken: string
+    access_token: string
     user: {
         id: number
         nome: string

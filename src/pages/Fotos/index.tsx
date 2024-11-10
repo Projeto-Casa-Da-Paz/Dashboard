@@ -24,6 +24,7 @@ import { Loading } from "../../components/Loading";
 import { LayoutDashboard } from "../../components/LayoutDashboard";
 import { ConfirmationDialog } from "../../components/Dialog";
 import MultiFileDropZone from "../../components/MultiFileDropZone";
+import { IToken } from "../../interfaces/token";
 
 interface IFoto {
     id: number;
@@ -80,6 +81,8 @@ export default function Fotos() {
         setSeverity(severity);
     }, []);
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
@@ -89,12 +92,12 @@ export default function Fotos() {
         setLoading(true);
 
         // Fetch galeria details
-        axios.get(import.meta.env.VITE_URL + `/galerias/${id}`)
+        axios.get(import.meta.env.VITE_URL + `/galerias/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 setNomeGaleria(res.data.nome);
 
                 // Fetch fotos after confirming galeria exists
-                return axios.get(import.meta.env.VITE_URL + '/fotos?id_galeria=' + id);
+                return axios.get(import.meta.env.VITE_URL + '/fotos/' + id, { headers: { Authorization: `Bearer ${token.access_token}` } });
             })
             .then((res) => {
                 setDadosFotos(res.data);

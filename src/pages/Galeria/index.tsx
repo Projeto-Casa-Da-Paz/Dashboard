@@ -35,6 +35,7 @@ import { SnackbarMui } from "../../components/Snackbar";
 import { Loading } from "../../components/Loading";
 import { LayoutDashboard } from "../../components/LayoutDashboard";
 import { ConfirmationDialog } from "../../components/Dialog";
+import { IToken } from "../../interfaces/token";
 
 interface IGalerias {
     id: number
@@ -59,6 +60,8 @@ export default function Galerias() {
         id: null as number | null
     })
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
     useEffect(() => {
         if (localStorage.length == 0 || verificaTokenExpirado()) {
             navigate("/")
@@ -73,7 +76,7 @@ export default function Galerias() {
 
         setLoading(true)
 
-        axios.get(import.meta.env.VITE_URL + '/galerias')
+        axios.get(import.meta.env.VITE_URL + '/galerias', { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 setdadosGalerias(res.data)
                 setLoading(false)

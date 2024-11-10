@@ -24,6 +24,7 @@ import { LayoutDashboard } from "../../../components/LayoutDashboard";
 import { SnackbarMui } from "../../../components/Snackbar";
 import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
+import { IToken } from "../../../interfaces/token";
 
 // Define a interface do formulário
 interface IParceiros {
@@ -80,6 +81,9 @@ export default function GerenciarParceiros() {
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const imagemField = watch("imagem");
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
+
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
@@ -89,16 +93,16 @@ export default function GerenciarParceiros() {
         const parceiroId = Number(id);
         if (!isNaN(parceiroId)) {
             setLoading(true);
-            axios.get(`http://localhost:3001/premios?id=${parceiroId}`)
+            axios.get(`${import.meta.env.VITE_URL}/parceiros/${parceiroId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
-                    const parceiroData = res.data[0];
+                    const parceiroData = res.data;
                     setIsEdit(true);
                     setValue("id", parceiroData.id || 0);
                     setValue("nome", parceiroData.nome || '');
                     setValue("classificacao", parceiroData.classificacao || '');
                     setValue("data_inicio", parceiroData.data_inicio || '');
                     if (parceiroData.imagem) {
-                        setPreviewUrl(`http://localhost:3001/uploads/${parceiroData.imagem}`);
+                        setPreviewUrl(`${import.meta.env.VITE_URL}/imagem/${parceiroData.imagem}`);
                     }
                     setLoading(false)
                 })
@@ -135,30 +139,47 @@ export default function GerenciarParceiros() {
 
     const submitForm: SubmitHandler<IParceiros> = useCallback((data) => {
         setLoading(true);
-
+    
         console.log('Dados enviados:', data);
         console.log('URL:', import.meta.env.VITE_URL);
         console.log('isEdit:', isEdit, 'id:', id);
-
-        // Cria um objeto simples com os dados
-        const payload = {
-            id: data.id,
-            nome: data.nome,
-            classificacao: data.classificacao,
-            data_inicio: data.data_inicio,
-            imagem: data.imagem || '',
-        };
-
+    
+        // Cria um FormData e adiciona os campos
+        const formData = new FormData();
+        formData.append('id', data.id?.toString() || '');
+        formData.append('nome', data.nome);
+        formData.append('classificacao', data.classificacao);
+        formData.append('data_inicio', data.data_inicio);
+    
+        // Se data.imagem for um File, adiciona diretamente
+        // Se for uma string (URL existente), adiciona como string
+        if (data.imagem instanceof File) {
+            formData.append('imagem', data.imagem);
+        } else if (data.imagem) {
+            formData.append('imagem', data.imagem);
+        }
+    
+        // Para debug - mostra todos os valores do FormData
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+        }
+    
         const config = {
             headers: {
-                'Content-Type': 'application/json'
+                'authorization': `Bearer ${token.access_token}`,
+                // Não definimos Content-Type aqui pois o axios vai configurar 
+                // automaticamente com o boundary correto para multipart/form-data
             }
         };
-
+    
+        const url = isEdit
+            ? `${import.meta.env.VITE_URL}/parceiros/${id}`
+            : `${import.meta.env.VITE_URL}/parceiros/`;
+    
         const request = isEdit
-            ? axios.put(`${import.meta.env.VITE_URL}/parceiros/${id}`, payload, config)
-            : axios.post(`${import.meta.env.VITE_URL}/parceiros/`, payload, config);
-
+            ? axios.put(url, formData, config)
+            : axios.post(url, formData, config);
+    
         request
             .then((response) => {
                 console.log('Resposta da API:', response);
@@ -177,7 +198,7 @@ export default function GerenciarParceiros() {
                 setLoading(false);
                 handleShowSnackbar(errorMessage, 'error');
             });
-    }, [isEdit, id, navigate]);
+    }, [isEdit, id, navigate, token]);
 
 
     return (

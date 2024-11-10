@@ -30,6 +30,7 @@ interface IUsers {
     nome: string
     email: string
     perfil: string
+    senha: string
 }
 
 export default function Usuarios() {

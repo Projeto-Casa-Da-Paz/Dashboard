@@ -45,7 +45,7 @@ const FormTextField = styled(TextField)({
 });
 
 
-export default function GerenciarParceiros() {
+export default function GerenciarColaboradores() {
     const {
         control,
         handleSubmit,

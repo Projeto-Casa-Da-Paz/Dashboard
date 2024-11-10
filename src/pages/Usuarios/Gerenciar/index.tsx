@@ -29,7 +29,7 @@ interface IForm {
     nome: string;
     email: string;
     perfil: string;
-    password: string;
+    senha: string;
 }
 
 // Componentes estilizados
@@ -59,7 +59,7 @@ export default function GerenciarUsuarios() {
             nome: '',
             email: '',
             perfil: '',
-            password: ''
+            senha: ''
         }
     });
 
@@ -207,7 +207,7 @@ export default function GerenciarUsuarios() {
                             />
 
                             <Controller
-                                name="password"
+                                name="senha"
                                 control={control}
                                 rules={{
                                     required: 'Senha é obrigatória!',
@@ -222,8 +222,8 @@ export default function GerenciarUsuarios() {
                                         fullWidth
                                         label="Senha"
                                         type="password"
-                                        error={!!errors.password}
-                                        helperText={errors.password?.message}
+                                        error={!!errors.senha}
+                                        helperText={errors.senha?.message}
                                     />
                                 )}
                             />

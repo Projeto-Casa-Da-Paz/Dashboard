@@ -24,9 +24,9 @@ import {
   Logout as LogoutIcon,
   CorporateFare as InstitutionIcon,
   Timeline as TimelineIcon,
-  PeopleAlt,
-} from '@mui/icons-material';
+  PeopleAlt} from '@mui/icons-material';
 import { IToken } from '../../interfaces/token';
+import GroupsIcon from '@mui/icons-material/Groups';
 import CollectionsIcon from '@mui/icons-material/Collections';
 
 interface IProps {
@@ -50,6 +50,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
     { text: 'Instituição', path: '/instituicao', icon: <InstitutionIcon /> },
     { text: 'História', path: '/historia/1', icon: <TimelineIcon /> },
     { text: 'Parceiros', path: '/parceiros', icon: <PeopleAlt /> },
+    { text: 'Colaboradores', path: '/colaboradores', icon: <GroupsIcon /> },
     { text: 'Galerias', path: '/galerias', icon: <CollectionsIcon /> },
   ];
 
@@ -59,7 +60,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
 
   const drawer = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', zIndex: 0 }}>
-      <List sx={{ flexGrow: 1,  }}>
+      <List sx={{ flexGrow: 1, }}>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
@@ -108,8 +109,8 @@ export const LayoutDashboard = ({ children }: IProps) => {
       <Box sx={{ display: 'flex', flexGrow: 1, zIndex: 0 }}>
         <Box
           component="nav"
-          sx={{ 
-            width: { md: drawerWidth }, 
+          sx={{
+            width: { md: drawerWidth },
             flexShrink: { md: 0 },
           }}
         >
@@ -124,8 +125,8 @@ export const LayoutDashboard = ({ children }: IProps) => {
             }}
             sx={{
               display: { xs: 'block', md: 'none' },
-              '& .MuiDrawer-paper': { 
-                boxSizing: 'border-box', 
+              '& .MuiDrawer-paper': {
+                boxSizing: 'border-box',
                 width: drawerWidth,
                 height: '100%',
               },
@@ -138,8 +139,8 @@ export const LayoutDashboard = ({ children }: IProps) => {
             variant="permanent"
             sx={{
               display: { xs: 'none', md: 'block' },
-              '& .MuiDrawer-paper': { 
-                boxSizing: 'border-box', 
+              '& .MuiDrawer-paper': {
+                boxSizing: 'border-box',
                 width: drawerWidth,
                 position: 'relative',
                 height: '100%',

@@ -17,6 +17,8 @@ import GerenciarParceiros from "./pages/Parceiros/Gerenciar"
 import Galerias from "./pages/Galeria"
 import GerenciarGalerias from "./pages/Galeria/Gerenciar"
 import Fotos from "./pages/Fotos"
+import Colaboradores from "./pages/Colaboradores"
+import GerenciarColaboradores from "./pages/Colaboradores/Gerenciar"
 
 export const Rotas = () => {
 
@@ -68,6 +70,14 @@ export const Rotas = () => {
                 <Route
                     path="/parceiros/:id"
                     element={<GerenciarParceiros />}
+                />
+                <Route
+                    path="/colaboradores"
+                    element={<Colaboradores />}
+                />
+                <Route
+                    path="/colaboradores/:id"
+                    element={<GerenciarColaboradores />}
                 />
                 <Route
                     path="/galerias/"

@@ -23,11 +23,12 @@ import { LayoutDashboard } from "../../../components/LayoutDashboard";
 import { SnackbarMui } from "../../../components/Snackbar";
 import { Loading } from "../../../components/Loading";
 import { CustomTextarea } from "../../../components/CustomTextArea";
+import { IToken } from "../../../interfaces/token";
 
 interface IGalerias {
     id: number
     nome: string
-    descricao: string
+    local: string
     data: string
 }
 
@@ -53,6 +54,7 @@ export default function GerenciarGalerias() {
         defaultValues: {
             id: 0,
             nome: "",
+            local: "",
             data: ""
         }
     });
@@ -73,6 +75,8 @@ export default function GerenciarGalerias() {
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
@@ -82,17 +86,20 @@ export default function GerenciarGalerias() {
         const galeriaId = Number(id);
         if (!isNaN(galeriaId)) {
             setLoading(true);
-            axios.get(`http://localhost:3001/galerias?id=${galeriaId}`)
+            axios.get(import.meta.env.VITE_URL + `/galerias/${galeriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
-                    const galeriaData = res.data[0];
+                    const galeriaData = res.data;
                     setIsEdit(true);
                     setValue("id", galeriaData.id || 0);
                     setValue("nome", galeriaData.nome || '');
-                    setValue("descricao", galeriaData.categoria || '');
-                    setValue("data", galeriaData.data_recebimento || '');
+                    setValue("local", galeriaData.local || '');
+                    setValue("data", galeriaData.data || '');
                     setLoading(false)
                 })
-                .catch(console.error)
+                .catch((error) => {
+                    console.error('Erro ao buscar galeria:', error);
+                    setLoading(false);
+                })
         }
 
 
@@ -109,13 +116,14 @@ export default function GerenciarGalerias() {
         const payload = {
             id: data.id,
             nome: data.nome,
-            descricao: data.descricao,
+            local: data.local,
             data: data.data
         };
 
         const config = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${token.access_token}`
             }
         };
 
@@ -193,7 +201,7 @@ export default function GerenciarGalerias() {
                             />
 
                             <Controller
-                                name="descricao"
+                                name="local"
                                 control={control}
                                 rules={{
                                     required: 'Descrição é obrigatória!'
@@ -205,8 +213,8 @@ export default function GerenciarGalerias() {
                                         placeholder={"Exemplo:\nFotos tiradas na missão da Casa da Paz."}
                                         aria-label="Descrição"
                                         label="Descrição"
-                                        error={!!errors.descricao}
-                                        helperText={errors.descricao?.message}
+                                        error={!!errors.local}
+                                        helperText={errors.local?.message}
                                     />
                                 )}
                             />

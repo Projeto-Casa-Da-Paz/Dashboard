@@ -25,6 +25,7 @@ import { LayoutDashboard } from "../../components/LayoutDashboard"
 import { ConfirmationDialog } from "../../components/Dialog"
 import { set } from "react-hook-form"
 import { SnackbarMui } from "../../components/Snackbar"
+import { IToken } from "../../interfaces/token"
 
 interface IPremios {
     id: number
@@ -49,6 +50,8 @@ export default function Premios() {
         open: false,
         id: null as number | null
     })
+    
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
     useEffect(() => {
         if (localStorage.length == 0 || verificaTokenExpirado()) {
@@ -57,7 +60,7 @@ export default function Premios() {
 
         setLoading(true)
 
-        axios.get(import.meta.env.VITE_URL + '/premios')
+        axios.get(import.meta.env.VITE_URL + '/premios', { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 setdadosPremios(res.data)
                 setLoading(false)
@@ -98,7 +101,7 @@ export default function Premios() {
             headerAlign: 'center',
             renderCell: (params: GridRenderCellParams) => (
                 <Avatar
-                    src={`public/${params.value}`}
+                    src={import.meta.env.VITE_URL + `imagem/${params.value}`}
                     alt="Imagem do prêmio"
                     sx={{ width: 75, height: 75 }}
                 />

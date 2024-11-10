@@ -14,8 +14,8 @@ import { IToken } from "../../interfaces/token";
 interface IHistoria {
     id: number
     ano_fundacao: string
-    mvv: string
-    pmh: string
+    MVV: string
+    PMH: string
     texto_institucional: string
     foto_capa: File | null
 }
@@ -52,8 +52,8 @@ export default function Historia() {
         defaultValues: {
             id: 0,
             ano_fundacao: '',
-            mvv: '',
-            pmh: '',
+            MVV: '',
+            PMH: '',
             texto_institucional: '',
             foto_capa: null
         }
@@ -70,13 +70,14 @@ export default function Historia() {
 
         const HistoriaId = Number(id);
         setLoading(true);
-        axios.get(`http://localhost:3001/historias?id=${HistoriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+        axios.get(import.meta.env.VITE_URL + `/historias/${HistoriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
-                const historiaData = res.data[0];
+                const historiaData = res.data;
+                console.log(historiaData);
                 setValue("id", historiaData.id || 0);
                 setValue("ano_fundacao", historiaData.ano_fundacao || '');
-                setValue("mvv", historiaData.mvv || '');
-                setValue("pmh", historiaData.pmh || '');
+                setValue("MVV", historiaData.MVV || '');
+                setValue("PMH", historiaData.PMH || '');
                 setValue("texto_institucional", historiaData.texto_institucional || '');
                 setLoading(false)
             })
@@ -117,11 +118,11 @@ export default function Historia() {
         setLoading(true);
         const formData = new FormData();
         formData.append('ano_fundacao', data.ano_fundacao);
-        formData.append('mvv', data.mvv);
-        formData.append('pmh', data.pmh);
+        formData.append('MVV', data.MVV);
+        formData.append('PMH', data.PMH);
         formData.append('texto_institucional', data.texto_institucional);
         formData.append('foto_capa', data.foto_capa || '');
-        axios.put(`http://localhost:3001/historias?id=${id}`, formData, {
+        axios.put(import.meta.env.VITE_URL + `/historias/${id}`, formData, {
             headers: {
                 "Authorization": 'Bearer' + token?.access_token
             }
@@ -177,7 +178,7 @@ export default function Historia() {
                             />
 
                             <Controller
-                                name="mvv"
+                                name="MVV"
                                 control={control}
                                 rules={{
                                     required: 'Missão, Visão e Valores são obrigatórios'
@@ -189,14 +190,14 @@ export default function Historia() {
                                         placeholder={"Exemplo:\nNosso valores são . . .\nNossa missão é . . .\nTemos . . . valores"}
                                         aria-label="Missão, Visão e Valores"
                                         label="Missão, Visão e Valores"
-                                        error={!!errors.mvv}
-                                        helperText={errors.mvv?.message}
+                                        error={!!errors.MVV}
+                                        helperText={errors.MVV?.message}
                                     />
                                 )}
                             />
 
                             <Controller
-                                name="pmh"
+                                name="PMH"
                                 control={control}
                                 rules={{
                                     required: 'Principais Marcos Históricos são obrigatórios'
@@ -208,8 +209,8 @@ export default function Historia() {
                                         placeholder={"Exemplo:\nem 2020: fizemos . . .\nem 2021: tivemos X conquistas . . .\nem 2024: temos uma melhora na qualidade. . ."}
                                         aria-label="Principais Marcos Históricos"
                                         label="Principais Marcos Históricos"
-                                        error={!!errors.pmh}
-                                        helperText={errors.pmh?.message}
+                                        error={!!errors.PMH}
+                                        helperText={errors.PMH?.message}
                                     />
                                 )}
                             />

@@ -23,6 +23,7 @@ import { LayoutDashboard } from "../../../components/LayoutDashboard";
 import { SnackbarMui } from "../../../components/Snackbar";
 import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
+import { IToken } from "../../../interfaces/token";
 
 // Define a interface do formulário
 interface IPremios {
@@ -79,6 +80,9 @@ export default function GerenciarPremios() {
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const imagemField = watch("imagem");
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
+
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
@@ -88,7 +92,7 @@ export default function GerenciarPremios() {
         const premioId = Number(id);
         if (!isNaN(premioId)) {
             setLoading(true);
-            axios.get(`http://localhost:3001/premios?id=${premioId}`)
+            axios.get(import.meta.env.VITE_API_URL + `/premios/${premioId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
                     const premioData = res.data[0];
                     setIsEdit(true);
@@ -131,30 +135,44 @@ export default function GerenciarPremios() {
 
     const submitForm: SubmitHandler<IPremios> = useCallback((data) => {
         setLoading(true);
-
+    
         console.log('Dados enviados:', data);
         console.log('URL:', import.meta.env.VITE_URL);
         console.log('isEdit:', isEdit, 'id:', id);
-
-        // Cria um objeto simples com os dados
-        const payload = {
-            id: data.id,
-            nome: data.nome,
-            categoria: data.categoria,
-            data_recebimento: data.data_recebimento,
-            imagem: data.imagem || '',
-        };
-
+    
+        // Cria um FormData e adiciona os campos
+        const formData = new FormData();
+        formData.append('id', data.id?.toString() || '');
+        formData.append('nome', data.nome);
+        formData.append('categoria', data.categoria);
+        formData.append('data_recebimento', data.data_recebimento);
+    
+        // Tratamento específico para o campo imagem
+        if (data.imagem instanceof File) {
+            formData.append('imagem', data.imagem);
+        } else if (data.imagem) {
+            formData.append('imagem', data.imagem);
+        }
+    
+        // Debug - mostra os valores do FormData no console
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+        }
+    
         const config = {
             headers: {
-                'Content-Type': 'application/json'
+                authorization: `Bearer ${token.access_token}`,
             }
         };
-
+    
+        const url = isEdit
+            ? `${import.meta.env.VITE_URL}/premios/${id}`
+            : `${import.meta.env.VITE_URL}/premios/`;
+    
         const request = isEdit
-            ? axios.put(`${import.meta.env.VITE_URL}/premios/${id}`, payload, config)
-            : axios.post(`${import.meta.env.VITE_URL}/premios/`, payload, config);
-
+            ? axios.put(url, formData, config)
+            : axios.post(url, formData, config);
+    
         request
             .then((response) => {
                 console.log('Resposta da API:', response);

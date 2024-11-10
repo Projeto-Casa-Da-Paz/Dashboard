@@ -24,6 +24,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { LayoutDashboard } from "../../components/LayoutDashboard"
 import { SnackbarMui } from "../../components/Snackbar"
 import { ConfirmationDialog } from "../../components/Dialog"
+import { IToken } from "../../interfaces/token"
 
 interface IParceiros {
     id: number
@@ -50,6 +51,9 @@ export default function Parceiros() {
         id: null as number | null
     })
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
+
     useEffect(() => {
         if (localStorage.length == 0 || verificaTokenExpirado()) {
             navigate("/")
@@ -57,7 +61,7 @@ export default function Parceiros() {
 
         setLoading(true)
 
-        axios.get(import.meta.env.VITE_URL + '/parceiros')
+        axios.get(import.meta.env.VITE_URL + '/parceiros', { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 setdadosParceiros(res.data)
                 setLoading(false)
@@ -106,7 +110,7 @@ export default function Parceiros() {
             headerAlign: 'center',
             renderCell: (params: GridRenderCellParams) => (
                 <Avatar
-                    src={`public/${params.value}`}
+                    src={import.meta.env.VITE_URL + `/imagem/${params.value}`}
                     alt="Imagem do Parceiro"
                     sx={{ width: 75, height: 75 }}
                 />
