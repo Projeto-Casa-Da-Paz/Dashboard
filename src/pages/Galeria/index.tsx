@@ -21,6 +21,7 @@ import {
     CardContent,
     Chip,
     CardActions,
+    Badge,
 } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Grid from "@mui/material/Grid2"; // Grid v2
@@ -40,7 +41,9 @@ import { IToken } from "../../interfaces/token";
 interface IGalerias {
     id: number
     nome: string
+    local: string
     data: string
+    qtd_fotos: number
 }
 
 export default function Galerias() {
@@ -175,11 +178,13 @@ export default function Galerias() {
 
                                     <CardContent sx={{ p: '1rem !important' }}>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <CropOriginalIcon
-                                                sx={{
-                                                    fontSize: { xs: '1.25rem', sm: '1.75rem', md: '3rem' } // Tamanho adaptativo do ícone
-                                                }}
-                                            />
+                                            <Badge badgeContent={String(galeria.qtd_fotos)} color="primary">
+                                                <CropOriginalIcon
+                                                    sx={{
+                                                        fontSize: { xs: '1.25rem', sm: '1.75rem', md: '3rem' } // Tamanho adaptativo do ícone
+                                                    }}
+                                                />
+                                            </Badge>
 
                                             <Typography variant="h6" component="h2"
                                                 sx={{
