@@ -94,18 +94,21 @@ export default function GerenciarPremios() {
             setLoading(true);
             axios.get(import.meta.env.VITE_API_URL + `/premios/${premioId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
-                    const premioData = res.data[0];
+                    const premioData = res.data;
                     setIsEdit(true);
                     setValue("id", premioData.id || 0);
                     setValue("nome", premioData.nome || '');
                     setValue("categoria", premioData.categoria || '');
                     setValue("data_recebimento", premioData.data_recebimento || '');
                     if (premioData.imagem) {
-                        setPreviewUrl(`http://localhost:3001/uploads/${premioData.imagem}`);
+                        setPreviewUrl(import.meta.env.VITE_API_URL + `/imagmem/${premioData.imagem}`);
                     }
                     setLoading(false)
                 })
-                .catch(console.error)
+                .catch((err) => {
+                    console.error(err)
+                    setLoading(false)
+                })
         }
 
         if (imagemField && imagemField instanceof File) {

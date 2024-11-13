@@ -101,7 +101,7 @@ export default function Premios() {
             headerAlign: 'center',
             renderCell: (params: GridRenderCellParams) => (
                 <Avatar
-                    src={import.meta.env.VITE_URL + `imagem/${params.value}`}
+                    src={import.meta.env.VITE_URL + `/imagem/${params.value}`}
                     alt="Imagem do prêmio"
                     sx={{ width: 75, height: 75 }}
                 />
@@ -173,14 +173,14 @@ export default function Premios() {
     const handleConfirmedDelete = useCallback(() => {
         const id = dialogState.id;
 
-        axios.delete(import.meta.env.VITE_URL + `/premios/${id}`)
+        axios.delete(import.meta.env.VITE_URL + `/premios/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then(() => {
-                handleShowSnackbar("Usuário removido com sucesso", "success");
+                handleShowSnackbar("Prêmio removido com sucesso", "success");
                 setdadosPremios((prevRows) => prevRows.filter((row) => row.id !== id));
                 setLoading(false)
             })
             .catch((error) => {
-                const errorMessage = error.response?.data || "Erro ao remover usuário";
+                const errorMessage = error.response?.data || "Erro ao remover Prêmio";
                 setLoading(false)
                 handleShowSnackbar(errorMessage, "error");
             })
