@@ -9,6 +9,8 @@ import {
     Card,
     CardMedia,
     Button,
+    CardActions,
+    IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid2"; // Grid v2
@@ -85,6 +87,7 @@ export default function Fotos() {
     const [dadosGaleria, setDadosGaleria] = useState<IGalerias>();
     const [dadosFotos, setDadosFotos] = useState<Array<IFotos>>([]);
     const [isUploading, setIsUploading] = useState(false);
+    const [limparFotos, setLimparFotos] = useState(false);
     const [files, setFiles] = useState<File[]>([]); // Estado para armazenar os arquivos selecionados
     const [dialogState, setDialogState] = useState({
         open: false,
@@ -113,14 +116,14 @@ export default function Fotos() {
             .then((res) => {
                 setDadosGaleria(res.data);
                 axios.get(import.meta.env.VITE_URL + `/galerias/${id}/fotos`, { headers: { Authorization: `Bearer ${token.access_token}` } })
-                .then((res) => {
-                    setDadosFotos(res.data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    handleShowSnackbar("Erro ao carregar fotos", "error");
-                    setLoading(false);
-                });
+                    .then((res) => {
+                        setDadosFotos(res.data);
+                        setLoading(false);
+                    })
+                    .catch((err) => {
+                        handleShowSnackbar("Erro ao carregar fotos", "error");
+                        setLoading(false);
+                    });
             })
             .catch((err) => {
                 handleShowSnackbar("Galeria não encontrada", "error");
@@ -130,6 +133,24 @@ export default function Fotos() {
                 }, 1500);
             });
     }, [id, navigate]);
+
+    const updateGalleryCoverCount = useCallback(async (dadosGaleria: any) => {
+        try {
+            await axios.put(
+                `${import.meta.env.VITE_URL}/galerias/${id}`,
+                dadosGaleria,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token.access_token}`
+                    }
+                }
+            );
+            handleShowSnackbar("Quantidade de fotos atualizada com sucesso", "success");
+        } catch (error) {
+            handleShowSnackbar("Erro ao atualizar a quantidade de fotos da galeria", "error");
+        }
+    }, [id, token, dadosGaleria, handleShowSnackbar]);
 
     const submitForm: SubmitHandler<IFotos> = useCallback(() => {
         setIsUploading(true);
@@ -164,32 +185,16 @@ export default function Fotos() {
             return promise.then(() => uploadPhoto(file, index));
         }, Promise.resolve());
 
-        console.log(uploadedPhotos)
-
         // Após o upload de todas as fotos, atualizar o estado e a galeria
         uploadAllPhotos
             .then(() => {
                 setDadosFotos((prevRows) => [...prevRows, ...uploadedPhotos]);
-
                 // Atualizar dados da galeria
                 setDadosGaleria({
                     ...dadosGaleria!,
                     qtd_fotos: dadosGaleria?.qtd_fotos! + uploadedPhotos.length,
                 });
-
-                return axios.put(
-                    `${import.meta.env.VITE_URL}/galerias/${id}`,
-                    dadosGaleria,
-                    {
-                        headers: {
-                            'Content-Type': 'aplication/json',
-                            'Authorization': `Bearer ${token.access_token}`
-                        }
-                    }
-                );
-            })
-            .then(() => {
-                handleShowSnackbar("Quantidade de fotos atualizada com sucesso", "success");
+                updateGalleryCoverCount(dadosGaleria);
             })
             .catch(() => {
                 handleShowSnackbar("Erro ao atualizar dados da galeria", "error");
@@ -197,30 +202,18 @@ export default function Fotos() {
             .finally(() => {
                 setIsUploading(false);
             });
-    }, [id, token, files, handleShowSnackbar, navigate, setDadosFotos, dadosGaleria]);
+
+        setLimparFotos(true);
+    }, [id, token, files, handleShowSnackbar, navigate, setDadosFotos, dadosGaleria, setFiles, setValue, setLimparFotos, updateGalleryCoverCount]);
 
     const handleFilesChange = useCallback((newFiles: File[]) => {
         setFiles(newFiles);
-    }, []);
+    }, [setFiles]);
 
-    const handleDeleteAllPhotos = useCallback(() => {
+    const handleDeletePhoto = useCallback((id: number) => {
         if (dadosFotos.length === 0) return;
-        setDialogState({ open: true, id: null });
+        setDialogState({ open: true, id: id });
     }, [dadosFotos]);
-
-    const confirmDeleteAllPhotos = useCallback(async () => {
-        setLoading(true);
-        try {
-            await axios.delete(import.meta.env.VITE_URL + `/galerias/${id}/fotos/deleteAll`, { headers: { Authorization: `Bearer ${token.access_token}` } });
-            setDadosFotos([]);
-            handleShowSnackbar("Todas as fotos foram excluídas com sucesso", "success");
-        } catch (error) {
-            handleShowSnackbar("Erro ao excluir todas as fotos", "error");
-        } finally {
-            setLoading(false);
-            setDialogState({ open: false, id: null });
-        }
-    }, [id, token, handleShowSnackbar, setDialogState, setLoading, setDadosFotos]);
 
     const handleConfirmedDelete = useCallback(async (fotoId: number) => {
         setLoading(true);
@@ -234,7 +227,8 @@ export default function Fotos() {
 
             // Atualiza o estado `dadosFotos` removendo a foto excluída
             setDadosFotos((prevFotos) => prevFotos.filter((foto) => foto.id !== fotoId));
-
+            setDadosGaleria(dadosGaleria ? { ...dadosGaleria, qtd_fotos: dadosGaleria.qtd_fotos - 1 } : undefined);
+            updateGalleryCoverCount({ ...dadosGaleria, qtd_fotos: dadosGaleria?.qtd_fotos! - 1 });
             handleShowSnackbar("Foto excluída com sucesso", "success");
         } catch (error) {
             handleShowSnackbar("Erro ao excluir a foto", "error");
@@ -242,7 +236,7 @@ export default function Fotos() {
             setLoading(false);
             setDialogState({ open: false, id: null });
         }
-    }, [token, handleShowSnackbar, setDialogState, setLoading, setDadosFotos]);
+    }, [token, handleShowSnackbar, setDialogState, setLoading, setDadosFotos, dadosGaleria, setDadosGaleria]);
     return (
         <>
             <Loading visible={loading || isUploading} />
@@ -262,7 +256,7 @@ export default function Fotos() {
                         open={dialogState.open}
                         title="Confirmar exclusão"
                         message={dialogState.id === null ? "Tem certeza que deseja excluir todas as fotos?" : "Tem certeza que deseja excluir esta Foto?"}
-                        onConfirm={dialogState.id === null ? confirmDeleteAllPhotos : () => dialogState.id && handleConfirmedDelete(dialogState.id)}
+                        onConfirm={() => dialogState.id && handleConfirmedDelete(dialogState.id)}
                         onClose={() => setDialogState({ open: false, id: null })}
                     />
 
@@ -278,8 +272,10 @@ export default function Fotos() {
                                 Adicionar novas fotos
                             </Typography>
                             <MultiFileDropZone
+                                files={files}
                                 onChange={handleFilesChange} // Atualiza os arquivos selecionados
                                 maxFiles={15}
+                                clearFilesTrigger={limparFotos}
                             />
                             <Button
                                 type="submit"
@@ -296,14 +292,6 @@ export default function Fotos() {
                     <StyledPaper>
                         <Box mb={4} display="flex" justifyContent="space-between" alignItems="center">
                             <Typography variant="h6">Quantidade de Fotos: {dadosGaleria?.qtd_fotos}</Typography>
-                            <Button
-                                variant="contained"
-                                color="error"
-                                startIcon={<DeleteIcon />}
-                                onClick={handleDeleteAllPhotos}
-                            >
-                                Excluir todas
-                            </Button>
                         </Box>
                         {dadosFotos.length > 0 ? (
                             <Grid container spacing={3}>
@@ -316,6 +304,22 @@ export default function Fotos() {
                                                 image={`${import.meta.env.VITE_URL}/imagem/${foto.nome}`}
                                                 alt="Imagem da galeria"
                                             />
+                                            <CardActions
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center'
+                                                }}
+                                            >
+                                                <IconButton
+                                                    color="error"
+                                                    size="small"
+                                                    onClick={() => handleDeletePhoto(foto.id)}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </CardActions>
+
                                         </Card>
                                     </Grid>
                                 )))}

@@ -89,13 +89,16 @@ interface FileData {
 
 // Component Props Interface
 interface MultiFileDropZoneProps {
+  files?: File[];
   onChange?: (files: File[]) => void;
   maxFiles?: number;
+  clearFilesTrigger?: boolean; // New prop for clearing files
 }
 
-export const MultiFileDropZone = ({ 
+export const MultiFileDropZone = ({
   onChange,
-  maxFiles = 15 
+  maxFiles = 15,
+  clearFilesTrigger = false // Default to false
 }: MultiFileDropZoneProps) => {
   const [files, setFiles] = useState<FileData[]>([]);
   const [isDragActive, setIsDragActive] = useState(false);
@@ -124,7 +127,6 @@ export const MultiFileDropZone = ({
         }
       });
       
-      // Notify parent component if onChange prop exists
       if (onChange) {
         onChange(updatedFiles.map(fileData => fileData.file));
       }
@@ -136,13 +138,11 @@ export const MultiFileDropZone = ({
   const handleDelete = (id: string) => {
     setFiles(prevFiles => {
       const updatedFiles = prevFiles.filter(file => file.id !== id);
-      // Revoke the URL to avoid memory leaks
       const fileToDelete = prevFiles.find(file => file.id === id);
       if (fileToDelete) {
         URL.revokeObjectURL(fileToDelete.preview);
       }
       
-      // Notify parent component if onChange prop exists
       if (onChange) {
         onChange(updatedFiles.map(fileData => fileData.file));
       }
@@ -178,6 +178,16 @@ export const MultiFileDropZone = ({
       });
     };
   }, []);
+
+  // Effect to clear files when `clearFilesTrigger` changes
+  useEffect(() => {
+    if (clearFilesTrigger) {
+      setFiles([]);
+      if (onChange) {
+        onChange([]);
+      }
+    }
+  }, [clearFilesTrigger, onChange]);
 
   return (
     <Box sx={{ width: '100%' }}>
