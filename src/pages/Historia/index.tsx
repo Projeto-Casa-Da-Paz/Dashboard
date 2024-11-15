@@ -122,8 +122,14 @@ export default function Historia() {
         formData.append('PMH', data.PMH);
         formData.append('texto_institucional', data.texto_institucional);
         formData.append('foto_capa', data.foto_capa || '');
+
+        console.log(data);
+        console.log(formData);
+
+
         axios.put(import.meta.env.VITE_URL + `/historias/${id}`, formData, {
             headers: {
+                "Content-Type": "multipart/form-data",
                 "Authorization": 'Bearer' + token?.access_token
             }
         })
@@ -134,8 +140,9 @@ export default function Historia() {
             .catch((err) => {
                 setLoading(false);
                 handleShowSnackbar('Erro ao atualizar historia', 'error');
+                console.error(err);
             })
-        }, [id, handleShowSnackbar, setValue])
+    }, [id, handleShowSnackbar, setValue])
 
     return (
         <>

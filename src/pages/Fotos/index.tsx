@@ -194,7 +194,7 @@ export default function Fotos() {
                     ...dadosGaleria!,
                     qtd_fotos: dadosGaleria?.qtd_fotos! + uploadedPhotos.length,
                 });
-                updateGalleryCoverCount(dadosGaleria);
+                updateGalleryCoverCount({ ...dadosGaleria, qtd_fotos: dadosGaleria?.qtd_fotos! + uploadedPhotos.length });
             })
             .catch(() => {
                 handleShowSnackbar("Erro ao atualizar dados da galeria", "error");

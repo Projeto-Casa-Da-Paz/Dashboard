@@ -45,7 +45,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
   const location = useLocation();
 
   const menuItems = [
-    { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
+    { text: 'Voluntários', path: '/dashboard', icon: <DashboardIcon /> },
     { text: 'Usuários', path: '/usuarios', icon: <PersonIcon /> },
     { text: 'Prêmios', path: '/premios', icon: <PrizeIcon /> },
     { text: 'Instituição', path: '/instituicao/1', icon: <InstitutionIcon /> },

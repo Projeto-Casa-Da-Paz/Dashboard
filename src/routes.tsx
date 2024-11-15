@@ -5,7 +5,7 @@ import {
 
 } from "react-router-dom"
 import Login from "./pages/Login"
-import Dashboard from "./pages/Dashboard"
+import Dashboard from "./pages/Voluntarios"
 import Usuarios from "./pages/Usuarios"
 import GerenciarUsuarios from "./pages/Usuarios/Gerenciar"
 import Premios from "./pages/Premios"
@@ -20,6 +20,7 @@ import Fotos from "./pages/Fotos"
 import Colaboradores from "./pages/Colaboradores"
 import GerenciarColaboradores from "./pages/Colaboradores/Gerenciar"
 import Doacao from "./pages/Doacao"
+import Voluntarios from "./pages/Voluntarios"
 
 export const Rotas = () => {
 
@@ -37,7 +38,7 @@ export const Rotas = () => {
                 <Route
                     path="/dashboard"
                     element={
-                        <Dashboard />
+                        <Voluntarios />
                     }
                 />
                 <Route

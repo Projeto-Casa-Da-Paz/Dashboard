@@ -111,7 +111,7 @@ export default function Galerias() {
     const handleConfirmedDelete = useCallback(() => {
         const id = dialogState.id;
 
-        axios.delete(import.meta.env.VITE_URL + `/galerias/${id}`)
+        axios.delete(import.meta.env.VITE_URL + `/galerias/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then(() => {
                 handleShowSnackbar("Galeria removida com sucesso", "success");
                 setdadosGalerias((prevRows) => prevRows.filter((row) => row.id !== id));
