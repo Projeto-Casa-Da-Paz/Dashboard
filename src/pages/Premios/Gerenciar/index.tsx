@@ -25,7 +25,6 @@ import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
 
-// Define a interface do formulário
 interface IPremios {
     id: number;
     nome: string;
@@ -34,7 +33,6 @@ interface IPremios {
     imagem: File | null;
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -92,7 +90,7 @@ export default function GerenciarPremios() {
         const premioId = Number(id);
         if (!isNaN(premioId)) {
             setLoading(true);
-            axios.get(import.meta.env.VITE_API_URL + `/premios/${premioId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            axios.get(import.meta.env.VITE_URL + `/premios/${premioId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
                     const premioData = res.data;
                     setIsEdit(true);
@@ -101,7 +99,7 @@ export default function GerenciarPremios() {
                     setValue("categoria", premioData.categoria || '');
                     setValue("data_recebimento", premioData.data_recebimento || '');
                     if (premioData.imagem) {
-                        setPreviewUrl(import.meta.env.VITE_API_URL + `/imagmem/${premioData.imagem}`);
+                        setPreviewUrl(import.meta.env.VITE_URL + `/imagem/premios/${premioData.imagem}`);
                     }
                     setLoading(false)
                 })
@@ -282,7 +280,7 @@ export default function GerenciarPremios() {
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
                                             handleFileChange(file);
-                                            onChange(file); // Atualiza o valor no react-hook-form
+                                            onChange(file);
                                         }}
                                         onDeleteImage={handleDeleteImage}
                                         error={!!errors.imagem}
