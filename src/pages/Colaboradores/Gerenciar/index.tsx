@@ -23,14 +23,15 @@ import { LayoutDashboard } from "../../../components/LayoutDashboard";
 import { SnackbarMui } from "../../../components/Snackbar";
 import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
+import { IToken } from "../../../interfaces/token";
 
 // Define a interface do formulário
-interface IParceiros {
+interface IColaboradores {
     id: number
     nome: string
+    profissao: string
     classificacao: string
-    data_inicio: string
-    imagem: File | null
+    foto: File | null
 }
 
 // Componentes estilizados
@@ -52,13 +53,13 @@ export default function GerenciarColaboradores() {
         setValue,
         watch,
         formState: { errors },
-    } = useForm<IParceiros>({
+    } = useForm<IColaboradores>({
         defaultValues: {
             id: 0,
             nome: '',
+            profissao: '',
             classificacao: '',
-            data_inicio: '',
-            imagem: null
+            foto: null
         }
     });
 
@@ -77,7 +78,10 @@ export default function GerenciarColaboradores() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const imagemField = watch("imagem");
+    const imagemField = watch("foto");
+
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
 
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
@@ -88,16 +92,16 @@ export default function GerenciarColaboradores() {
         const parceiroId = Number(id);
         if (!isNaN(parceiroId)) {
             setLoading(true);
-            axios.get(`http://localhost:3001/premios?id=${parceiroId}`)
+            axios.get(import.meta.env.VITE_URL + `/colaboradores/${parceiroId}`, {headers: {"Authorization": 'Bearer' + token?.access_token}})
                 .then((res) => {
-                    const parceiroData = res.data[0];
+                    const colaboradorData = res.data;
                     setIsEdit(true);
-                    setValue("id", parceiroData.id || 0);
-                    setValue("nome", parceiroData.nome || '');
-                    setValue("classificacao", parceiroData.classificacao || '');
-                    setValue("data_inicio", parceiroData.data_inicio || '');
-                    if (parceiroData.imagem) {
-                        setPreviewUrl(`http://localhost:3001/uploads/${parceiroData.imagem}`);
+                    setValue("id", colaboradorData.id || 0);
+                    setValue("nome", colaboradorData.nome || '');
+                    setValue("profissao", colaboradorData.profissao || '');
+                    setValue("classificacao", colaboradorData.classificacao || '');
+                    if (colaboradorData.foto) {
+                        setPreviewUrl(import.meta.env.VITE_URL + `/imagem/${colaboradorData.foto}`);
                     }
                     setLoading(false)
                 })
@@ -121,18 +125,18 @@ export default function GerenciarColaboradores() {
 
     const handleFileChange = useCallback((file: File | null) => {
         if (file && file.type.startsWith('image/')) {
-            setValue("imagem", file);
+            setValue("foto", file);
         } else {
             handleShowSnackbar('Por favor, selecione um arquivo de imagem válido.', 'error');
         }
     }, [handleShowSnackbar, setValue]);
 
     const handleDeleteImage = useCallback(() => {
-        setValue("imagem", null);
+        setValue("foto", null);
         setPreviewUrl('');
     }, [setValue]);
 
-    const submitForm: SubmitHandler<IParceiros> = useCallback((data) => {
+    const submitForm: SubmitHandler<IColaboradores> = useCallback((data) => {
         setLoading(true);
 
         console.log('Dados enviados:', data);
@@ -143,32 +147,33 @@ export default function GerenciarColaboradores() {
         const payload = {
             id: data.id,
             nome: data.nome,
+            profissao: data.profissao,
             classificacao: data.classificacao,
-            data_recebimento: data.data_inicio,
-            imagem: data.imagem || '',
+            foto: data.foto || '',
         };
 
         const config = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token.access_token}`
             }
         };
 
         const request = isEdit
-            ? axios.put(`${import.meta.env.VITE_URL}/parceiros/${id}`, payload, config)
-            : axios.post(`${import.meta.env.VITE_URL}/parceiros/`, payload, config);
+            ? axios.put(`${import.meta.env.VITE_URL}/colaboradores/${id}`, payload, config)
+            : axios.post(`${import.meta.env.VITE_URL}/colaboradores/`, payload, config);
 
         request
             .then((response) => {
                 console.log('Resposta da API:', response);
                 handleShowSnackbar(
                     isEdit
-                        ? 'Parceiro editado com sucesso!'
-                        : 'Parceiro adicionado com sucesso!',
+                        ? 'Colaborador(a) editado com sucesso!'
+                        : 'Colaborador(a) adicionado com sucesso!',
                     'success'
                 );
                 setLoading(false);
-                setTimeout(() => { navigate('/parceiros'); }, 1500);
+                navigate('/colaboradores');
             })
             .catch((error) => {
                 console.error('Erro na requisição:', error.response);
@@ -196,7 +201,7 @@ export default function GerenciarColaboradores() {
                 <Container maxWidth="md">
                     <StyledPaper elevation={3}>
                         <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
-                            {isEdit ? "Editar Parceiro" : "Adicionar Parceiro"}
+                            {isEdit ? "Editar Colaborador" : "Adicionar Colaborador"}
                         </Typography>
 
                         <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate>
@@ -210,9 +215,24 @@ export default function GerenciarColaboradores() {
                                     <FormTextField
                                         {...field}
                                         fullWidth
-                                        label="Nome do Parceiro"
+                                        label="Nome do Colaborador"
                                         error={!!errors.nome}
                                         helperText={errors.nome?.message}
+                                    />
+                                )}
+                            />
+
+                            <Controller
+                                name="profissao"
+                                control={control}
+                                rules={{ required: 'Profissão é obrigatória!' }}
+                                render={({ field }) => (
+                                    <FormTextField
+                                        {...field}
+                                        fullWidth
+                                        label="Profissão do Colaborador"
+                                        error={!!errors.profissao}
+                                        helperText={errors.profissao?.message}
                                     />
                                 )}
                             />
@@ -240,27 +260,7 @@ export default function GerenciarColaboradores() {
                             />
 
                             <Controller
-                                name="data_inicio"
-                                control={control}
-                                rules={{ required: 'Data de Inicio de Atuação é obrigatória!' }}
-                                render={({ field }) => (
-                                    <FormTextField
-                                        {...field}
-                                        aria-label="Data de Inicio"
-                                        fullWidth
-                                        label="Data de Inicio"
-                                        type="date"
-                                        error={!!errors.data_inicio}
-                                        helperText={errors.data_inicio?.message}
-                                        InputLabelProps={{
-                                            shrink: true
-                                        }}
-                                    />
-                                )}
-                            />
-
-                            <Controller
-                                name="imagem"
+                                name="foto"
                                 control={control}
                                 rules={{ required: 'Imagem é obrigatória!' }}
                                 render={({ field: { value, onChange } }) => (
@@ -271,7 +271,7 @@ export default function GerenciarColaboradores() {
                                             onChange(file); // Atualiza o valor no react-hook-form
                                         }}
                                         onDeleteImage={handleDeleteImage}
-                                        error={!!errors.imagem}
+                                        error={!!errors.foto}
                                     />
                                 )}
                             />

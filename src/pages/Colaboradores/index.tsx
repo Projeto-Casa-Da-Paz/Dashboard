@@ -33,14 +33,16 @@ interface IParceiros {
     imagem: string
 }
 
-export default function Premios() {
+export default function Colaboradores() {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
-    const [dadosParceiros, setdadosParceiros] = useState<Array<IParceiros>>([])
+    const [dadosColaboradores, setDadosColaboradores] = useState<Array<IParceiros>>([])
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 10,
     })
+
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
     useEffect(() => {
         if (localStorage.length == 0 || verificaTokenExpirado()) {
@@ -49,18 +51,17 @@ export default function Premios() {
 
         setLoading(true)
 
-        const token = JSON.parse(localStorage.getItem('token') || '') as IToken
 
-            axios.get(import.meta.env.VITE_URL + '/parceiros',{
+            axios.get(import.meta.env.VITE_URL + '/colaboradores',{
                 headers: {
                 "Authorization": 'Bearer' + token?.access_token
             }})
             .then((res) => {
-                setdadosParceiros(res.data)
+                setDadosColaboradores(res.data)
                 setLoading(false)
             })
             .catch((err) => {
-                setdadosParceiros(err)
+                setDadosColaboradores(err)
                 setLoading(false)
             })
     }, [])
@@ -76,7 +77,7 @@ export default function Premios() {
             align: 'center'
         },
         {
-            field: 'imagem',
+            field: 'foto',
             headerName: 'Imagem',
             width: 150,
             filterable: false,
@@ -100,29 +101,19 @@ export default function Premios() {
         },
         {
             field: 'classificacao',
-            headerName: 'Classificacao',
-            width: 150,
+            headerName: 'Classificação',
+            width: 250,
             filterable: true,
             headerAlign: 'center',
             align: 'center',
         },
         {
-            field: 'descricao',
-            headerName: 'Descrição',
-            width: 150,
-            headerAlign: 'center',
-            align: 'center',
-        },
-        {
-            field: 'data_inicio',
-            headerName: 'Inicio de Atividade',
-            width: 150,
+            field: 'profissao',
+            headerName: 'Profissão',
+            width: 250,
             filterable: true,
             headerAlign: 'center',
             align: 'center',
-            valueGetter: (params: GridValueGetter) => {
-                return new Date(params + 'T00:00:00').toLocaleDateString("pt-BR")
-            },
         },
         {
             field: 'acoes',
@@ -137,7 +128,7 @@ export default function Premios() {
                 <Box >
                     <IconButton
                         color="primary"
-                        onClick={() => navigate(`/parceiros/${params.row.id}`)}
+                        onClick={() => navigate(`/colaboradores/${params.row.id}`)}
                         size="large"
                     >
                         <EditIcon />
@@ -160,13 +151,13 @@ export default function Premios() {
                 <Container maxWidth="xl" sx={{ mb: 4, mt: 3 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                         <Typography variant="h4" component="h1">
-                            Parceiros
+                            Colaboradores
                         </Typography>
                         <Button
                             variant="contained"
                             color="success"
                             startIcon={<AddIcon />}
-                            onClick={() => navigate('/parceiros/add')}
+                            onClick={() => navigate('/colaboradores/add')}
                         >
                             Adicionar
                         </Button>
@@ -174,7 +165,7 @@ export default function Premios() {
 
                     <Box sx={{ width: '100%' }}>
                         <DataGrid
-                            rows={dadosParceiros}
+                            rows={dadosColaboradores}
                             columns={columns}
                             rowHeight={90}
                             density="standard"

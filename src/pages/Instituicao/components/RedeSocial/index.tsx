@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Controller, set, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -21,6 +21,7 @@ import { styled } from "@mui/material/styles";
 import { verificaTokenExpirado } from "../../../../services/token";
 import { SnackbarMui } from "../../../../components/Snackbar";
 import { Loading } from "../../../../components/Loading";
+import { IToken } from "../../../../interfaces/token";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
@@ -55,6 +56,8 @@ export const RedeSocial = ({ setLoading }: IProps) => {
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate();
+    const { id } = useParams();
+
 
     const {
         control: redesControl,
@@ -73,6 +76,9 @@ export const RedeSocial = ({ setLoading }: IProps) => {
         }
     });
 
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
+
     const handleShowSnackbar = useCallback((
         message: string,
         severity: 'success' | 'error' | 'warning' | 'info'
@@ -89,7 +95,7 @@ export const RedeSocial = ({ setLoading }: IProps) => {
 
         setLoading(true);
 
-        axios.get(import.meta.env.VITE_URL + '/redes-sociais')
+        axios.get(import.meta.env.VITE_URL + '/instituicoes/1/redes-sociais', { headers: { Authorization: `Bearer ${token.access_token}` } })	
             .then((res) => {
                 setRedesValue("redes", res.data);
                 setLoading(false);
@@ -104,7 +110,7 @@ export const RedeSocial = ({ setLoading }: IProps) => {
         setLoading(true);
 
         const promises = data.redes.map(redeSocial =>
-            axios.put(`${import.meta.env.VITE_URL}/redes-sociais/${redeSocial.id}`, redeSocial)
+            axios.put(`${import.meta.env.VITE_URL}/instituicoes/1/redes-sociais/${redeSocial.id}`, redeSocial, { headers: { Authorization: `Bearer ${token.access_token}` } })
         );
 
         Promise.all(promises)

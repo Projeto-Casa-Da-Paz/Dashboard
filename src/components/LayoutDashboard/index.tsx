@@ -28,6 +28,7 @@ import {
 import { IToken } from '../../interfaces/token';
 import GroupsIcon from '@mui/icons-material/Groups';
 import CollectionsIcon from '@mui/icons-material/Collections';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 interface IProps {
   children: ReactNode;
@@ -47,8 +48,9 @@ export const LayoutDashboard = ({ children }: IProps) => {
     { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
     { text: 'Usuários', path: '/usuarios', icon: <PersonIcon /> },
     { text: 'Prêmios', path: '/premios', icon: <PrizeIcon /> },
-    { text: 'Instituição', path: '/instituicao', icon: <InstitutionIcon /> },
+    { text: 'Instituição', path: '/instituicao/1', icon: <InstitutionIcon /> },
     { text: 'História', path: '/historia/1', icon: <TimelineIcon /> },
+    { text: 'Dados Bancários', path: '/doacao/1', icon: <AccountBalanceWalletIcon /> },
     { text: 'Parceiros', path: '/parceiros', icon: <PeopleAlt /> },
     { text: 'Colaboradores', path: '/colaboradores', icon: <GroupsIcon /> },
     { text: 'Galerias', path: '/galerias', icon: <CollectionsIcon /> },

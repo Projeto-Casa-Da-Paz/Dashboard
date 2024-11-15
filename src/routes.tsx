@@ -19,6 +19,7 @@ import GerenciarGalerias from "./pages/Galeria/Gerenciar"
 import Fotos from "./pages/Fotos"
 import Colaboradores from "./pages/Colaboradores"
 import GerenciarColaboradores from "./pages/Colaboradores/Gerenciar"
+import Doacao from "./pages/Doacao"
 
 export const Rotas = () => {
 
@@ -56,7 +57,7 @@ export const Rotas = () => {
                     element={<GerenciarPremios />}
                 />
                 <Route
-                    path="/instituicao"
+                    path="/instituicao/:id"
                     element={<Instituicao />}
                 />
                 <Route
@@ -82,6 +83,10 @@ export const Rotas = () => {
                 <Route
                     path="/galerias/"
                     element={<Galerias />}
+                />
+                <Route
+                    path="/doacao/:id"
+                    element={<Doacao />}
                 />
                 <Route
                     path="/galerias/:id"

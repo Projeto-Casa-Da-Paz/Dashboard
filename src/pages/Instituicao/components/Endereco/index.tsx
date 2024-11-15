@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -21,6 +21,7 @@ import { styled } from "@mui/material/styles";
 import { verificaTokenExpirado } from "../../../../services/token";
 import { SnackbarMui } from "../../../../components/Snackbar";
 import { Loading } from "../../../../components/Loading";
+import { IToken } from "../../../../interfaces/token";
 
 interface IEndereco {
     id: number;
@@ -60,6 +61,8 @@ export const Endereco = ({ setLoading }: IProps) => {
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate();
+    const { id } = useParams();
+
 
     const {
         control: locaisControl,
@@ -99,22 +102,25 @@ export const Endereco = ({ setLoading }: IProps) => {
 
         setLoading(true);
 
-        axios.get(import.meta.env.VITE_URL + '/enderecos')
+        axios.get(import.meta.env.VITE_URL + `/instituicoes/1/enderecos/`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 setLocaisValue("locais", res.data);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((err) => {
                 handleShowSnackbar("Erro ao carregar endereços", "error");
+                console.log(err)
                 setLoading(false);
             });
     }, [navigate, setLocaisValue]);
+
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
     const submitLocais: SubmitHandler<{ locais: IEndereco[] }> = useCallback((data) => {
         setLoading(true);
 
         const promises = data.locais.map(endereco =>
-            axios.put(`${import.meta.env.VITE_URL}/enderecos/${endereco.id}`, endereco)
+            axios.put(`${import.meta.env.VITE_URL}/instituicoes/1/enderecos/${endereco.id}`, endereco, { headers: { Authorization: `Bearer ${token.access_token}` } })
         );
 
         Promise.all(promises)

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -25,6 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { verificaTokenExpirado } from "../../../../services/token";
 import { SnackbarMui } from "../../../../components/Snackbar";
 import { Loading } from "../../../../components/Loading";
+import { IToken } from "../../../../interfaces/token";
 
 
 interface IContato {
@@ -57,6 +58,7 @@ export const Contato = ({ setLoading }: IProps) => {
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const {
         control: contatoControl,
@@ -72,6 +74,8 @@ export const Contato = ({ setLoading }: IProps) => {
             telefone: "",
         }
     });
+
+    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
     const handleShowSnackbar = useCallback((
         message: string,
@@ -89,9 +93,9 @@ export const Contato = ({ setLoading }: IProps) => {
 
 
         setLoading(true);
-        axios.get(import.meta.env.VITE_URL + '/instituicoes')
+        axios.get(import.meta.env.VITE_URL +  `/instituicoes/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
-                const instituicaoData = res.data[0];
+                const instituicaoData = res.data;
                 setContatoValue("id", instituicaoData.id || 0);
                 setContatoValue("nome", instituicaoData.nome || '');
                 setContatoValue("cnpj", instituicaoData.cnpj || '');
@@ -99,8 +103,9 @@ export const Contato = ({ setLoading }: IProps) => {
                 setContatoValue("telefone", instituicaoData.telefone || '');
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((err) => {
                 handleShowSnackbar("Erro ao carregar dados da instituição", "error");
+                console.error(err);
                 setLoading(false);
             });
 
@@ -109,7 +114,7 @@ export const Contato = ({ setLoading }: IProps) => {
 
     const submitContato: SubmitHandler<IContato> = useCallback((data) => {
         setLoading(true);
-        axios.put(import.meta.env.VITE_URL + `/instituicoes` + `/${data.id}`, data)
+        axios.put(import.meta.env.VITE_URL + `/instituicoes` + `/${data.id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then(() => {
                 handleShowSnackbar("Informações da instituição editadas com sucesso", "success");
                 setLoading(false)
