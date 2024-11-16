@@ -119,7 +119,7 @@ export default function Colaboradores() {
             field: 'acoes',
             headerName: 'Ações',
             flex: 1,
-            minWidth: 100, // Define uma largura mínima
+            minWidth: 150, // Define uma largura mínima
             filterable: false,
             sortable: false,
             headerAlign: 'center',

@@ -64,6 +64,7 @@ interface DropZoneProps {
 export const DropZone = ({ previewUrl, onFileChange, onDeleteImage, error }: DropZoneProps) => {
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [isDragActive, setIsDragActive] = useState(false);
+    const [hasFile, setHasFile] = useState(false);
 
     const handleFileChange = (file: File | null) => {
         if (file && file.type.startsWith('image/')) {

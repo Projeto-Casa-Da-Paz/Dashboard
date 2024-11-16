@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { verificaTokenExpirado } from "../../../services/token";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, set, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
 // Material UI imports
@@ -25,6 +25,7 @@ import { SnackbarMui } from "../../../components/Snackbar";
 import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
+import { Watch } from "@mui/icons-material";
 
 // Define a interface do formulário
 interface IParceiros {
@@ -79,10 +80,8 @@ export default function GerenciarParceiros() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const imagemField = watch("imagem");
 
     const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
-
 
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
@@ -93,64 +92,62 @@ export default function GerenciarParceiros() {
         const parceiroId = Number(id);
         if (!isNaN(parceiroId)) {
             setLoading(true);
-            axios.get(`${import.meta.env.VITE_URL}/parceiros/${parceiroId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            axios
+                .get(`${import.meta.env.VITE_URL}/parceiros/${parceiroId}`, {
+                    headers: { Authorization: `Bearer ${token.access_token}` },
+                })
                 .then((res) => {
                     const parceiroData = res.data;
                     setIsEdit(true);
                     setValue("id", parceiroData.id || 0);
-                    setValue("nome", parceiroData.nome || '');
-                    setValue("classificacao", parceiroData.classificacao || '');
-                    setValue("data_inicio", parceiroData.data_inicio || '');
+                    setValue("nome", parceiroData.nome || "");
+                    setValue("classificacao", parceiroData.classificacao || "");
+                    setValue("data_inicio", parceiroData.data_inicio || "");
                     if (parceiroData.imagem) {
-                        setPreviewUrl(`${import.meta.env.VITE_URL}/imagem/${parceiroData.imagem}`);
+                        setValue("imagem", parceiroData.imagem); // Atualiza o campo no formulário
+                        setPreviewUrl(`${import.meta.env.VITE_URL}/imagem/${parceiroData.imagem}`); // Exibe a imagem
                     }
-                    setLoading(false)
+                    setLoading(false);
                 })
                 .catch((err) => {
-                    console.error(err)
-                    setLoading(false)
-                })
+                    console.error(err);
+                    setLoading(false);
+                });
         }
-
-        if (imagemField && imagemField instanceof File) {
-            const fileReader = new FileReader();
-            fileReader.onloadend = () => {
-                setPreviewUrl(fileReader.result as string);
-            };
-            fileReader.readAsDataURL(imagemField);
-        }
-
-    }, [id, navigate, setValue, imagemField]);
-
+    }, [id, navigate, setValue]);
 
 
     const handleFileChange = useCallback((file: File | null) => {
-        if (file && file.type.startsWith('image/')) {
-            setValue("imagem", file);
-        } else {
-            handleShowSnackbar('Por favor, selecione um arquivo de imagem válido.', 'error');
+        if (file) {
+            if (file instanceof File) {
+                // Caso seja um arquivo novo, atualiza o preview
+                const fileReader = new FileReader();
+                fileReader.onloadend = () => {
+                    setPreviewUrl(fileReader.result as string);
+                };
+                fileReader.readAsDataURL(file);
+            } else if (typeof file === "string") {
+                // Caso seja uma URL, atualiza diretamente
+                setPreviewUrl(file);
+            }
         }
     }, [handleShowSnackbar, setValue]);
 
-    const handleDeleteImage = useCallback(() => {
-        setValue("imagem", null);
-        setPreviewUrl('');
-    }, [setValue]);
 
     const submitForm: SubmitHandler<IParceiros> = useCallback((data) => {
         setLoading(true);
-    
+
         console.log('Dados enviados:', data);
         console.log('URL:', import.meta.env.VITE_URL);
         console.log('isEdit:', isEdit, 'id:', id);
-    
+
         // Cria um FormData e adiciona os campos
         const formData = new FormData();
         formData.append('id', data.id?.toString() || '');
         formData.append('nome', data.nome);
         formData.append('classificacao', data.classificacao);
         formData.append('data_inicio', data.data_inicio);
-    
+
         // Se data.imagem for um File, adiciona diretamente
         // Se for uma string (URL existente), adiciona como string
         if (data.imagem instanceof File) {
@@ -158,12 +155,12 @@ export default function GerenciarParceiros() {
         } else if (data.imagem) {
             formData.append('imagem', data.imagem);
         }
-    
+
         // Para debug - mostra todos os valores do FormData
         for (const pair of formData.entries()) {
             console.log(`${pair[0]}: ${pair[1]}`);
         }
-    
+
         const config = {
             headers: {
                 'authorization': `Bearer ${token.access_token}`,
@@ -171,15 +168,15 @@ export default function GerenciarParceiros() {
                 // automaticamente com o boundary correto para multipart/form-data
             }
         };
-    
+
         const url = isEdit
             ? `${import.meta.env.VITE_URL}/parceiros/${id}`
             : `${import.meta.env.VITE_URL}/parceiros/`;
-    
+
         const request = isEdit
             ? axios.put(url, formData, config)
             : axios.post(url, formData, config);
-    
+
         request
             .then((response) => {
                 console.log('Resposta da API:', response);
@@ -258,7 +255,7 @@ export default function GerenciarParceiros() {
                                         )}
                                     </FormControl>
                                 )}
-                            />  
+                            />
 
                             <Controller
                                 name="data_inicio"
@@ -284,14 +281,18 @@ export default function GerenciarParceiros() {
                                 name="imagem"
                                 control={control}
                                 rules={{ required: 'Imagem é obrigatória!' }}
-                                render={({ field: { value, onChange } }) => (
+                                render={({ field: { onChange } }) => (
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
+                                            setValue("imagem", file); // Atualiza o formulário
+                                            onChange(file); // Atualiza o react-hook-form
                                             handleFileChange(file);
-                                            onChange(file); // Atualiza o valor no react-hook-form
                                         }}
-                                        onDeleteImage={handleDeleteImage}
+                                        onDeleteImage={() => {
+                                            setValue("imagem", null); // Remove do formulário
+                                            setPreviewUrl(""); // Remove o preview
+                                        }}
                                         error={!!errors.imagem}
                                     />
                                 )}

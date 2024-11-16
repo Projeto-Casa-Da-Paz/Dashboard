@@ -173,7 +173,7 @@ export default function Parceiros() {
     const handleConfirmedDelete = useCallback(() => {
         const id = dialogState.id;
 
-        axios.delete(import.meta.env.VITE_URL + `/parceiros/${id}`)
+        axios.delete(import.meta.env.VITE_URL + `/parceiros/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then(() => {
                 handleShowSnackbar("Parceiro removido com sucesso", "success");
                 setdadosParceiros((prevRows) => prevRows.filter((row) => row.id !== id));

@@ -30,7 +30,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const FormTextField = styled(TextField)({
     marginTop: '1rem',
 });
-
 export default function Historia() {
     const [range, setRange] = useState();
     const [lastChange, setLastChange] = useState();
@@ -59,7 +58,6 @@ export default function Historia() {
         }
     });
     const { id } = useParams();
-    const imagemField = watch("foto_capa");
 
     const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
@@ -69,31 +67,28 @@ export default function Historia() {
         }
 
         const HistoriaId = Number(id);
-        setLoading(true);
-        axios.get(import.meta.env.VITE_URL + `/historias/${HistoriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
-            .then((res) => {
-                const historiaData = res.data;
-                console.log(historiaData);
-                setValue("id", historiaData.id || 0);
-                setValue("ano_fundacao", historiaData.ano_fundacao || '');
-                setValue("MVV", historiaData.MVV || '');
-                setValue("PMH", historiaData.PMH || '');
-                setValue("texto_institucional", historiaData.texto_institucional || '');
-                setLoading(false)
-            })
-            .catch((err) => {
-                console.error(err)
-                setLoading(false)
-            })
-
-        if (imagemField && imagemField instanceof File) {
-            const fileReader = new FileReader();
-            fileReader.onloadend = () => {
-                setPreviewUrl(fileReader.result as string);
-            };
-            fileReader.readAsDataURL(imagemField);
+        if (!isNaN(HistoriaId)) {
+            setLoading(true);
+            axios.get(import.meta.env.VITE_URL + `/historias/${HistoriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+                .then((res) => {
+                    const historiaData = res.data;
+                    console.log(historiaData)
+                    setValue("ano_fundacao", historiaData.ano_fundacao || '');
+                    setValue("MVV", historiaData.MVV || '');
+                    setValue("PMH", historiaData.PMH || '');
+                    setValue("texto_institucional", historiaData.texto_institucional || '');
+                    if (historiaData.foto_capa) {
+                        setValue("foto_capa", historiaData.foto_capa); // Atualiza o campo no formulário
+                        setPreviewUrl(import.meta.env.VITE_URL + `/imagem/historia/${historiaData.foto_capa}`);
+                    }
+                    setLoading(false)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    setLoading(false)
+                })
         }
-    }, [id, navigate, setValue, imagemField])
+    }, [id, navigate, setValue])
 
     const handleShowSnackbar = (msg: string, sev: 'success' | 'error' | 'info' | 'warning') => {
         setMessage(msg);
@@ -102,17 +97,20 @@ export default function Historia() {
     };
 
     const handleFileChange = useCallback((file: File | null) => {
-        if (file && file.type.startsWith('image/')) {
-            setValue("foto_capa", file);
-        } else {
-            handleShowSnackbar('Por favor, selecione um arquivo de imagem válido.', 'error');
+        if (file) {
+            if (file instanceof File) {
+                // Caso seja um arquivo novo, atualiza o preview
+                const fileReader = new FileReader();
+                fileReader.onloadend = () => {
+                    setPreviewUrl(fileReader.result as string);
+                };
+                fileReader.readAsDataURL(file);
+            } else if (typeof file === "string") {
+                // Caso seja uma URL, atualiza diretamente
+                setPreviewUrl(file);
+            }
         }
     }, [handleShowSnackbar, setValue]);
-
-    const handleDeleteImage = useCallback(() => {
-        setValue("foto_capa", null);
-        setPreviewUrl('');
-    }, [setValue]);
 
     const submitForm: SubmitHandler<IHistoria> = useCallback((data) => {
         setLoading(true);
@@ -123,10 +121,6 @@ export default function Historia() {
         formData.append('texto_institucional', data.texto_institucional);
         formData.append('foto_capa', data.foto_capa || '');
 
-        console.log(data);
-        console.log(formData);
-
-
         axios.put(import.meta.env.VITE_URL + `/historias/${id}`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -134,6 +128,7 @@ export default function Historia() {
             }
         })
             .then((res) => {
+                console.log(res)
                 setLoading(false);
                 handleShowSnackbar('Historia atualizada com sucesso!', 'success');
             })
@@ -165,6 +160,28 @@ export default function Historia() {
                         </Typography>
 
                         <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate>
+
+                            <InputLabel sx={{ mt: 0, mb: 1, color: 'black' }}>Imagem Capa</InputLabel>
+                            <Controller
+                                name="foto_capa"
+                                control={control}
+                                rules={{ required: 'Imagem é obrigatória!' }}
+                                render={({ field: { value, onChange } }) => (
+                                    <DropZone
+                                        previewUrl={previewUrl}
+                                        onFileChange={(file) => {
+                                            setValue("foto_capa", file); // Atualiza o formulário
+                                            onChange(file); // Atualiza o react-hook-form
+                                            handleFileChange(file);
+                                        }}
+                                        onDeleteImage={() => {
+                                            setValue("foto_capa", null); // Remove do formulário
+                                            setPreviewUrl(""); // Remove o preview
+                                        }}
+                                        error={!!errors.foto_capa}
+                                    />
+                                )}
+                            />
 
                             <Controller
                                 name="ano_fundacao"
@@ -237,24 +254,6 @@ export default function Historia() {
                                         label="Texto institucional"
                                         error={!!errors.texto_institucional}
                                         helperText={errors.texto_institucional?.message}
-                                    />
-                                )}
-                            />
-
-                            <InputLabel sx={{ mt: 2, mb: 1, color: 'black' }}>Imagem Capa</InputLabel>
-                            <Controller
-                                name="foto_capa"
-                                control={control}
-                                rules={{ required: 'Imagem é obrigatória!' }}
-                                render={({ field: { value, onChange } }) => (
-                                    <DropZone
-                                        previewUrl={previewUrl}
-                                        onFileChange={(file) => {
-                                            handleFileChange(file);
-                                            onChange(file); // Atualiza o valor no react-hook-form
-                                        }}
-                                        onDeleteImage={handleDeleteImage}
-                                        error={!!errors.foto_capa}
                                     />
                                 )}
                             />

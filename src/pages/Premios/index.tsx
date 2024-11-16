@@ -101,7 +101,7 @@ export default function Premios() {
             headerAlign: 'center',
             renderCell: (params: GridRenderCellParams) => (
                 <Avatar
-                    src={import.meta.env.VITE_URL + `/imagem/${params.value}`}
+                    src={import.meta.env.VITE_URL + `/imagem/premios/${params.value}`}
                     alt="Imagem do prêmio"
                     sx={{ width: 75, height: 75 }}
                 />

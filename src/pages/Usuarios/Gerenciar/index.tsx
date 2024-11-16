@@ -119,7 +119,10 @@ export default function GerenciarUsuarios() {
                 );
                 setTimeout(() => { navigate('/usuarios') }, 1500)
             })
-            .catch((error) => handleShowSnackbar(error.response.data, 'error'))
+            .catch((error) => {
+                console.error(error);  
+                handleShowSnackbar(error.response.data, 'error')
+            })
             .finally(() => setLoading(false));
     }, [isEdit, id, navigate]);
 

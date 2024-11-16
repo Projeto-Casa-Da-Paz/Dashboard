@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { verificaTokenExpirado } from "../../../services/token";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -24,6 +24,7 @@ import { SnackbarMui } from "../../../components/Snackbar";
 import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
+import { Watch } from "@mui/icons-material";
 
 // Define a interface do formulário
 interface IPremios {
@@ -51,7 +52,7 @@ export default function GerenciarPremios() {
         control,
         handleSubmit,
         setValue,
-        watch,
+        getValues,
         formState: { errors },
     } = useForm<IPremios>({
         defaultValues: {
@@ -68,6 +69,8 @@ export default function GerenciarPremios() {
     const [severity, setSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('info');
     const [previewUrl, setPreviewUrl] = useState<string>('');
 
+
+
     const handleShowSnackbar = (msg: string, sev: 'success' | 'error' | 'info' | 'warning') => {
         setMessage(msg);
         setSeverity(sev);
@@ -78,12 +81,12 @@ export default function GerenciarPremios() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const imagemField = watch("imagem");
 
     const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
 
     useEffect(() => {
+        setPreviewUrl(""); // Resetando a imagem ao navegar para outro parceiro
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
             return;
@@ -92,7 +95,7 @@ export default function GerenciarPremios() {
         const premioId = Number(id);
         if (!isNaN(premioId)) {
             setLoading(true);
-            axios.get(import.meta.env.VITE_API_URL + `/premios/${premioId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            axios.get(import.meta.env.VITE_URL + `/premios/${premioId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
                     const premioData = res.data;
                     setIsEdit(true);
@@ -101,7 +104,7 @@ export default function GerenciarPremios() {
                     setValue("categoria", premioData.categoria || '');
                     setValue("data_recebimento", premioData.data_recebimento || '');
                     if (premioData.imagem) {
-                        setPreviewUrl(import.meta.env.VITE_API_URL + `/imagmem/${premioData.imagem}`);
+                        setPreviewUrl(import.meta.env.VITE_URL + `/imagem/premios/${premioData.imagem}`);
                     }
                     setLoading(false)
                 })
@@ -110,72 +113,61 @@ export default function GerenciarPremios() {
                     setLoading(false)
                 })
         }
-
-        if (imagemField && imagemField instanceof File) {
-            const fileReader = new FileReader();
-            fileReader.onloadend = () => {
-                setPreviewUrl(fileReader.result as string);
-            };
-            fileReader.readAsDataURL(imagemField);
-        }
-
-    }, [id, navigate, setValue, imagemField]);
-
+    }, [id, navigate, setValue]);
 
 
     const handleFileChange = useCallback((file: File | null) => {
-        if (file && file.type.startsWith('image/')) {
-            setValue("imagem", file);
-        } else {
-            handleShowSnackbar('Por favor, selecione um arquivo de imagem válido.', 'error');
+        if (file) {
+            if (file instanceof File) {
+                // Caso seja um arquivo novo, atualiza o preview
+                const fileReader = new FileReader();
+                fileReader.onloadend = () => {
+                    setPreviewUrl(fileReader.result as string);
+                };
+                fileReader.readAsDataURL(file);
+            } else if (typeof file === "string") {
+                // Caso seja uma URL, atualiza diretamente
+                setPreviewUrl(file);
+            }
         }
     }, [handleShowSnackbar, setValue]);
 
-    const handleDeleteImage = useCallback(() => {
-        setValue("imagem", null);
-        setPreviewUrl('');
-    }, [setValue]);
-
     const submitForm: SubmitHandler<IPremios> = useCallback((data) => {
         setLoading(true);
-    
+
         console.log('Dados enviados:', data);
         console.log('URL:', import.meta.env.VITE_URL);
         console.log('isEdit:', isEdit, 'id:', id);
-    
+
         // Cria um FormData e adiciona os campos
         const formData = new FormData();
         formData.append('id', data.id?.toString() || '');
         formData.append('nome', data.nome);
         formData.append('categoria', data.categoria);
         formData.append('data_recebimento', data.data_recebimento);
-    
-        // Tratamento específico para o campo imagem
-        if (data.imagem instanceof File) {
-            formData.append('imagem', data.imagem);
-        } else if (data.imagem) {
-            formData.append('imagem', data.imagem);
-        }
-    
+        formData.append('imagem', data.imagem || '');
+
+
         // Debug - mostra os valores do FormData no console
         for (const pair of formData.entries()) {
             console.log(`${pair[0]}: ${pair[1]}`);
         }
-    
+
         const config = {
             headers: {
+                'Content-Type': 'multipart/form-data',
                 authorization: `Bearer ${token.access_token}`,
             }
         };
-    
+
         const url = isEdit
             ? `${import.meta.env.VITE_URL}/premios/${id}`
             : `${import.meta.env.VITE_URL}/premios/`;
-    
+
         const request = isEdit
             ? axios.put(url, formData, config)
             : axios.post(url, formData, config);
-    
+
         request
             .then((response) => {
                 console.log('Resposta da API:', response);
@@ -277,14 +269,18 @@ export default function GerenciarPremios() {
                                 name="imagem"
                                 control={control}
                                 rules={{ required: 'Imagem é obrigatória!' }}
-                                render={({ field: { value, onChange } }) => (
+                                render={({ field: { onChange } }) => (
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
+                                            setValue("imagem", file); // Atualiza o formulário
+                                            onChange(file); // Atualiza o react-hook-form
                                             handleFileChange(file);
-                                            onChange(file); // Atualiza o valor no react-hook-form
                                         }}
-                                        onDeleteImage={handleDeleteImage}
+                                        onDeleteImage={() => {
+                                            setValue("imagem", null); // Remove do formulário
+                                            setPreviewUrl(""); // Remove o preview
+                                        }}
                                         error={!!errors.imagem}
                                     />
                                 )}
