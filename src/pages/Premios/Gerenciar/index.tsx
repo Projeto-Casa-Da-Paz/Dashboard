@@ -163,7 +163,7 @@ export default function GerenciarPremios() {
             : `${import.meta.env.VITE_URL}/premios/`;
 
         const request = isEdit
-            ? axios.put(url, formData, config)
+            ? axios.post(url, formData, config)
             : axios.post(url, formData, config);
 
         request
@@ -274,7 +274,10 @@ export default function GerenciarPremios() {
                                             setValue("imagem", file); // Atualiza o formulário
                                             onChange(file); // Atualiza o react-hook-form
                                             handleFileChange(file);
-                                            onChange(file); // Atualiza o valor no react-hook-form
+                                        }}
+                                        onDeleteImage={() => {
+                                            setValue("imagem", null); // Remove do formulário
+                                            setPreviewUrl(""); // Remove o preview
                                         }}
                                         error={!!errors.imagem}
                                     />

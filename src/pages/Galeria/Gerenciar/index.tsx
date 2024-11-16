@@ -128,7 +128,7 @@ export default function GerenciarGalerias() {
         };
 
         const request = isEdit
-            ? axios.put(`${import.meta.env.VITE_URL}/galerias/${id}`, payload, config)
+            ? axios.post(`${import.meta.env.VITE_URL}/galerias/${id}`, payload, config)
             : axios.post(`${import.meta.env.VITE_URL}/galerias/`, payload, config);
 
         request

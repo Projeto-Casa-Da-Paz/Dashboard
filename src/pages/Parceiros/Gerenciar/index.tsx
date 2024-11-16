@@ -174,7 +174,7 @@ export default function GerenciarParceiros() {
             : `${import.meta.env.VITE_URL}/parceiros/`;
 
         const request = isEdit
-            ? axios.put(url, formData, config)
+            ? axios.post(url, formData, config)
             : axios.post(url, formData, config);
 
         request

@@ -106,7 +106,7 @@ export default function GerenciarUsuarios() {
     const submitForm: SubmitHandler<IForm> = useCallback((data) => {
         setLoading(true);
         const request = isEdit
-            ? axios.put(import.meta.env.VITE_URL + `/usuarios/${id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            ? axios.post(import.meta.env.VITE_URL + `/usuarios/${id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
             : axios.post(import.meta.env.VITE_URL + '/usuarios/', data, { headers: { Authorization: `Bearer ${token.access_token}` } })
 
         request

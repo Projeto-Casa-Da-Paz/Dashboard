@@ -114,7 +114,7 @@ export const Contato = ({ setLoading }: IProps) => {
 
     const submitContato: SubmitHandler<IContato> = useCallback((data) => {
         setLoading(true);
-        axios.put(import.meta.env.VITE_URL + `/instituicoes` + `/${data.id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
+        axios.post(import.meta.env.VITE_URL + `/instituicoes` + `/${data.id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then(() => {
                 handleShowSnackbar("Informações da instituição editadas com sucesso", "success");
                 setLoading(false)

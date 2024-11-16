@@ -108,7 +108,7 @@ export default function Doacao() {
 
     const submitDadosBancarios: SubmitHandler<IDadosBancarios> = useCallback((data) => {
         setLoading(true);
-        axios.put(import.meta.env.VITE_URL + `/doacoes/${id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
+        axios.post(import.meta.env.VITE_URL + `/doacoes/${id}`, data, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then(() => {
                 handleShowSnackbar("Dados bancários editadas com sucesso", "success");
                 setLoading(false)

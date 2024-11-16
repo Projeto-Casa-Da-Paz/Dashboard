@@ -120,7 +120,7 @@ export const Endereco = ({ setLoading }: IProps) => {
         setLoading(true);
 
         const promises = data.locais.map(endereco =>
-            axios.put(`${import.meta.env.VITE_URL}/instituicoes/1/enderecos/${endereco.id}`, endereco, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            axios.post(`${import.meta.env.VITE_URL}/instituicoes/1/enderecos/${endereco.id}`, endereco, { headers: { Authorization: `Bearer ${token.access_token}` } })
         );
 
         Promise.all(promises)

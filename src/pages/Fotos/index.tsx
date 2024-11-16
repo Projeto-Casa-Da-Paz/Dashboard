@@ -136,7 +136,7 @@ export default function Fotos() {
 
     const updateGalleryCoverCount = useCallback(async (dadosGaleria: any) => {
         try {
-            await axios.put(
+            await axios.post(
                 `${import.meta.env.VITE_URL}/galerias/${id}`,
                 dadosGaleria,
                 {

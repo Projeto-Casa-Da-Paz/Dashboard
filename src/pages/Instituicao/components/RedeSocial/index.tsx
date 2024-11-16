@@ -110,7 +110,7 @@ export const RedeSocial = ({ setLoading }: IProps) => {
         setLoading(true);
 
         const promises = data.redes.map(redeSocial =>
-            axios.put(`${import.meta.env.VITE_URL}/instituicoes/1/redes-sociais/${redeSocial.id}`, redeSocial, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            axios.post(`${import.meta.env.VITE_URL}/instituicoes/1/redes-sociais/${redeSocial.id}`, redeSocial, { headers: { Authorization: `Bearer ${token.access_token}` } })
         );
 
         Promise.all(promises)

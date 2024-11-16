@@ -160,7 +160,7 @@ export default function GerenciarColaboradores() {
         };
 
         const request = isEdit
-            ? axios.put(`${import.meta.env.VITE_URL}/colaboradores/${id}`, payload, config)
+            ? axios.post(`${import.meta.env.VITE_URL}/colaboradores/${id}`, payload, config)
             : axios.post(`${import.meta.env.VITE_URL}/colaboradores/`, payload, config);
 
         request
