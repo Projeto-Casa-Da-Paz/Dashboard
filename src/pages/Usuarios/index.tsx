@@ -155,7 +155,7 @@ export default function Usuarios() {
     const handleConfirmedDelete = useCallback(() => {
         const id = dialogState.id;
 
-        axios.delete(import.meta.env.VITE_URL + `/users/${id}`)
+        axios.delete(import.meta.env.VITE_URL + `/usuarios/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then(() => {
                 handleShowSnackbar("Usuário removido com sucesso", "success");
                 setdadosUsers((prevRows) => prevRows.filter((row) => row.id !== id));
