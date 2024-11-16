@@ -89,9 +89,9 @@ export default function GerenciarUsuarios() {
         const idUser = Number(id);
         if (!isNaN(idUser)) {
             setLoading(true);
-            axios.get(import.meta.env.VITE_URL + `/usuarios?id=${idUser}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            axios.get(import.meta.env.VITE_URL + `/usuarios/${idUser}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
-                    const userData = res.data.data[0];
+                    const userData = res.data.data;
                     setIsEdit(true);
                     // Atualiza os campos individualmente
                     setValue("nome", userData.nome || '');
