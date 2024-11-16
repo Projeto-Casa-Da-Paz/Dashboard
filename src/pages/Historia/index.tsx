@@ -73,13 +73,13 @@ export default function Historia() {
                 .then((res) => {
                     const historiaData = res.data;
                     console.log(historiaData)
-                    setValue("ano_fundacao", historiaData.ano_fundacao || '');
+                    setValue("ano_fundacao", historiaData.ano_fundacao.split('T')[0] || '');
                     setValue("mvv", historiaData.mvv || '');
                     setValue("pmh", historiaData.pmh || '');
                     setValue("texto_institucional", historiaData.texto_institucional || '');
                     if (historiaData.foto_capa) {
                         setValue("foto_capa", historiaData.foto_capa); // Atualiza o campo no formulário
-                        setPreviewUrl(import.meta.env.VITE_URL + `/imagem/historia/${historiaData.foto_capa}`);
+                        setPreviewUrl(import.meta.env.VITE_URL + `/imagem/fotoscapas/${historiaData.foto_capa}`);
                     }
                     setLoading(false)
                 })
@@ -115,7 +115,6 @@ export default function Historia() {
     const submitForm: SubmitHandler<IHistoria> = useCallback((data) => {
         setLoading(true);
         const formData = new FormData();
-        formData.append('id', "1");
         formData.append('ano_fundacao', data.ano_fundacao);
         formData.append('mvv', data.mvv);
         formData.append('pmh', data.pmh);
@@ -124,10 +123,9 @@ export default function Historia() {
 
         console.log(data)
 
-        axios.put(import.meta.env.VITE_URL + `/historias/${id}`, formData, {
+        axios.post(import.meta.env.VITE_URL + `/historias/${id}`, formData, {
             headers: {
-                "Content-Type": "multipart/form-data",
-                "Authorization": 'Bearer' + token.access_token
+                "Authorization": 'Bearer ' + token.access_token
             }
         })
             .then((res) => {
