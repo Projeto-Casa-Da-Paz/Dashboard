@@ -26,7 +26,6 @@ import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
 import { Watch } from "@mui/icons-material";
 
-// Define a interface do formulário
 interface IPremios {
     id: number;
     nome: string;
@@ -35,7 +34,6 @@ interface IPremios {
     imagem: File | null;
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -276,10 +274,7 @@ export default function GerenciarPremios() {
                                             setValue("imagem", file); // Atualiza o formulário
                                             onChange(file); // Atualiza o react-hook-form
                                             handleFileChange(file);
-                                        }}
-                                        onDeleteImage={() => {
-                                            setValue("imagem", null); // Remove do formulário
-                                            setPreviewUrl(""); // Remove o preview
+                                            onChange(file); // Atualiza o valor no react-hook-form
                                         }}
                                         error={!!errors.imagem}
                                     />

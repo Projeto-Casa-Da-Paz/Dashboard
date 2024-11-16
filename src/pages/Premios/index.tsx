@@ -136,7 +136,7 @@ export default function Premios() {
             field: 'acoes',
             headerName: 'Ações',
             flex: 1,
-            minWidth: 150, // Define uma largura mínima
+            minWidth: 150,
             filterable: false,
             sortable: false,
             headerAlign: 'center',
@@ -163,7 +163,7 @@ export default function Premios() {
     ]
 
     const removePremios = useCallback((id: number) => {
-        // Abre o dialog e guarda o ID para usar depois
+        
         setDialogState({
             open: true,
             id: id
