@@ -78,7 +78,6 @@ export default function GerenciarColaboradores() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const imagemField = watch("foto");
 
     const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
@@ -111,30 +110,25 @@ export default function GerenciarColaboradores() {
                 })
         }
 
-        if (imagemField && imagemField instanceof File) {
-            const fileReader = new FileReader();
-            fileReader.onloadend = () => {
-                setPreviewUrl(fileReader.result as string);
-            };
-            fileReader.readAsDataURL(imagemField);
-        }
-
-    }, [id, navigate, setValue, imagemField]);
+    }, [id, navigate, setValue]);
 
 
 
     const handleFileChange = useCallback((file: File | null) => {
-        if (file && file.type.startsWith('image/')) {
-            setValue("foto", file);
-        } else {
-            handleShowSnackbar('Por favor, selecione um arquivo de imagem válido.', 'error');
+        if (file) {
+            if (file instanceof File) {
+                // Caso seja um arquivo novo, atualiza o preview
+                const fileReader = new FileReader();
+                fileReader.onloadend = () => {
+                    setPreviewUrl(fileReader.result as string);
+                };
+                fileReader.readAsDataURL(file);
+            } else if (typeof file === "string") {
+                // Caso seja uma URL, atualiza diretamente
+                setPreviewUrl(file);
+            }
         }
     }, [handleShowSnackbar, setValue]);
-
-    const handleDeleteImage = useCallback(() => {
-        setValue("foto", null);
-        setPreviewUrl('');
-    }, [setValue]);
 
     const submitForm: SubmitHandler<IColaboradores> = useCallback((data) => {
         setLoading(true);
@@ -267,10 +261,14 @@ export default function GerenciarColaboradores() {
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
+                                            setValue("foto", file); // Atualiza o formulário
+                                            onChange(file); // Atualiza o react-hook-form
                                             handleFileChange(file);
-                                            onChange(file); // Atualiza o valor no react-hook-form
                                         }}
-                                        onDeleteImage={handleDeleteImage}
+                                        onDeleteImage={() => {
+                                            setValue("foto", null); // Remove do formulário
+                                            setPreviewUrl(""); // Remove o preview
+                                        }}
                                         error={!!errors.foto}
                                     />
                                 )}

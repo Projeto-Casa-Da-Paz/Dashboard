@@ -1,21 +1,21 @@
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { verificaTokenExpirado } from "../../services/token"
 import { Loading } from "../../components/Loading"
 import axios from "axios"
-import { 
-  Container,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-  Avatar
+import {
+    Container,
+    Typography,
+    Button,
+    Box,
+    IconButton,
+    Avatar
 } from '@mui/material'
-import { 
-  DataGrid,
-  GridColDef,
-  GridValueGetter,
-  GridRenderCellParams
+import {
+    DataGrid,
+    GridColDef,
+    GridValueGetter,
+    GridRenderCellParams
 } from '@mui/x-data-grid'
 import { ptBR } from '@mui/x-data-grid/locales'
 import AddIcon from '@mui/icons-material/Add'
@@ -23,6 +23,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { LayoutDashboard } from "../../components/LayoutDashboard"
 import { IToken } from "../../interfaces/token"
+import { ConfirmationDialog } from "../../components/Dialog"
 
 interface IParceiros {
     id: number
@@ -34,6 +35,9 @@ interface IParceiros {
 }
 
 export default function Colaboradores() {
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [message, setMessage] = useState("");
+    const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [dadosColaboradores, setDadosColaboradores] = useState<Array<IParceiros>>([])
@@ -41,6 +45,19 @@ export default function Colaboradores() {
         page: 0,
         pageSize: 10,
     })
+    const [dialogState, setDialogState] = useState({
+        open: false,
+        id: null as number | null
+    })
+
+    const handleShowSnackbar = useCallback((
+        message: string,
+        severity: 'success' | 'error' | 'warning' | 'info'
+    ) => {
+        setSnackbarVisible(true);
+        setMessage(message);
+        setSeverity(severity);
+    }, [setSnackbarVisible, setMessage, setSeverity]);
 
     const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
@@ -52,10 +69,11 @@ export default function Colaboradores() {
         setLoading(true)
 
 
-            axios.get(import.meta.env.VITE_URL + '/colaboradores',{
-                headers: {
+        axios.get(import.meta.env.VITE_URL + '/colaboradores', {
+            headers: {
                 "Authorization": 'Bearer' + token?.access_token
-            }})
+            }
+        })
             .then((res) => {
                 setDadosColaboradores(res.data)
                 setLoading(false)
@@ -67,9 +85,9 @@ export default function Colaboradores() {
     }, [])
 
     const columns: GridColDef[] = [
-        { 
-            field: 'id', 
-            headerName: 'ID', 
+        {
+            field: 'id',
+            headerName: 'ID',
             width: 60,
             filterable: false,
             sortable: false,
@@ -136,6 +154,7 @@ export default function Colaboradores() {
                     <IconButton
                         color="error"
                         size="large"
+                        onClick={() => removeColaborador(params.row.id)}
                     >
                         <DeleteIcon />
                     </IconButton>
@@ -144,11 +163,43 @@ export default function Colaboradores() {
         },
     ]
 
+    const handleConfirmedDelete = useCallback(() => {
+        const id = dialogState.id;
+
+        axios.delete(import.meta.env.VITE_URL + `/colaboradores/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            .then(() => {
+                handleShowSnackbar("Colaborador removido com sucesso", "success");
+                setDadosColaboradores((prevRows) => prevRows.filter((row) => row.id !== id));
+                setLoading(false)
+            })
+            .catch((error) => {
+                const errorMessage = error.response?.data || "Erro ao remover Colaborador";
+                setLoading(false)
+                handleShowSnackbar(errorMessage, "error");
+            })
+    }, [dialogState.id, setLoading]);
+
+    const removeColaborador = useCallback((id: number) => {
+        // Abre o dialog e guarda o ID para usar depois
+        setDialogState({
+            open: true,
+            id: id
+        });
+    }, []);
+
+
     return (
         <>
             <Loading visible={loading} />
             <LayoutDashboard>
                 <Container maxWidth="xl" sx={{ mb: 4, mt: 3 }}>
+                    <ConfirmationDialog
+                        open={dialogState.open}
+                        title="Confirmar exclusão"
+                        message="Tem certeza que deseja excluir este Colaborador?"
+                        onConfirm={handleConfirmedDelete}
+                        onClose={() => setDialogState({ open: false, id: null })}
+                    />
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                         <Typography variant="h4" component="h1">
                             Colaboradores

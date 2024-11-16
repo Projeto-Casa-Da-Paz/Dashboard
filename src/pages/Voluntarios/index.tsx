@@ -77,7 +77,7 @@ export default function Voluntarios() {
         {
             field: 'nome',
             headerName: 'Nome',
-            width: 200,
+            width: 175,
             filterable: true,
         },
         {
@@ -147,7 +147,9 @@ export default function Voluntarios() {
         {
             field: 'endereco',
             headerName: 'Endereço',
-            width: 200,
+            flex: 1,
+            minWidth: 275,
+            width: 275,
             filterable: true,
             headerAlign: 'center',
             align: 'center',
