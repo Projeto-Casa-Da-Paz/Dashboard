@@ -1,126 +1,137 @@
-Painel Casa da Paz
+# Casa da Paz - Painel Administrativo
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Vite](https://img.shields.io/badge/Vite-5.3-646CFF)
+![React](https://img.shields.io/badge/React-18.3-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue)
+
+## 📋 Sobre o Projeto
+
+Painel administrativo desenvolvido para a Associação Assistencial e Promocional Casa da Paz, permitindo o gerenciamento completo do conteúdo do website institucional. Esta ferramenta possibilita o controle de usuários, gestão de conteúdo e monitoramento das atividades da instituição.
+
+### 🔗 Repositórios Relacionados
+O projeto faz parte de um sistema maior, composto por:
+
+1. [Website Institucional](https://github.com/Projeto-Casa-Da-Paz/Page) - Frontend principal
+2. [API](https://github.com/Projeto-Casa-Da-Paz/Back-End) - Backend do projeto
+3. [Dashboard Administrativo](https://github.com/Projeto-Casa-Da-Paz/Dashboard) - Este repositório
+
+Você pode acessar a organização completa do projeto no [GitHub da Casa da Paz](https://github.com/Projeto-Casa-Da-Paz).
+
+### 👨‍💻 Desenvolvedores
+
+Este projeto foi desenvolvido com dedicação por:
+
+- [Daniel Oliveira](https://github.com/danielsz3) - Frontend Developer
+- [Felipe Gustavo](https://github.com/devfelipegustavo) - Dashboard Developer
+- [João Gabryel](https://github.com/JoaoGabryel) - Backend Developer
+
+## 🛠 Tecnologias Utilizadas
+
+### Core
+- **Build Tool**: Vite 5.3
+- **Framework**: React 18.3
+- **Linguagem**: TypeScript 5.2
 
-📋 Descrição
+### UI/UX
+- **Componentes UI**: 
+  - Material UI (MUI) v6
+  - MUI X Data Grid
+  - MUI Lab
+  - Bootstrap 5.3
+  - React Bootstrap
+- **Estilização**: 
+  - Styled Components
+  - Emotion
 
-Sistema de painel administrativo desenvolvido com React, TypeScript e Vite.
+### Editores de Texto Rico
+- Lexical
+- TipTap
+- Draft.js
+- Quill
+- React Quill
 
-🚀 Tecnologias Principais
+### Formulários e Validação
+- React Hook Form
+- React Input Mask
 
-React 18.3
+### Integrações
+- Axios para requisições HTTP
+- JWT para autenticação
 
-TypeScript
+## 🚀 Como Executar
 
-Vite
+1. **Pré-requisitos**
+   ```bash
+   Node.js (versão LTS recomendada)
+   npm ou yarn
+   ```
 
-Material-UI (MUI)
+2. **Clone o repositório**
+   ```bash
+   git clone https://github.com/Projeto-Casa-Da-Paz/Dashboard.git
+   cd Dashboard
+   ```
 
-React Router DOM
+3. **Instale as dependências**
+   ```bash
+   npm install
+   # ou
+   yarn install
+   ```
 
-React Hook Form
+4. **Execute o projeto**
+   ```bash
+   npm run dev
+   # ou
+   yarn dev
+   ```
 
-Styled Components
+## 📦 Scripts Disponíveis
 
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Compila o TypeScript e cria build de produção
+- `npm run preview` - Preview da versão de produção
+- `npm run lint` - Executa verificação de código
+- `npm run server` - Inicia servidor JSON Server para desenvolvimento
 
-📦 Dependências Principais
+## 🏗 Principais Funcionalidades
 
-UI Components
+- Sistema completo de autenticação e autorização
+- Gerenciamento de usuários e permissões
+- Editor de conteúdo rico com suporte a imagens
+- Dashboard com métricas e estatísticas
+- Gestão de notícias e eventos
+- Upload e gerenciamento de mídia
+- Interface responsiva e intuitiva
+- Integração com API principal
 
-Material-UI (v6)
+## 🔒 Segurança
 
-Styled Components
+- Autenticação JWT
+- Proteção de rotas
+- Validação de formulários
+- Sanitização de entrada de dados
+- Controle de sessão
 
-Formulários e Validação
+## 🤝 Contribuindo
 
-React Hook Form
+Contribuições são bem-vindas! Para contribuir:
 
-React Input Mask
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
+## 📄 Licença
 
-Autenticação e API
+Este projeto é privado e destinado exclusivamente para uso da Associação Casa da Paz.
 
-JWT
+## 📞 Suporte
 
-Axios
+Para suporte e mais informações sobre o projeto, entre em contato através de [@danielsz3](https://github.com/danielsz3), [@devfelipegustavo](https://github.com/devfelipegustavo) ou [@JoaoGabryel](https://github.com/JoaoGabryel) ou abra uma issue no repositório.
 
+---
 
-🛠️ Scripts Disponíveis
-
-# Inicia o ambiente de desenvolvimento
-npm run dev
-
-# Realiza o build do projeto
-npm run build
-
-# Executa o linting do código
-npm run lint
-
-# Visualiza a versão de produção localmente
-npm run preview
-
-# Inicia o servidor JSON Server na porta 3001
-npm run server
-
-💻 Requisitos de Desenvolvimento
-
-Node.js
-
-npm ou yarn
-
-
-🔧 Configuração do Ambiente
-
-1. Clone o repositório.
-
-
-2. Instale as dependências:
-
-npm install
-
-
-3. Inicie o servidor de desenvolvimento:
-
-npm run dev
-
-
-4. Em outro terminal, inicie a API
-Consulte repositório Page, para mais informações
-
-
-
-📚 Estrutura do Projeto
-
-O projeto utiliza:
-
-Vite como bundler.
-
-TypeScript para tipagem estática.
-
-ESLint para linting.
-
-JSON Server para simulação de API REST.
-
-Diversas bibliotecas de UI para uma interface rica e responsiva.
-
-
-🔒 Autenticação
-
-O sistema utiliza:
-
-JWT para tokens.
-
-Axios para requisições HTTP.
-
-
-📝 Observações
-
-O projeto é privado ("private": true).
-
-Versão atual: 0.0.0.
-
-Configurado com suporte a TypeScript e ESLint.
-
-
-🤝 Contribuição
-
-Por ser um projeto privado, consulte as diretrizes de contribuição com a equipe de desenvolvimento.
-
+Desenvolvido com 💙 para a Casa da Paz por [Daniel Oliveira](https://github.com/danielsz3), [Felipe Gustavo](https://github.com/devfelipegustavo) e [João Gabryel](https://github.com/JoaoGabryel)
