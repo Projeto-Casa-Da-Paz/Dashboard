@@ -166,7 +166,7 @@ export const RedeSocial = ({ setLoading }: IProps) => {
                                                     <MenuItem value="Instagram">Instagram</MenuItem>
                                                     <MenuItem value="Facebook">Facebook</MenuItem>
                                                     <MenuItem value="Twitter">Twitter</MenuItem>
-                                                    <MenuItem value="LinkedIn">LinkedIn</MenuItem>
+                                                    <MenuItem value="Whatsapp">Whatsapp</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         )}
