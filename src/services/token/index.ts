@@ -11,11 +11,7 @@ export const verificaTokenExpirado = () => {
     }
 
     if (token) {
-        console.log("deu bom")
-        //console.log(token.access_token)
         let decodedToken = jwtDecode(token.access_token)
-        console.log("aqui foi")
-
         if (
             !decodedToken.exp
             ||

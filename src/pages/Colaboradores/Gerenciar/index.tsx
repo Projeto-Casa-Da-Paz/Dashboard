@@ -4,7 +4,6 @@ import { verificaTokenExpirado } from "../../../services/token";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -25,7 +24,6 @@ import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
 
-// Define a interface do formulário
 interface IColaboradores {
     id: number
     nome: string
@@ -34,7 +32,6 @@ interface IColaboradores {
     foto: File | null
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -105,7 +102,7 @@ export default function GerenciarColaboradores() {
                     setLoading(false)
                 })
                 .catch((err) => {
-                    console.error(err)
+                    handleShowSnackbar("Não foi possível carregar o colaborador", "error");
                     setLoading(false)
                 })
         }
@@ -117,14 +114,12 @@ export default function GerenciarColaboradores() {
     const handleFileChange = useCallback((file: File | null) => {
         if (file) {
             if (file instanceof File) {
-                // Caso seja um arquivo novo, atualiza o preview
                 const fileReader = new FileReader();
                 fileReader.onloadend = () => {
                     setPreviewUrl(fileReader.result as string);
                 };
                 fileReader.readAsDataURL(file);
             } else if (typeof file === "string") {
-                // Caso seja uma URL, atualiza diretamente
                 setPreviewUrl(file);
             }
         }
@@ -133,11 +128,6 @@ export default function GerenciarColaboradores() {
     const submitForm: SubmitHandler<IColaboradores> = useCallback((data) => {
         setLoading(true);
 
-        console.log('Dados enviados:', data);
-        console.log('URL:', import.meta.env.VITE_URL);
-        console.log('isEdit:', isEdit, 'id:', id);
-
-        // Cria um objeto simples com os dados
         const payload = {
             id: data.id,
             nome: data.nome,
@@ -159,7 +149,6 @@ export default function GerenciarColaboradores() {
 
         request
             .then((response) => {
-                console.log('Resposta da API:', response);
                 handleShowSnackbar(
                     isEdit
                         ? 'Colaborador(a) editado com sucesso!'
@@ -170,7 +159,6 @@ export default function GerenciarColaboradores() {
                 navigate('/colaboradores');
             })
             .catch((error) => {
-                console.error('Erro na requisição:', error.response);
                 const errorMessage = error.response?.data || 'Erro ao processar a requisição';
                 setLoading(false);
                 handleShowSnackbar(errorMessage, 'error');
@@ -261,13 +249,13 @@ export default function GerenciarColaboradores() {
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
-                                            setValue("foto", file); // Atualiza o formulário
-                                            onChange(file); // Atualiza o react-hook-form
+                                            setValue("foto", file); 
+                                            onChange(file); 
                                             handleFileChange(file);
                                         }}
                                         onDeleteImage={() => {
-                                            setValue("foto", null); // Remove do formulário
-                                            setPreviewUrl(""); // Remove o preview
+                                            setValue("foto", null);
+                                            setPreviewUrl(""); 
                                         }}
                                         error={!!errors.foto}
                                     />

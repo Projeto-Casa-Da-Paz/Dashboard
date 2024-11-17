@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -24,7 +23,6 @@ import { LayoutDashboard } from "../../components/LayoutDashboard";
 import { IToken } from "../../interfaces/token";
 import { verificaTokenExpirado } from "../../services/token";
 
-// Define a interface do formulário
 interface IDadosBancarios {
     id: number
     banco: string
@@ -35,7 +33,6 @@ interface IDadosBancarios {
     chave_pix: string
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -101,7 +98,7 @@ export default function Doacao() {
                 setLoading(false)
             })
             .catch((err) => {
-                console.error(err)
+                handleShowSnackbar("Erro ao obter dados bancários", "error");
                 setLoading(false)
             })
     }, [id, navigate, setValue]);

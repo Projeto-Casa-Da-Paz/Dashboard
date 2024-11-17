@@ -20,7 +20,6 @@ interface IHistoria {
     foto_capa: File | null
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -72,19 +71,18 @@ export default function Historia() {
             axios.get(import.meta.env.VITE_URL + `/historias/${HistoriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
                 .then((res) => {
                     const historiaData = res.data;
-                    console.log(historiaData)
                     setValue("ano_fundacao", historiaData.ano_fundacao.split('T')[0] || '');
                     setValue("mvv", historiaData.mvv || '');
                     setValue("pmh", historiaData.pmh || '');
                     setValue("texto_institucional", historiaData.texto_institucional || '');
                     if (historiaData.foto_capa) {
-                        setValue("foto_capa", historiaData.foto_capa); // Atualiza o campo no formulário
+                        setValue("foto_capa", historiaData.foto_capa);
                         setPreviewUrl(import.meta.env.VITE_URL + `/imagem/fotoscapas/${historiaData.foto_capa}`);
                     }
                     setLoading(false)
                 })
                 .catch((err) => {
-                    console.error(err)
+                    handleShowSnackbar(err.response.data.message, 'error');
                     setLoading(false)
                 })
         }
@@ -99,14 +97,12 @@ export default function Historia() {
     const handleFileChange = useCallback((file: File | null) => {
         if (file) {
             if (file instanceof File) {
-                // Caso seja um arquivo novo, atualiza o preview
                 const fileReader = new FileReader();
                 fileReader.onloadend = () => {
                     setPreviewUrl(fileReader.result as string);
                 };
                 fileReader.readAsDataURL(file);
             } else if (typeof file === "string") {
-                // Caso seja uma URL, atualiza diretamente
                 setPreviewUrl(file);
             }
         }
@@ -121,22 +117,18 @@ export default function Historia() {
         formData.append('texto_institucional', data.texto_institucional);
         formData.append('foto_capa', data.foto_capa || '');
 
-        console.log(data)
-
         axios.post(import.meta.env.VITE_URL + `/historias/${id}`, formData, {
             headers: {
                 "Authorization": 'Bearer ' + token.access_token
             }
         })
             .then((res) => {
-                console.log(res)
                 setLoading(false);
                 handleShowSnackbar('Historia atualizada com sucesso!', 'success');
             })
             .catch((err) => {
                 setLoading(false);
                 handleShowSnackbar('Erro ao atualizar historia', 'error');
-                console.error(err);
             })
     }, [id, handleShowSnackbar, setValue])
 
@@ -171,13 +163,13 @@ export default function Historia() {
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
-                                            setValue("foto_capa", file); // Atualiza o formulário
-                                            onChange(file); // Atualiza o react-hook-form
+                                            setValue("foto_capa", file); 
+                                            onChange(file); 
                                             handleFileChange(file);
                                         }}
                                         onDeleteImage={() => {
-                                            setValue("foto_capa", null); // Remove do formulário
-                                            setPreviewUrl(""); // Remove o preview
+                                            setValue("foto_capa", null);
+                                            setPreviewUrl("");
                                         }}
                                         error={!!errors.foto_capa}
                                     />

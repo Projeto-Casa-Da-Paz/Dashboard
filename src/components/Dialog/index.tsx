@@ -1,4 +1,3 @@
-// ConfirmationDialog.tsx
 import {
     Dialog,
     DialogActions,

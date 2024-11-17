@@ -4,7 +4,6 @@ import { verificaTokenExpirado } from "../../../services/token";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -24,7 +23,6 @@ import { SnackbarMui } from "../../../components/Snackbar";
 import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
 
-// Define a interface do formulário
 interface IForm {
     nome: string;
     email: string;
@@ -32,7 +30,6 @@ interface IForm {
     senha: string;
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -43,7 +40,6 @@ const FormTextField = styled(TextField)({
     marginBottom: '1rem',
 });
 
-// Regras de validação
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/
 const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/
@@ -93,12 +89,13 @@ export default function GerenciarUsuarios() {
                 .then((res) => {
                     const userData = res.data.data;
                     setIsEdit(true);
-                    // Atualiza os campos individualmente
                     setValue("nome", userData.nome || '');
                     setValue("email", userData.email || '');
                     setValue("perfil", userData.permissoes || '');
                 })
-                .catch(console.error)
+                .catch((error) => {
+                    handleShowSnackbar(error.response.data, 'error')
+                })
                 .finally(() => setLoading(false));
         }
     }, [id, navigate, setValue]);
@@ -120,7 +117,6 @@ export default function GerenciarUsuarios() {
                 setTimeout(() => { navigate('/usuarios') }, 1500)
             })
             .catch((error) => {
-                console.error(error);  
                 handleShowSnackbar(error.response.data, 'error')
             })
             .finally(() => setLoading(false));

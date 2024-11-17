@@ -4,7 +4,6 @@ import { styled } from '@mui/system';
 import { FormControl, FormHelperText, FormLabel } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 
-// Interface para as props do componente
 interface CustomTextareaProps {
   maxRows?: number;
   minRows?: number;
@@ -23,7 +22,6 @@ interface CustomTextareaProps {
   helperText?: string;
 }
 
-// Interface para as props do StyledTextarea
 interface StyledTextareaProps {
   theme?: Theme;
   error?: boolean;

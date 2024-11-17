@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -18,7 +17,7 @@ import {
     InputLabel,
 } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
-import Grid from "@mui/material/Grid2"; // Grid v2
+import Grid from "@mui/material/Grid2";
 import { styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -36,7 +35,6 @@ interface IContato {
     telefone: string;
 }
 
-// Componentes estilizados mantidos como estavam...
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -105,7 +103,6 @@ export const Contato = ({ setLoading }: IProps) => {
             })
             .catch((err) => {
                 handleShowSnackbar("Erro ao carregar dados da instituição", "error");
-                console.error(err);
                 setLoading(false);
             });
 

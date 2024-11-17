@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { verificaTokenExpirado } from "../../../services/token";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -24,7 +23,6 @@ import { SnackbarMui } from "../../../components/Snackbar";
 import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
-import { Watch } from "@mui/icons-material";
 
 interface IPremios {
     id: number;
@@ -84,7 +82,7 @@ export default function GerenciarPremios() {
 
 
     useEffect(() => {
-        setPreviewUrl(""); // Resetando a imagem ao navegar para outro parceiro
+        setPreviewUrl(""); 
         if (localStorage.length === 0 || verificaTokenExpirado()) {
             navigate("/");
             return;
@@ -107,7 +105,7 @@ export default function GerenciarPremios() {
                     setLoading(false)
                 })
                 .catch((err) => {
-                    console.error(err)
+                    handleShowSnackbar(err.response.data.message, 'error');
                     setLoading(false)
                 })
         }
@@ -117,14 +115,12 @@ export default function GerenciarPremios() {
     const handleFileChange = useCallback((file: File | null) => {
         if (file) {
             if (file instanceof File) {
-                // Caso seja um arquivo novo, atualiza o preview
                 const fileReader = new FileReader();
                 fileReader.onloadend = () => {
                     setPreviewUrl(fileReader.result as string);
                 };
                 fileReader.readAsDataURL(file);
             } else if (typeof file === "string") {
-                // Caso seja uma URL, atualiza diretamente
                 setPreviewUrl(file);
             }
         }
@@ -133,23 +129,12 @@ export default function GerenciarPremios() {
     const submitForm: SubmitHandler<IPremios> = useCallback((data) => {
         setLoading(true);
 
-        console.log('Dados enviados:', data);
-        console.log('URL:', import.meta.env.VITE_URL);
-        console.log('isEdit:', isEdit, 'id:', id);
-
-        // Cria um FormData e adiciona os campos
         const formData = new FormData();
         formData.append('id', data.id?.toString() || '');
         formData.append('nome', data.nome);
         formData.append('categoria', data.categoria);
         formData.append('data_recebimento', data.data_recebimento);
         formData.append('imagem', data.imagem || '');
-
-
-        // Debug - mostra os valores do FormData no console
-        for (const pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
 
         const config = {
             headers: {
@@ -168,7 +153,6 @@ export default function GerenciarPremios() {
 
         request
             .then((response) => {
-                console.log('Resposta da API:', response);
                 handleShowSnackbar(
                     isEdit
                         ? 'Prêmio editado com sucesso!'
@@ -179,7 +163,6 @@ export default function GerenciarPremios() {
                 setTimeout(() => { navigate('/premios'); }, 1500);
             })
             .catch((error) => {
-                console.error('Erro na requisição:', error.response);
                 const errorMessage = error.response?.data || 'Erro ao processar a requisição';
                 setLoading(false);
                 handleShowSnackbar(errorMessage, 'error');
@@ -271,13 +254,13 @@ export default function GerenciarPremios() {
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
-                                            setValue("imagem", file); // Atualiza o formulário
-                                            onChange(file); // Atualiza o react-hook-form
+                                            setValue("imagem", file);
+                                            onChange(file);
                                             handleFileChange(file);
                                         }}
                                         onDeleteImage={() => {
-                                            setValue("imagem", null); // Remove do formulário
-                                            setPreviewUrl(""); // Remove o preview
+                                            setValue("imagem", null);
+                                            setPreviewUrl("");
                                         }}
                                         error={!!errors.imagem}
                                     />

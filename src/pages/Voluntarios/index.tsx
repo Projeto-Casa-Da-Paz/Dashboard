@@ -35,7 +35,6 @@ export default function Voluntarios() {
 
     const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
-    // Inicio, Update State, Destruir
     useEffect(() => {
 
         if (localStorage.length == 0 || verificaTokenExpirado()) {
@@ -96,16 +95,15 @@ export default function Voluntarios() {
             width: 175,
             filterable: true,
             renderCell: (params: GridRenderCellParams) => {
-                const rawValue = params.value || ''; // Valor bruto do telefone
-                const numericValue = rawValue.replace(/\D/g, ''); // Remove caracteres não numéricos
+                const rawValue = params.value || ''; 
+                const numericValue = rawValue.replace(/\D/g, '');
 
-                // Aplica a máscara de telefone
                 const maskedValue =
                     numericValue.length === 11
                         ? `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 7)}-${numericValue.slice(7)}`
                         : numericValue.length === 10
                             ? `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 6)}-${numericValue.slice(6)}`
-                            : rawValue; // Retorna o valor original caso não seja 10 ou 11 dígitos
+                            : rawValue; 
 
                 return (
                     <Box>
@@ -195,7 +193,7 @@ export default function Voluntarios() {
                                 border: 2,
                                 borderColor: 'primary.light',
                                 '& .MuiDataGrid-cell': {
-                                    overflow: 'visible', // Permite que o conteúdo da célula apareça
+                                    overflow: 'visible',
                                     textOverflow: 'clip',
                                 },
                                 '& .MuiDataGrid-cell:hover': {

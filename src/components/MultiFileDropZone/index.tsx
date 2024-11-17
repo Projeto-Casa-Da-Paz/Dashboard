@@ -6,12 +6,11 @@ import {
   Paper,
   styled,
 } from "@mui/material";
-import Grid from "@mui/material/Grid2"; // Grid v2
+import Grid from "@mui/material/Grid2";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Theme } from "@mui/material/styles";
 
-// Styled Components
 const StyledDropZone = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'isDragActive' && prop !== 'hasFiles'
 })<{ isDragActive?: boolean; hasFiles?: boolean }>(
@@ -43,7 +42,7 @@ const StyledDropZone = styled(Paper, {
 const PreviewContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
   width: '100%',
-  paddingTop: '100%', // 1:1 Aspect Ratio
+  paddingTop: '100%', 
   '&:hover .delete-button': {
     opacity: 1,
   },
@@ -75,30 +74,27 @@ const DeleteButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-// Helper function to create alpha colors
 function alpha(color: string, value: number) {
   return color + Math.round(value * 255).toString(16).padStart(2, '0');
 }
 
-// Interface for file data
 interface FileData {
   file: File;
   preview: string;
   id: string;
 }
 
-// Component Props Interface
 interface MultiFileDropZoneProps {
   files?: File[];
   onChange?: (files: File[]) => void;
   maxFiles?: number;
-  clearFilesTrigger?: boolean; // New prop for clearing files
+  clearFilesTrigger?: boolean; 
 }
 
 export const MultiFileDropZone = ({
   onChange,
   maxFiles = 15,
-  clearFilesTrigger = false // Default to false
+  clearFilesTrigger = false 
 }: MultiFileDropZoneProps) => {
   const [files, setFiles] = useState<FileData[]>([]);
   const [isDragActive, setIsDragActive] = useState(false);
@@ -170,7 +166,6 @@ export const MultiFileDropZone = ({
     handleFileChange(e.dataTransfer.files);
   }, []);
 
-  // Cleanup function for preview URLs
   useEffect(() => {
     return () => {
       files.forEach(file => {
@@ -179,7 +174,6 @@ export const MultiFileDropZone = ({
     };
   }, []);
 
-  // Effect to clear files when `clearFilesTrigger` changes
   useEffect(() => {
     if (clearFilesTrigger) {
       setFiles([]);

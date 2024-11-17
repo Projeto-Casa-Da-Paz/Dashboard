@@ -73,7 +73,6 @@ export default function Parceiros() {
     }, [])
 
     const removeParceiro = useCallback((id: number) => {
-        // Abre o dialog e guarda o ID para usar depois
         setDialogState({
             open: true,
             id: id
@@ -145,7 +144,7 @@ export default function Parceiros() {
             field: 'acoes',
             headerName: 'Ações',
             flex: 1,
-            minWidth: 150, // Define uma largura mínima
+            minWidth: 150,
             filterable: false,
             sortable: false,
             headerAlign: 'center',
@@ -240,7 +239,7 @@ export default function Parceiros() {
                                 border: 2,
                                 borderColor: 'primary.light',
                                 '& .MuiDataGrid-cell': {
-                                    overflow: 'visible', // Permite que o conteúdo da célula apareça
+                                    overflow: 'visible',
                                     textOverflow: 'clip',
                                 },
                                 '& .MuiDataGrid-cell:hover': {

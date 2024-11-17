@@ -13,7 +13,7 @@ import {
     IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid2"; // Grid v2
+import Grid from "@mui/material/Grid2"; 
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import { verificaTokenExpirado } from "../../services/token";
@@ -25,12 +25,11 @@ import MultiFileDropZone from "../../components/MultiFileDropZone";
 import { IToken } from "../../interfaces/token";
 import { set, SubmitHandler, useForm } from "react-hook-form";
 
-// Interface atualizada para aceitar um array de imagens
 interface IFotos {
     id: number;
     nome: string;
     id_galeria: number;
-    imagens: File[]; // Array de imagens
+    imagens: File[]; 
 }
 
 interface IGalerias {
@@ -41,7 +40,6 @@ interface IGalerias {
     qtd_fotos: number
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -75,7 +73,7 @@ export default function Fotos() {
         defaultValues: {
             id: 0,
             id_galeria: 0,
-            imagens: [] // Array de imagens inicializado vazio
+            imagens: [] 
         }
     });
 
@@ -88,7 +86,7 @@ export default function Fotos() {
     const [dadosFotos, setDadosFotos] = useState<Array<IFotos>>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [limparFotos, setLimparFotos] = useState(false);
-    const [files, setFiles] = useState<File[]>([]); // Estado para armazenar os arquivos selecionados
+    const [files, setFiles] = useState<File[]>([]);
     const [dialogState, setDialogState] = useState({
         open: false,
         id: null as number | null
@@ -111,7 +109,6 @@ export default function Fotos() {
 
         setLoading(true);
 
-        // Fetch galeria details
         axios.get(import.meta.env.VITE_URL + `/galerias/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 setDadosGaleria(res.data);
@@ -180,16 +177,13 @@ export default function Fotos() {
                 });
         };
 
-        // Upload de cada foto em sequência
         const uploadAllPhotos = files.reduce((promise, file, index) => {
             return promise.then(() => uploadPhoto(file, index));
         }, Promise.resolve());
 
-        // Após o upload de todas as fotos, atualizar o estado e a galeria
         uploadAllPhotos
             .then(() => {
                 setDadosFotos((prevRows) => [...prevRows, ...uploadedPhotos]);
-                // Atualizar dados da galeria
                 setDadosGaleria({
                     ...dadosGaleria!,
                     qtd_fotos: dadosGaleria?.qtd_fotos! + uploadedPhotos.length,
@@ -218,14 +212,11 @@ export default function Fotos() {
     const handleConfirmedDelete = useCallback(async (fotoId: number) => {
         setLoading(true);
         try {
-            // Chamada de API para excluir uma única foto com base no `id`
             await axios.delete(`${import.meta.env.VITE_URL}/fotos/${fotoId}`, {
                 headers: {
                     Authorization: `Bearer ${token.access_token}`
                 }
             });
-
-            // Atualiza o estado `dadosFotos` removendo a foto excluída
             setDadosFotos((prevFotos) => prevFotos.filter((foto) => foto.id !== fotoId));
             setDadosGaleria(dadosGaleria ? { ...dadosGaleria, qtd_fotos: dadosGaleria.qtd_fotos - 1 } : undefined);
             updateGalleryCoverCount({ ...dadosGaleria, qtd_fotos: dadosGaleria?.qtd_fotos! - 1 });
@@ -273,7 +264,7 @@ export default function Fotos() {
                             </Typography>
                             <MultiFileDropZone
                                 files={files}
-                                onChange={handleFilesChange} // Atualiza os arquivos selecionados
+                                onChange={handleFilesChange}
                                 maxFiles={15}
                                 clearFilesTrigger={limparFotos}
                             />

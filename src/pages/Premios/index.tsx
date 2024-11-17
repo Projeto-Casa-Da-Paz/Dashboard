@@ -240,7 +240,7 @@ export default function Premios() {
                                 border: 2,
                                 borderColor: 'primary.light',
                                 '& .MuiDataGrid-cell': {
-                                    overflow: 'visible', // Permite que o conteúdo da célula apareça
+                                    overflow: 'visible',
                                     textOverflow: 'clip',
                                 },
                                 '& .MuiDataGrid-cell:hover': {

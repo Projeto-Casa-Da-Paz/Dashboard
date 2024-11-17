@@ -4,7 +4,6 @@ import { styled } from "@mui/material/styles";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-// Estilos
 const StyledDropZone = styled(Box, {
     shouldForwardProp: (prop) => prop !== 'isDragActive' && prop !== 'hasFile' && prop !== 'error'
 })<{ isDragActive?: boolean; hasFile?: boolean; error?: boolean }>(
@@ -53,7 +52,6 @@ const DeleteButton = styled(IconButton)(({ theme }) => ({
     },
 }));
 
-// Interface para os props
 interface DropZoneProps {
     previewUrl: string;
     onFileChange: (file: File | null) => void;
@@ -70,7 +68,7 @@ export const DropZone = ({ previewUrl, onFileChange, onDeleteImage, error }: Dro
         if (file && file.type.startsWith('image/')) {
             onFileChange(file);
         } else {
-            onFileChange(null); // ou exibir um erro
+            onFileChange(null); 
         }
     };
 
@@ -101,7 +99,7 @@ export const DropZone = ({ previewUrl, onFileChange, onDeleteImage, error }: Dro
                 isDragActive={isDragActive}
                 hasFile={!!previewUrl}
                 error={error}
-                onClick={() => inputFileRef.current?.click()} // Chama o clique no input
+                onClick={() => inputFileRef.current?.click()} 
                 onDragEnter={handleDragEnter}
                 onDragOver={handleDragEnter}
                 onDragLeave={handleDragLeave}

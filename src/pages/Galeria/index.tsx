@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Controller, set, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -24,7 +23,7 @@ import {
     Badge,
 } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
-import Grid from "@mui/material/Grid2"; // Grid v2
+import Grid from "@mui/material/Grid2";
 import { styled } from "@mui/material/styles";
 import CropOriginalIcon from '@mui/icons-material/CropOriginal';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
@@ -100,7 +99,6 @@ export default function Galerias() {
     }, [setSnackbarVisible, setMessage, setSeverity]);
 
     const removeGaleria = useCallback((id: number) => {
-        // Abre o dialog e guarda o ID para usar depois
         setDialogState({
             open: true,
             id: id
@@ -181,14 +179,14 @@ export default function Galerias() {
                                             <Badge badgeContent={String(galeria.qtd_fotos)} color="primary">
                                                 <CropOriginalIcon
                                                     sx={{
-                                                        fontSize: { xs: '1.25rem', sm: '1.75rem', md: '3rem' } // Tamanho adaptativo do ícone
+                                                        fontSize: { xs: '1.25rem', sm: '1.75rem', md: '3rem' }
                                                     }}
                                                 />
                                             </Badge>
 
                                             <Typography variant="h6" component="h2"
                                                 sx={{
-                                                    fontSize: { xs: '0.55rem', sm: '0.75rem', md: '1.10rem' } // Tamanho adaptativo do texto
+                                                    fontSize: { xs: '0.55rem', sm: '0.75rem', md: '1.10rem' } 
                                                 }}
                                             >
                                                 {galeria.nome}
@@ -196,7 +194,7 @@ export default function Galerias() {
 
                                             <Typography variant="h6" component="h6"
                                                 sx={{
-                                                    fontSize: { xs: '0.55rem', sm: '0.75rem', md: '1.10rem' } // Tamanho adaptativo da data
+                                                    fontSize: { xs: '0.55rem', sm: '0.75rem', md: '1.10rem' } 
                                                 }}
                                             >
                                                 Data: {new Date(galeria.data).toLocaleDateString("pt-BR")}
@@ -208,7 +206,7 @@ export default function Galerias() {
                                                 >
                                                     <AddToPhotosIcon
                                                         sx={{
-                                                            fontSize: { xs: '1rem', sm: '1.40rem', md: '2.5rem' } // Tamanho adaptativo do ícone
+                                                            fontSize: { xs: '1rem', sm: '1.40rem', md: '2.5rem' }
                                                         }}
                                                     />
                                                 </IconButton>
@@ -217,7 +215,7 @@ export default function Galerias() {
                                                 >
                                                     <EditIcon
                                                         sx={{
-                                                            fontSize: { xs: '1rem', sm: '1.40rem', md: '2.5rem' } // Tamanho adaptativo do ícone
+                                                            fontSize: { xs: '1rem', sm: '1.40rem', md: '2.5rem' } 
                                                         }}
                                                     />
                                                 </IconButton>
@@ -226,7 +224,7 @@ export default function Galerias() {
                                                 >
                                                     <DeleteIcon
                                                         sx={{
-                                                            fontSize: { xs: '1rem', sm: '1.40rem', md: '2.5rem' } // Tamanho adaptativo do ícone
+                                                            fontSize: { xs: '1rem', sm: '1.40rem', md: '2.5rem' } 
                                                         }}
                                                     />
                                                 </IconButton>

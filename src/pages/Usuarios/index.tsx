@@ -51,7 +51,6 @@ export default function Usuarios() {
 
     const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
 
-    // Inicio, Update State, Destruir
     useEffect(() => {
 
         if (localStorage.length == 0 || verificaTokenExpirado()) {
@@ -59,12 +58,10 @@ export default function Usuarios() {
         }
 
         setLoading(true)
-        console.log(token)
         axios.get(import.meta.env.VITE_URL + '/usuarios', { headers: { Authorization: `Bearer ${token.access_token}` } })
             .then((res) => {
                 setdadosUsers(res.data.data)
                 setLoading(false)
-                console.log(res.data.data)
             })
             .catch((err) => {
                 setLoading(false)
@@ -118,7 +115,7 @@ export default function Usuarios() {
             field: 'acoes',
             headerName: 'Ações',
             flex: 2,
-            minWidth: 150, // Define uma largura mínima
+            minWidth: 150, 
             filterable: false,
             sortable: false,
             headerAlign: 'center',
@@ -145,7 +142,6 @@ export default function Usuarios() {
     ]
 
     const removeUser = useCallback((id: number) => {
-        // Abre o dialog e guarda o ID para usar depois
         setDialogState({
             open: true,
             id: id
@@ -222,7 +218,7 @@ export default function Usuarios() {
                                 border: 2,
                                 borderColor: 'primary.light',
                                 '& .MuiDataGrid-cell': {
-                                    overflow: 'visible', // Permite que o conteúdo da célula apareça
+                                    overflow: 'visible',
                                     textOverflow: 'clip',
                                 },
                                 '& .MuiDataGrid-cell:hover': {

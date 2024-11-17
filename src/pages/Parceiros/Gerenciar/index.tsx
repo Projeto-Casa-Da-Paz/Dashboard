@@ -4,7 +4,6 @@ import { verificaTokenExpirado } from "../../../services/token";
 import { Controller, set, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -27,7 +26,6 @@ import { Loading } from "../../../components/Loading";
 import { IToken } from "../../../interfaces/token";
 import { Watch } from "@mui/icons-material";
 
-// Define a interface do formulário
 interface IParceiros {
     id: number
     nome: string
@@ -36,7 +34,6 @@ interface IParceiros {
     imagem: File | null
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -104,13 +101,13 @@ export default function GerenciarParceiros() {
                     setValue("classificacao", parceiroData.classificacao || "");
                     setValue("data_inicio", parceiroData.data_inicio || "");
                     if (parceiroData.imagem) {
-                        setValue("imagem", parceiroData.imagem); // Atualiza o campo no formulário
-                        setPreviewUrl(`${import.meta.env.VITE_URL}/imagem/${parceiroData.imagem}`); // Exibe a imagem
+                        setValue("imagem", parceiroData.imagem);
+                        setPreviewUrl(`${import.meta.env.VITE_URL}/imagem/${parceiroData.imagem}`);
                     }
                     setLoading(false);
                 })
                 .catch((err) => {
-                    console.error(err);
+                    handleShowSnackbar(err.response.data.message, 'error');
                     setLoading(false);
                 });
         }
@@ -120,14 +117,12 @@ export default function GerenciarParceiros() {
     const handleFileChange = useCallback((file: File | null) => {
         if (file) {
             if (file instanceof File) {
-                // Caso seja um arquivo novo, atualiza o preview
                 const fileReader = new FileReader();
                 fileReader.onloadend = () => {
                     setPreviewUrl(fileReader.result as string);
                 };
                 fileReader.readAsDataURL(file);
             } else if (typeof file === "string") {
-                // Caso seja uma URL, atualiza diretamente
                 setPreviewUrl(file);
             }
         }
@@ -137,35 +132,21 @@ export default function GerenciarParceiros() {
     const submitForm: SubmitHandler<IParceiros> = useCallback((data) => {
         setLoading(true);
 
-        console.log('Dados enviados:', data);
-        console.log('URL:', import.meta.env.VITE_URL);
-        console.log('isEdit:', isEdit, 'id:', id);
-
-        // Cria um FormData e adiciona os campos
         const formData = new FormData();
         formData.append('id', data.id?.toString() || '');
         formData.append('nome', data.nome);
         formData.append('classificacao', data.classificacao);
         formData.append('data_inicio', data.data_inicio);
 
-        // Se data.imagem for um File, adiciona diretamente
-        // Se for uma string (URL existente), adiciona como string
         if (data.imagem instanceof File) {
             formData.append('imagem', data.imagem);
         } else if (data.imagem) {
             formData.append('imagem', data.imagem);
         }
 
-        // Para debug - mostra todos os valores do FormData
-        for (const pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
-
         const config = {
             headers: {
                 'authorization': `Bearer ${token.access_token}`,
-                // Não definimos Content-Type aqui pois o axios vai configurar 
-                // automaticamente com o boundary correto para multipart/form-data
             }
         };
 
@@ -179,7 +160,6 @@ export default function GerenciarParceiros() {
 
         request
             .then((response) => {
-                console.log('Resposta da API:', response);
                 handleShowSnackbar(
                     isEdit
                         ? 'Parceiro editado com sucesso!'
@@ -190,7 +170,6 @@ export default function GerenciarParceiros() {
                 setTimeout(() => { navigate('/parceiros'); }, 1500);
             })
             .catch((error) => {
-                console.error('Erro na requisição:', error.response);
                 const errorMessage = error.response?.data || 'Erro ao processar a requisição';
                 setLoading(false);
                 handleShowSnackbar(errorMessage, 'error');
@@ -285,13 +264,13 @@ export default function GerenciarParceiros() {
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
-                                            setValue("imagem", file); // Atualiza o formulário
-                                            onChange(file); // Atualiza o react-hook-form
+                                            setValue("imagem", file); 
+                                            onChange(file); 
                                             handleFileChange(file);
                                         }}
                                         onDeleteImage={() => {
-                                            setValue("imagem", null); // Remove do formulário
-                                            setPreviewUrl(""); // Remove o preview
+                                            setValue("imagem", null);
+                                            setPreviewUrl(""); 
                                         }}
                                         error={!!errors.imagem}
                                     />

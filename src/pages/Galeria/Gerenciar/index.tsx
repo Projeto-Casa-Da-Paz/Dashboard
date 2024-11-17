@@ -4,7 +4,6 @@ import { verificaTokenExpirado } from "../../../services/token";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 
-// Material UI imports
 import {
     Box,
     Button,
@@ -32,7 +31,6 @@ interface IGalerias {
     data: string
 }
 
-// Componentes estilizados
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     marginTop: theme.spacing(4),
@@ -97,7 +95,7 @@ export default function GerenciarGalerias() {
                     setLoading(false)
                 })
                 .catch((error) => {
-                    console.error('Erro ao buscar galeria:', error);
+                    handleShowSnackbar("Galeria não encontrada", "error");
                     setLoading(false);
                 })
         }
@@ -108,11 +106,6 @@ export default function GerenciarGalerias() {
     const submitForm: SubmitHandler<IGalerias> = useCallback((data) => {
         setLoading(true);
 
-        console.log('Dados enviados:', data);
-        console.log('URL:', import.meta.env.VITE_URL);
-        console.log('isEdit:', isEdit, 'id:', id);
-
-        // Cria um objeto simples com os dados
         const payload = {
             id: data.id,
             nome: data.nome,
@@ -133,7 +126,6 @@ export default function GerenciarGalerias() {
 
         request
             .then((response) => {
-                console.log('Resposta da API:', response);
                 handleShowSnackbar(
                     isEdit
                         ? 'Galeria editado com sucesso!'
@@ -154,7 +146,6 @@ export default function GerenciarGalerias() {
                 }, 1500);
             })
             .catch((error) => {
-                console.error('Erro na requisição:', error.response);
                 const errorMessage = error.response?.data || 'Erro ao processar a requisição';
                 setLoading(false);
                 handleShowSnackbar(errorMessage, 'error');

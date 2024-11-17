@@ -109,7 +109,6 @@ export const Endereco = ({ setLoading }: IProps) => {
             })
             .catch((err) => {
                 handleShowSnackbar("Erro ao carregar endereços", "error");
-                console.log(err)
                 setLoading(false);
             });
     }, [navigate, setLocaisValue]);
@@ -147,7 +146,7 @@ export const Endereco = ({ setLoading }: IProps) => {
                 setLocaisValue(`locais.${index}.estado`, uf);
                 setLocaisValue(`locais.${index}.cep`, cep);
             } catch (error) {
-                console.error("Erro ao buscar o CEP:", error);
+                handleShowSnackbar("CEP inválido", "error");
             }
         }
     }, [setLocaisValue]);
