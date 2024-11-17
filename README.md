@@ -1,3 +1,9 @@
+<!-- Versão mais simples -->
+![React](https://img.shields.io/badge/-React-61DAFB?style=flat&logo=react&logoColor=black)
+
+<!-- Versão com fundo escuro -->
+![React](https://img.shields.io/badge/-React-20232A?style=flat&logo=react&logoColor=61DAFB)
+
 # Casa da Paz - Painel Administrativo
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
