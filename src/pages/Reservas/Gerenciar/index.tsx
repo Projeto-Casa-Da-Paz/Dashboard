@@ -2,6 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { verificaTokenExpirado } from "../../../services/token";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+import dayjs from 'dayjs';
+
+
 import axios from "axios";
 
 import {
@@ -20,15 +26,21 @@ import {
 import { styled } from "@mui/material/styles";
 import { LayoutDashboard } from "../../../components/LayoutDashboard";
 import { SnackbarMui } from "../../../components/Snackbar";
+import DropZone from "../../../components/Dropzone";
 import { Loading } from "../../../components/Loading";
-import { CustomTextarea } from "../../../components/CustomTextArea";
 import { IToken } from "../../../interfaces/token";
 
-interface IGalerias {
+interface IReserva {
+    id: number
+    ambiente_id: number
+    horario: string
+    data: string
+    usuario_id: number
+}
+
+interface IAmbiente {
     id: number
     nome: string
-    local: string
-    data: string
 }
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -42,25 +54,29 @@ const FormTextField = styled(TextField)({
 });
 
 
-export default function GerenciarGalerias() {
+export default function GerenciarReservas() {
     const {
         control,
         handleSubmit,
         setValue,
+        getValues,
         formState: { errors },
-    } = useForm<IGalerias>({
+    } = useForm<IReserva>({
         defaultValues: {
             id: 0,
-            nome: "",
-            local: "",
-            data: ""
+            ambiente_id: 0,
+            horario: '',
+            data: ''
         }
     });
 
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [message, setMessage] = useState('');
     const [severity, setSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('info');
-    const [previewUrl, setPreviewUrl] = useState<string>('');
+    const [ambientes, setAmbientes] = useState<Map<number, string>>(new Map())
+
+
+
 
     const handleShowSnackbar = (msg: string, sev: 'success' | 'error' | 'info' | 'warning') => {
         setMessage(msg);
@@ -73,7 +89,8 @@ export default function GerenciarGalerias() {
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState<boolean>(false);
 
-    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+    const token = JSON.parse(localStorage.getItem('auth.token') || '') as IToken
+
 
     useEffect(() => {
         if (localStorage.length === 0 || verificaTokenExpirado()) {
@@ -81,76 +98,84 @@ export default function GerenciarGalerias() {
             return;
         }
 
-        const galeriaId = Number(id);
-        if (!isNaN(galeriaId)) {
+        // Busca ambientes
+        axios.get(import.meta.env.VITE_URL + '/ambientes', { headers: { Authorization: `Bearer ${token.accessToken}` } })
+            .then((res) => {
+                const ambienteMap = new Map<number, string>()
+                res.data.forEach((ambiente: IAmbiente) => {
+                    ambienteMap.set(ambiente.id, ambiente.nome)
+                })
+                setAmbientes(ambienteMap)
+            })
+            .catch(() => handleShowSnackbar("Erro ao buscar ambientes", "error"))
+
+        const reservaId = Number(id);
+        if (!isNaN(reservaId)) {
             setLoading(true);
-            axios.get(import.meta.env.VITE_URL + `/galerias/${galeriaId}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+            /*axios.get(import.meta.env.VITE_URL + `/reservas/${reservaId}`, { headers: { Authorization: `Bearer ${token.accessToken}` } })
                 .then((res) => {
-                    const galeriaData = res.data;
+                    const premioData = res.data;
                     setIsEdit(true);
-                    setValue("id", galeriaData.id || 0);
-                    setValue("nome", galeriaData.nome || '');
-                    setValue("local", galeriaData.local || '');
-                    setValue("data", galeriaData.data || '');
+                    setValue("id", premioData.id || 0);
+                    setValue("nome", premioData.nome || '');
+                    setValue("categoria", premioData.categoria || '');
+                    setValue("data_recebimento", premioData.data_recebimento || '');
+
                     setLoading(false)
                 })
-                .catch((error) => {
-                    handleShowSnackbar("Galeria não encontrada", "error");
-                    setLoading(false);
-                })
+                .catch((err) => {
+                    handleShowSnackbar(err.response.data.message, 'error');
+                    setLoading(false)
+                })*/
         }
-
-
     }, [id, navigate, setValue]);
 
-    const submitForm: SubmitHandler<IGalerias> = useCallback((data) => {
+    function submitForm(data: IReserva, event?: BaseSyntheticEvent<object, any, any> | undefined): unknown {
+        throw new Error("Function not implemented.");
+    }
+
+    /*const submitForm: SubmitHandler<IReserva> = useCallback((data) => {
         setLoading(true);
 
-        const payload = {
-            id: data.id,
-            nome: data.nome,
-            local: data.local,
-            data: data.data
-        };
+        const formData = new FormData();
+        formData.append('id', data.id?.toString() || '');
+        formData.append('nome', data.nome);
+        formData.append('categoria', data.categoria);
+        formData.append('data_recebimento', data.data_recebimento);
+        formData.append('imagem', data.imagem || '');
 
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                'authorization': `Bearer ${token.access_token}`
+                authorization: `Bearer ${token.accessToken}`,
             }
         };
 
+        const url = isEdit
+            ? `${import.meta.env.VITE_URL}/premios/${id}`
+            : `${import.meta.env.VITE_URL}/premios/`;
+
         const request = isEdit
-            ? axios.post(`${import.meta.env.VITE_URL}/galerias/${id}`, payload, config)
-            : axios.post(`${import.meta.env.VITE_URL}/galerias/`, payload, config);
+            ? axios.post(url, formData, config)
+            : axios.post(url, formData, config);
 
         request
             .then((response) => {
                 handleShowSnackbar(
                     isEdit
-                        ? 'Galeria editado com sucesso!'
-                        : 'Galeria adicionada com sucesso!',
+                        ? 'Prêmio editado com sucesso!'
+                        : 'Prêmio adicionado com sucesso!',
                     'success'
                 );
                 setLoading(false);
-                setTimeout(() => {
-                    isEdit
-                        ? navigate(`/galerias`)
-                        : navigate('/galerias', {
-                            state: {
-                                snackbarMessage: 'Galeria ' + data.nome + ' está sem fotos, clique no botão de "+" para adicionar fotos !',
-                                snackbarSeverity: 'warning'
-                            }
-                        });
-
-                }, 1500);
+                setTimeout(() => { navigate('/premios'); }, 1500);
             })
             .catch((error) => {
                 const errorMessage = error.response?.data || 'Erro ao processar a requisição';
                 setLoading(false);
                 handleShowSnackbar(errorMessage, 'error');
             });
-    }, [isEdit, id, navigate]);
+    }, [isEdit, id, navigate]);*/
 
 
     return (
@@ -170,65 +195,47 @@ export default function GerenciarGalerias() {
                 <Container maxWidth="md">
                     <StyledPaper elevation={3}>
                         <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
-                            {isEdit ? "Editar Galeria" : "Adicionar Galeria"}
+                            {isEdit ? "Editar Reserva" : "Adicionar Reserva"}
                         </Typography>
 
                         <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate>
-                            <Controller
-                                name="nome"
-                                control={control}
-                                rules={{
-                                    required: 'Nome é obrigatório!'
-                                }}
-                                render={({ field }) => (
-                                    <FormTextField
-                                        {...field}
-                                        fullWidth
-                                        label="Nome da Galeria"
-                                        error={!!errors.nome}
-                                        helperText={errors.nome?.message}
-                                    />
-                                )}
-                            />
 
                             <Controller
-                                name="local"
+                                name="ambiente_id"
                                 control={control}
-                                rules={{
-                                    required: 'Descrição é obrigatória!'
-                                }}
+                                rules={{ required: 'Categoria é obrigatória!' }}
                                 render={({ field }) => (
-                                    <CustomTextarea
-                                        {...field}
-                                        minRows={10}
-                                        placeholder={"Exemplo:\nFotos tiradas na missão da Casa da Paz."}
-                                        aria-label="Descrição"
-                                        label="Descrição"
-                                        error={!!errors.local}
-                                        helperText={errors.local?.message}
-                                    />
+                                    <FormControl fullWidth error={!!errors.ambiente_id} sx={{ mb: 2 }}>
+                                        <InputLabel>Ambientes</InputLabel>
+                                        <Select {...field} label="Categoria">
+                                            <MenuItem value="">Selecione o Ambiente</MenuItem>
+                                            {Array.from(ambientes.entries()).map(([key, value]) => (
+                                                <MenuItem key={key} value={key}>{value}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        {errors.ambiente_id && (
+                                            <FormHelperText>{errors.ambiente_id.message}</FormHelperText>
+                                        )}
+                                    </FormControl>
                                 )}
                             />
 
                             <Controller
                                 name="data"
                                 control={control}
-                                rules={{ required: 'Data é obrigatória!' }}
                                 render={({ field }) => (
-                                    <FormTextField
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <StaticDatePicker
                                         {...field}
-                                        sx={{ mt: 5 }}
-                                        aria-label="Data"
-                                        fullWidth
-                                        label="Data"
-                                        type="date"
-                                        error={!!errors.data}
-                                        helperText={errors.data?.message}
-                                        InputLabelProps={{ shrink: true }}
+                                        displayStaticWrapperAs="desktop" // Mantém o DatePicker estático
+                                        value={dayjs(field.value)}
+                                        onChange={(newValue) => field.onChange(dayjs(newValue).toDate())}
                                     />
+                                    </LocalizationProvider>
                                 )}
                             />
 
+                            
                             <Button
                                 type="submit"
                                 variant="contained"

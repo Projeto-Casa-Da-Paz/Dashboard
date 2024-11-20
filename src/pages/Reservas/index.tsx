@@ -25,22 +25,30 @@ import { LayoutDashboard } from "../../components/LayoutDashboard"
 import { ConfirmationDialog } from "../../components/Dialog"
 import { SnackbarMui } from "../../components/Snackbar"
 import { IToken } from "../../interfaces/token"
+import { GridInitialStateCommunity } from "@mui/x-data-grid/models/gridStateCommunity"
 
-interface IPremios {
+interface IReserva {
     id: number
-    nome: string
-    categoria: string
-    data_recebimento: string
-    imagem: string
+    ambiente_id: number
+    horario: string
+    data: string
+    usuario_id: number
+    status: string
 }
 
-export default function Premios() {
+interface IAmbiente {
+    id: number
+    nome: string
+}
+
+export default function Reservas() {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
-    const [dadosPremios, setdadosPremios] = useState<Array<IPremios>>([])
+    const [dadosReservas, setDadosReservas] = useState<Array<IReserva>>([])
+    const [ambientes, setAmbientes] = useState<Map<number, string>>(new Map())
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 10,
@@ -49,8 +57,8 @@ export default function Premios() {
         open: false,
         id: null as number | null
     })
-    
-    const token = JSON.parse(localStorage.getItem('casadapaz.token') || '') as IToken
+
+    const token = JSON.parse(localStorage.getItem('auth.token') || '') as IToken
 
     useEffect(() => {
         if (localStorage.length == 0 || verificaTokenExpirado()) {
@@ -59,13 +67,24 @@ export default function Premios() {
 
         setLoading(true)
 
-        axios.get(import.meta.env.VITE_URL + '/premios', { headers: { Authorization: `Bearer ${token.access_token}` } })
+        // Busca ambientes
+        axios.get(import.meta.env.VITE_URL + '/ambientes', { headers: { Authorization: `Bearer ${token.accessToken}` } })
             .then((res) => {
-                setdadosPremios(res.data)
+                const ambienteMap = new Map<number, string>()
+                res.data.forEach((ambiente: IAmbiente) => {
+                    ambienteMap.set(ambiente.id, ambiente.nome)
+                })
+                setAmbientes(ambienteMap)
+            })
+            .catch(() => handleShowSnackbar("Erro ao buscar ambientes", "error"))
+
+        axios.get(import.meta.env.VITE_URL + '/reservas?usuario_id=' + token.user.id, { headers: { Authorization: `Bearer ${token.accessToken}` } })
+            .then((res) => {
+                setDadosReservas(res.data)
                 setLoading(false)
             })
             .catch((err) => {
-                setdadosPremios(err)
+                setDadosReservas(err)
                 setLoading(false)
             })
     }, [])
@@ -90,46 +109,38 @@ export default function Premios() {
             align: 'center'
         },
         {
-            field: 'imagem',
-            headerName: 'Imagem',
-            width: 150,
-            filterable: false,
-            display: 'flex',
-            sortable: false,
-            align: 'center',
-            headerAlign: 'center',
-            renderCell: (params: GridRenderCellParams) => (
-                <Avatar
-                    src={import.meta.env.VITE_URL + `/imagem/premios/${params.value}`}
-                    alt="Imagem do prêmio"
-                    sx={{ width: 75, height: 75 }}
-                />
-            ),
-        },
-        {
-            field: 'nome',
-            headerName: 'Nome',
-            width: 250,
-            filterable: true,
-        },
-        {
-            field: 'categoria',
-            headerName: 'Categoria',
-            width: 150,
-            filterable: true,
-            headerAlign: 'center',
-            align: 'center',
-        },
-        {
-            field: 'data_recebimento',
-            headerName: 'Data Recebimento',
+            field: 'ambiente_id',
+            headerName: 'Ambiente',
             width: 200,
+            filterable: true,
+            valueGetter: (params) => ambientes.get(params) || "Desconhecido",
+        },
+        {
+            field: 'horario',
+            headerName: 'Horário',
+            width: 150,
+            filterable: true,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'data',
+            headerName: 'Data',
+            width: 150,
             filterable: true,
             headerAlign: 'center',
             align: 'center',
             valueGetter: (params: GridValueGetter) => {
                 return new Date(params + 'T00:00:00').toLocaleDateString("pt-BR")
             },
+        },
+        {
+            field: 'status',
+            headerName: 'Situação',
+            width: 150,
+            filterable: true,
+            headerAlign: 'center',
+            align: 'center',
         },
         {
             field: 'acoes',
@@ -144,7 +155,7 @@ export default function Premios() {
                 <Box >
                     <IconButton
                         color="primary"
-                        onClick={() => navigate(`/premios/${params.row.id}`)}
+                        onClick={() => navigate(`/reservas/${params.row.id}`)}
                         size="large"
                     >
                         <EditIcon />
@@ -152,7 +163,7 @@ export default function Premios() {
                     <IconButton
                         color="error"
                         size="large"
-                        onClick={() => removePremios(params.row.id)}
+                        onClick={() => cancelaReserva(params.row.id)}
                     >
                         <DeleteIcon />
                     </IconButton>
@@ -161,8 +172,8 @@ export default function Premios() {
         },
     ]
 
-    const removePremios = useCallback((id: number) => {
-        
+    const cancelaReserva = useCallback((id: number) => {
+
         setDialogState({
             open: true,
             id: id
@@ -172,14 +183,14 @@ export default function Premios() {
     const handleConfirmedDelete = useCallback(() => {
         const id = dialogState.id;
 
-        axios.delete(import.meta.env.VITE_URL + `/premios/${id}`, { headers: { Authorization: `Bearer ${token.access_token}` } })
+        axios.delete(import.meta.env.VITE_URL + `/reservas/${id}`, { headers: { Authorization: `Bearer ${token.accessToken}` } })
             .then(() => {
-                handleShowSnackbar("Prêmio removido com sucesso", "success");
-                setdadosPremios((prevRows) => prevRows.filter((row) => row.id !== id));
+                handleShowSnackbar("Reserva cancelada com sucesso", "success");
+                setDadosReservas((prevRows) => prevRows.filter((row) => row.id !== id));
                 setLoading(false)
             })
             .catch((error) => {
-                const errorMessage = error.response?.data || "Erro ao remover Prêmio";
+                const errorMessage = error.response?.data || "Erro ao cancelar Reserva";
                 setLoading(false)
                 handleShowSnackbar(errorMessage, "error");
             })
@@ -203,19 +214,19 @@ export default function Premios() {
                     <ConfirmationDialog
                         open={dialogState.open}
                         title="Confirmar exclusão"
-                        message="Tem certeza que deseja excluir este Prêmio?"
+                        message="Tem certeza que deseja cancelar esta Reserva ?"
                         onConfirm={handleConfirmedDelete}
                         onClose={() => setDialogState({ open: false, id: null })}
                     />
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                         <Typography variant="h4" component="h1">
-                            Prêmios
+                            Reservas
                         </Typography>
                         <Button
                             variant="contained"
-                            color="success"
+                            color="primary"
                             startIcon={<AddIcon />}
-                            onClick={() => navigate('/premios/add')}
+                            onClick={() => navigate('/reservas/add')}
                         >
                             Adicionar
                         </Button>
@@ -223,10 +234,15 @@ export default function Premios() {
 
                     <Box sx={{ width: '100%' }}>
                         <DataGrid
-                            rows={dadosPremios}
+                            rows={dadosReservas}
                             columns={columns}
-                            rowHeight={90}
+                            rowHeight={50}
                             density="standard"
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'data', sort: 'asc' }], // Ordenação inicial
+                                },
+                            } as GridInitialStateCommunity}
                             paginationModel={paginationModel}
                             onPaginationModelChange={setPaginationModel}
                             pageSizeOptions={[10, 25, 50, { value: -1, label: 'Todos os Registros' }]}

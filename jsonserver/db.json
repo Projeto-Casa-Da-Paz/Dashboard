@@ -4,192 +4,181 @@
       "id": 1,
       "nome": "Adenilson",
       "email": "admin@gmail.com",
-      "permissao": "admin",
-      "password": "$2a$10$Y4/4ws04wYotZQg2RB1bwurp7W6RCq.NLrUEEONlOZEdjLXCVG/LW"
+      "password": "$2a$10$Y4/4ws04wYotZQg2RB1bwurp7W6RCq.NLrUEEONlOZEdjLXCVG/LW",
+      "telefone": "44912244678",
+      "cpf": "13354362433",
+      "isAdmin": 1,
+      "isUser": 1
+    },
+    {
+      "id": 2,
+      "nome": "Adenilso2",
+      "email": "admin2@gmail.com",
+      "password": "$2a$10$Y4/4ws04wYotZQg2RB1bwurp7W6RCq.NLrUEEONlOZEdjLXCVG/LW",
+      "telefone": "44912244678",
+      "cpf": "13354362433",
+      "isAdmin": 0,
+      "isUser": 1
     }
   ],
-  "premios": [
+  "ambientes": [
     {
       "id": 1,
-      "nome": "Selo Top",
-      "categoria": "Business",
-      "data_recebimento": "2020-01-01",
-      "imagem": "premioLogo.png"
+      "nome": "Sala de Reuniões 1",
+      "descricao": "Ambiente para reuniões com capacidade para 10 pessoas."
+    },
+    {
+      "id": 2,
+      "nome": "Auditório",
+      "descricao": "Auditório com capacidade para 50 pessoas e espaço para palestras."
+    }
+  ],
+  "horarios_funcionamento": [
+    {
+      "id": 1,
+      "ambiente_id": 1,
+      "horario": "00:00-01:00"
+    },
+    {
+      "id": 2,
+      "ambiente_id": 1,
+      "horario": "01:00-02:00"
+    },
+    {
+      "id": 3,
+      "ambiente_id": 1,
+      "horario": "02:00-03:00"
     },
     {
       "id": 4,
-      "nome": "Adenilson1",
-      "categoria": "academico",
-      "data_recebimento": "2024-10-03",
-      "imagem": {}
+      "ambiente_id": 1,
+      "horario": "03:00-04:00"
     },
     {
       "id": 5,
-      "nome": "Adenilson1",
-      "categoria": "academico",
-      "data_recebimento": "2024-10-09",
-      "imagem": {}
+      "ambiente_id": 1,
+      "horario": "04:00-05:00"
     },
     {
       "id": 6,
-      "nome": "Adenilson2",
-      "categoria": "honraria",
-      "data_recebimento": "2020-01-01",
-      "imagem": {}
+      "ambiente_id": 1,
+      "horario": "05:00-06:00"
     },
     {
       "id": 7,
-      "nome": "teste",
-      "categoria": "academico",
-      "data_recebimento": "2024-10-08",
-      "imagem": {}
+      "ambiente_id": 1,
+      "horario": "06:00-07:00"
+    },
+    {
+      "id": 8,
+      "ambiente_id": 1,
+      "horario": "07:00-08:00"
+    },
+    {
+      "id": 9,
+      "ambiente_id": 1,
+      "horario": "08:00-09:00"
+    },
+    {
+      "id": 10,
+      "ambiente_id": 1,
+      "horario": "09:00-10:00"
+    },
+    {
+      "id": 11,
+      "ambiente_id": 1,
+      "horario": "10:00-11:00"
+    },
+    {
+      "id": 12,
+      "ambiente_id": 1,
+      "horario": "11:00-12:00"
+    },
+    {
+      "id": 13,
+      "ambiente_id": 1,
+      "horario": "12:00-13:00"
+    },
+    {
+      "id": 14,
+      "ambiente_id": 1,
+      "horario": "13:00-14:00"
+    },
+    {
+      "id": 15,
+      "ambiente_id": 1,
+      "horario": "14:00-15:00"
     },
     {
       "id": 16,
-      "nome": "Felipe Gustavo Ferreira Cruz",
-      "categoria": "profissional",
-      "data_recebimento": "2024-11-07",
-      "imagem": {}
+      "ambiente_id": 1,
+      "horario": "15:00-16:00"
+    },
+    {
+      "id": 17,
+      "ambiente_id": 1,
+      "horario": "16:00-17:00"
+    },
+    {
+      "id": 18,
+      "ambiente_id": 1,
+      "horario": "17:00-18:00"
+    },
+    {
+      "id": 19,
+      "ambiente_id": 1,
+      "horario": "18:00-19:00"
+    },
+    {
+      "id": 20,
+      "ambiente_id": 1,
+      "horario": "19:00-20:00"
+    },
+    {
+      "id": 21,
+      "ambiente_id": 1,
+      "horario": "20:00-21:00"
+    },
+    {
+      "id": 22,
+      "ambiente_id": 1,
+      "horario": "21:00-22:00"
+    },
+    {
+      "id": 23,
+      "ambiente_id": 1,
+      "horario": "22:00-23:00"
+    },
+    {
+      "id": 24,
+      "ambiente_id": 1,
+      "horario": "23:00-00:00"
     }
   ],
-  "instituicoes": [
+  "reservas": [
     {
       "id": 1,
-      "nome": "Casa da Paz",
-      "cnpj": "123456789",
-      "email": "casa@dapaz.com",
-      "telefone": "123456789"
-    }
-  ],
-  "redes-sociais": [
-    {
-      "id": 1,
-      "tipo": "Facebook",
-      "nome": "Casa da Paz ",
-      "url": "casadapaz_umuarama"
+      "ambiente_id": 1,
+      "horario": "09:00-10:00",
+      "data": "2024-11-20",
+      "usuario_id": 1,
+      "status": "pendente"
     },
     {
       "id": 2,
-      "tipo": "Instagram",
-      "nome": "Casa da Paz - Bazar",
-      "url": "casadapaz_umuarama"
+      "ambiente_id": 1,
+      "horario": "10:00-11:00",
+      "data": "2024-11-20",
+      "usuario_id": 1,
+      "status": "pendente"
     },
     {
       "id": 3,
-      "tipo": "Twitter",
-      "nome": "Casa da Paz - Fanclub",
-      "url": "casadapaz_umuarama"
-    }
-  ],
-  "enderecos": [
-    {
-      "id": 1,
-      "local": "Sede - Casa da Paz 2",
-      "cep": "87506648",
-      "rua": "Casa da Paz",
-      "numero": "123",
-      "complemento": "Casa da Paz",
-      "bairro": "Casa da Paz",
-      "cidade": "Casa da Paz",
-      "estado": "Casa da Paz",
-      "instituicao": 1,
-      "logradouro": "Felipe"
-    },
-    {
-      "id": 2,
-      "local": "Bazar - Casa da Paz",
-      "cep": "87506550",
-      "rua": "Casa da Paz",
-      "numero": "123",
-      "complemento": "Casa dasdsads Paz",
-      "bairro": "Casa da Paz",
-      "cidade": "Casa da Paz",
-      "estado": "Casa da Paz",
-      "instituicao": 1,
-      "logradouro": "Felipe"
-    }
-  ],
-  "voluntarios": [
-    {
-      "id": 1,
-      "nome": "Adenilson",
-      "email": "admin@gmail.com",
-      "telefone": "123456789",
-      "data_nascimento": "2020-01-01"
-    },
-    {
-      "nome": "Daniel Oliveira",
-      "email": "danielmo352@gmail.com",
-      "telefone": "44997221511",
-      "data_nascimento": "2000-08-10",
-      "id": 2
-    },
-    {
-      "nome": "Teste4025",
-      "email": "teste@gmail.com",
-      "telefone": "4499991008",
-      "data_nascimento": "2000-08-10",
-      "id": 3
-    }
-  ],
-  "historias": [
-    {
-      "id": 1,
-      "ano_fundacao": "2020-01-10",
-      "mvv": "Nosso valores são x, nossa missão é y e temos z valores",
-      "pmh": "Inauguração - X, Inaugurado - y, Inaugurando - z",
-      "texto_institucional": "Somos a Casa da Paz e temos x e y e z valores, em x temos o valor de x, e em y temos o valor de y e em z temos o valor de z.",
-      "foto_capa": "capa.jpg"
-    }
-  ],
-  "colaboradores": [
-    {
-      "id": 1,
-      "nome": "Adenilson",
-      "profissao": "Programador",
-      "classificacao": "diretor",
-      "foto": "colaborador.jpg"
-    }
-  ],
-  "parceiros": [
-    {
-      "id": 1,
-      "nome": "Sede Casa da Paz",
-      "classificacao": "comunidade",
-      "data_inicio": "2024-11-05",
-      "imagem": {}
-    }
-  ],
-  "galerias": [
-    {
-      "id": 1,
-      "nome": "Sede Casa da Paz",
-      "descricao": "Esse album foi criado...",
-      "data": "2024-11-05"
-    },
-    {
-      "id": 2,
-      "nome": "Dia internacional de ontem",
-      "descricao": "Opa tiramos ontem",
-      "data": "2024-11-08"
-    },
-    {
-      "id": 3,
-      "nome": "teste",
-      "descricao": "teste",
-      "data": "2024-11-07"
-    }
-  ],
-  "fotos": [
-    {
-      "id": 1,
-      "id_galeria": 1,
-      "imagem": "casadapaz1.jpg"
-    },
-    {
-      "id": 2,
-      "id_galeria": 1,
-      "imagem": "casadapaz2.jpg"
+      "ambiente_id": 2,
+      "horario": "14:00-15:00",
+      "data": "2024-11-21",
+      "usuario_id": 1,
+      "status": "pendente"
     }
   ]
 }
