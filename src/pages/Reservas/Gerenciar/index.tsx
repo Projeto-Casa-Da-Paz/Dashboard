@@ -203,11 +203,11 @@ export default function GerenciarReservas() {
                             <Controller
                                 name="ambiente_id"
                                 control={control}
-                                rules={{ required: 'Categoria é obrigatória!' }}
+                                rules={{ required: 'Ambiente é obrigatório!' }}
                                 render={({ field }) => (
                                     <FormControl fullWidth error={!!errors.ambiente_id} sx={{ mb: 2 }}>
                                         <InputLabel>Ambientes</InputLabel>
-                                        <Select {...field} label="Categoria">
+                                        <Select {...field} label="Amientes">
                                             <MenuItem value="">Selecione o Ambiente</MenuItem>
                                             {Array.from(ambientes.entries()).map(([key, value]) => (
                                                 <MenuItem key={key} value={key}>{value}</MenuItem>
