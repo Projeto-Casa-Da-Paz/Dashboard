@@ -1,30 +1,82 @@
-# React + TypeScript + Vite
+# Painel Casa da Paz
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Vite](https://img.shields.io/badge/Vite-5.3-646CFF)
+![React](https://img.shields.io/badge/React-18.3-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue)
 
-Currently, two official plugins are available:
+## 📋 Descrição  
+Sistema de painel administrativo desenvolvido com React, TypeScript e Vite.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tecnologias Principais  
+- React 18.3  
+- TypeScript  
+- Vite  
+- Material-UI (MUI)  
+- React Router DOM  
+- React Hook Form  
+- Styled Components  
 
-## Expanding the ESLint configuration
+## 📦 Dependências Principais  
+- **UI Components**:  
+  - Material-UI (v6)  
+  - Styled Components  
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Formulários e Validação**:  
+  - React Hook Form  
+  - React Input Mask  
 
-- Configure the top-level `parserOptions` property like this:
+- **Autenticação e API**:  
+  - JWT  
+  - Axios  
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## 🛠️ Scripts Disponíveis  
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Para iniciar o ambiente de desenvolvimento, use:  
+`npm run dev`
+
+Para realizar o build do projeto:  
+`npm run build`
+
+Para executar o linting do código:  
+`npm run lint`
+
+Para visualizar a versão de produção localmente:  
+`npm run preview`
+
+Para iniciar o servidor na porta 3001:  
+`npm run server`
+
+## 💻 Requisitos de Desenvolvimento  
+- Node.js  
+- npm ou yarn  
+
+## 🔧 Configuração do Ambiente  
+
+1. Clone o repositório  
+2. Instale as dependências:  
+`npm install`  
+3. Inicie o servidor de desenvolvimento:  
+`npm run dev`  
+4. Em outro terminal, inicie a API:  
+Consulte o repositório Page, para mais informações 
+
+## 📚 Estrutura do Projeto  
+O projeto utiliza:  
+- Vite como bundler  
+- TypeScript para tipagem estática  
+- ESLint para linting  
+- Diversas bibliotecas de UI para uma interface rica e responsiva  
+
+## 🔒 Autenticação  
+O sistema utiliza:  
+- JWT para tokens  
+- Axios para requisições HTTP  
+
+## 📝 Observações  
+- O projeto é privado (`"private": true`)  
+- Versão atual: 0.0.0  
+- Configurado com suporte a TypeScript e ESLint  
+
+## 🤝 Contribuição  
+Por ser um projeto privado, consulte as diretrizes de contribuição com a equipe de desenvolvimento.
