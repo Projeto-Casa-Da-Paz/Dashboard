@@ -11,7 +11,7 @@ export const verificaTokenExpirado = () => {
     }
 
     if (token) {
-        let decodedToken = jwtDecode(token.accessToken)
+        let decodedToken = jwtDecode(token.access_token)
         if (
             !decodedToken.exp
             ||
