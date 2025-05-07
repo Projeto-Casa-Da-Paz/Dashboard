@@ -1,5 +1,5 @@
 import { Loading } from "../../components/Loading";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { LayoutDashboard } from "../../components/LayoutDashboard";
@@ -10,6 +10,7 @@ import { SnackbarMui } from "../../components/Snackbar";
 import { CustomTextarea } from "../../components/CustomTextArea";
 import DropZone from "../../components/Dropzone";
 import { IToken } from "../../interfaces/token";
+import ColorPicker from "../../components/ColorPicker";
 
 interface IHistoria {
     id: number
@@ -39,6 +40,8 @@ export default function Historia() {
     const [severity, setSeverity] = useState<"success" | "error" | "info" | "warning">("info");
     const navigate = useNavigate();
     const [previewUrl, setPreviewUrl] = useState<string>('');
+    const [selectedColor, setSelectedColor] = useState("#443a3a");
+
 
     const {
         control,
@@ -163,8 +166,8 @@ export default function Historia() {
                                     <DropZone
                                         previewUrl={previewUrl}
                                         onFileChange={(file) => {
-                                            setValue("foto_capa", file); 
-                                            onChange(file); 
+                                            setValue("foto_capa", file);
+                                            onChange(file);
                                             handleFileChange(file);
                                         }}
                                         onDeleteImage={() => {
@@ -250,6 +253,16 @@ export default function Historia() {
                                     />
                                 )}
                             />
+
+                            <Box sx={{ p: 2 }}>
+                                <Typography variant="h5" gutterBottom>
+                                    Escolha uma cor:
+                                </Typography>
+                                <ColorPicker
+                                    initialColor={selectedColor}
+                                    onChange={(newColor: SetStateAction<string>) => setSelectedColor(newColor)}
+                                />
+                            </Box>
 
                             <Button
                                 type="submit"
