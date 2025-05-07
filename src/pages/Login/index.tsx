@@ -48,7 +48,7 @@ export default function Login() {
             });
 
             localStorage.setItem(
-                'casadapaz.token',
+                'auth.token',
                JSON.stringify(response.data)
             );
 
@@ -56,6 +56,7 @@ export default function Login() {
             setTimeout(() => { navigate('/dashboard'); }, 1500);
         } catch (error) {
             setLoading(false);
+            console.error(error);
             handleShowSnackbar("Login ou senha inválidos !", 'error');
         }
     }, [navigate]);

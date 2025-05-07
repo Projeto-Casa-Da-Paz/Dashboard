@@ -26,13 +26,16 @@ import {
   Timeline as TimelineIcon,
   PeopleAlt} from '@mui/icons-material';
 import { IToken } from '../../interfaces/token';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import GroupsIcon from '@mui/icons-material/Groups';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
 interface IProps {
   children: ReactNode;
   token?: IToken | null;
+  notificacoes?: number;
 }
 
 const drawerWidth = 240;
@@ -47,13 +50,8 @@ export const LayoutDashboard = ({ children }: IProps) => {
   const menuItems = [
     { text: 'Voluntários', path: '/dashboard', icon: <DashboardIcon /> },
     { text: 'Usuários', path: '/usuarios', icon: <PersonIcon /> },
-    { text: 'Prêmios', path: '/premios', icon: <PrizeIcon /> },
-    { text: 'Instituição', path: '/instituicao/1', icon: <InstitutionIcon /> },
-    { text: 'História', path: '/historia/1', icon: <TimelineIcon /> },
-    { text: 'Dados Bancários', path: '/doacao/1', icon: <AccountBalanceWalletIcon /> },
-    { text: 'Parceiros', path: '/parceiros', icon: <PeopleAlt /> },
-    { text: 'Colaboradores', path: '/colaboradores', icon: <GroupsIcon /> },
-    { text: 'Galerias', path: '/galerias', icon: <CollectionsIcon /> },
+    { text: 'Ambientes', path: '/ambientes', icon: <InstitutionIcon /> },
+    { text: 'Reservas', path: '/reservas', icon: <CalendarMonthIcon /> },
   ];
 
   const handleDrawerToggle = () => {
@@ -95,8 +93,16 @@ export const LayoutDashboard = ({ children }: IProps) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Sistema Gestão - Página Casa da Paz
+            Gerenciador de Ambientes - UniAlfa
           </Typography>
+          <IconButton
+            color="inherit"
+            component={RouterLink}
+            to="/notificacoes"
+          >
+            <NotificationsActiveIcon />
+          </IconButton>
+
           <IconButton
             color="inherit"
             component={RouterLink}
@@ -105,6 +111,7 @@ export const LayoutDashboard = ({ children }: IProps) => {
           >
             <LogoutIcon />
           </IconButton>
+          
         </Toolbar>
       </AppBar>
 

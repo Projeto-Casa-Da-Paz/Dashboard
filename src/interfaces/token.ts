@@ -1,9 +1,10 @@
 export interface IToken {
-    access_token: string
+    accessToken: string
     user: {
         id: number
         nome: string
         email: string
-        perfil: string
+        isAdmin: boolean,
+        isUser: boolean
     }
 }
